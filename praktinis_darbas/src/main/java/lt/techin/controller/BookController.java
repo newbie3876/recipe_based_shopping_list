@@ -1,8 +1,8 @@
-package lt.techin.praktinis_darbas.controller;
+package lt.techin.controller;
 
 
-import lt.techin.praktinis_darbas.model.Book;
-import lt.techin.praktinis_darbas.service.BookService;
+import lt.techin.model.Book;
+import lt.techin.service.BookService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

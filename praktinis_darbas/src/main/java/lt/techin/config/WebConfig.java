@@ -1,4 +1,4 @@
-package lt.techin.praktinis_darbas.config;
+package lt.techin.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -6,7 +6,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
   @Override
   public void addCorsMappings(CorsRegistry registry) {
     // Leidžiame užklausas iš React frontend'o (localhost:5173)

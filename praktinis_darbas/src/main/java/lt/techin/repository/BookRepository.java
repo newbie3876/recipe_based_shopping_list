@@ -1,7 +1,7 @@
-package lt.techin.praktinis_darbas.repository;
+package lt.techin.repository;
 
 
-import lt.techin.praktinis_darbas.model.Book;
+import lt.techin.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookRepository extends JpaRepository<Book, Long> {

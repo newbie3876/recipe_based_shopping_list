@@ -1,4 +1,4 @@
-package lt.techin.praktinis_darbas.security;
+package lt.techin.security;
 
 
 import org.springframework.context.annotation.Bean;

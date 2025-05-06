@@ -1,13 +1,13 @@
-package lt.techin.praktinis_darbas;
+package lt.techin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PraktinisDarbasApplicationTests {
+class ApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+  @Test
+  void contextLoads() {
+  }
 
 }

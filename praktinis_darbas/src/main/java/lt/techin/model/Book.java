@@ -1,4 +1,4 @@
-package lt.techin.praktinis_darbas.model;
+package lt.techin.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
