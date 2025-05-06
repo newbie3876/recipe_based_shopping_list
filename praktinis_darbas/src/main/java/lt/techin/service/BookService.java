@@ -1,8 +1,8 @@
-package lt.techin.praktinis_darbas.service;
+package lt.techin.service;
 
 
-import lt.techin.praktinis_darbas.model.Book;
-import lt.techin.praktinis_darbas.repository.BookRepository;
+import lt.techin.model.Book;
+import lt.techin.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
