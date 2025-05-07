@@ -1,27 +1,35 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @NotNull
-  @Column(nullable = false, length = 125)
   private String username;
-
-  @NotNull
-  @Column(nullable = false, length = 180)
   private String password;
 
-  public User(String username, String password) {
-    this.username = username;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+          name = "users_roles",
+          joinColumns = @JoinColumn(name = "user_id"),
+          inverseJoinColumns = @JoinColumn(name = "role_id")
+  )
+  private List<Role> roles;
+
+  public User(String password, String username, List<Role> roles) {
     this.password = password;
+    this.username = username;
+    this.roles = roles;
   }
 
   public User() {
@@ -31,6 +39,7 @@ public class User {
     return id;
   }
 
+  @Override
   public String getUsername() {
     return username;
   }
@@ -39,11 +48,25 @@ public class User {
     this.username = username;
   }
 
+  @Override
   public String getPassword() {
     return password;
   }
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public List<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Role> roles) {
+    this.roles = roles;
+  }
+
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return this.roles;
   }
 }
