@@ -9,6 +9,7 @@ function Header() {
       <h1>My App</h1>
       {isAuthenticated ? (
         <div>
+      
           <button onClick={logout} className="text-red-500">
             Atsijungti
           </button>

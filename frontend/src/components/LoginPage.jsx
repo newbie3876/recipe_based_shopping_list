@@ -15,13 +15,18 @@ function LoginPage() {
   } = useForm({ mode: "onBlur" });
 
   const [loginError, setLoginError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onSubmit = async ({ username, password }) => {
+    setLoading(true);
+
     try {
       const token = await loginUser(username, password); // Naudojame service
       login(token);
     } catch (error) {
       setLoginError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,7 +80,7 @@ function LoginPage() {
           type="submit"
           className="w-full bg-blue-500 hover:bg-blue-600 cursor-pointer text-white font-bold py-2 px-4 rounded"
         >
-          Prisijungti
+          {loading ? "Jungiamasi..." : "Prisijungti"}
         </button>
       </form>
       <div className="flex gap-2">

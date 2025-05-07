@@ -14,7 +14,7 @@ export const loginUser = async (username, password) => {
     );
     return response.data; // tokenas
   } catch (error) {
-    console.error("An error occurred:", error);
-    alert("Something went wrong, please try again later.");
+    console.error("Login error:", error);
+    throw new Error("Neteisingas vartotojo vardas arba slaptažodis");
   }
 };
