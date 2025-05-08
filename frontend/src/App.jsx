@@ -1,10 +1,19 @@
 import React from "react";
-import BookList from "./components/BookList";
+import LoginPage from "./components/LoginPage";
+import Header from "./components/Header";
+import HomePage from "./components/HomePage";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
+  const { token } = useAuth();
+  if (!token) {
+    return <LoginPage />;
+  }
+
   return (
     <div className="App">
-      <BookList />
+      <Header />
+      <HomePage />
     </div>
   );
 }

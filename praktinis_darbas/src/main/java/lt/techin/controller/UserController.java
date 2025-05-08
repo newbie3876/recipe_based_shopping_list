@@ -31,6 +31,7 @@ public class UserController {
     this.userService = userService;
     this.passwordEncoder = passwordEncoder;
   }
+  
 
   @PostMapping("/users")
   // Use UserRequestDTO!
@@ -84,7 +85,7 @@ public class UserController {
     if (userOptional.isEmpty()) {
       return ResponseEntity.notFound().build();
     }
-    
+
     this.userService.deleteUserByID(id);
     return ResponseEntity.noContent().build();
   }
