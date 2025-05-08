@@ -1,6 +1,7 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -22,17 +23,17 @@ public class Recipe {
   @Column(nullable = false, length = 255)
   private String link;
 
-  @NotNull
+  @Min(value = 1, message = "At least 1 portion has to be included.")
   @Column(nullable = false)
   private int portions;
 
   @NotNull
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @NotNull
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "recipe_category_id", nullable = false)
   private RecipeCategory recipeCategory;
 
