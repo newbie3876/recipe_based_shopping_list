@@ -3,7 +3,9 @@ package lt.techin.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lt.techin.dto.user.AdminRequestDTO;
 import lt.techin.dto.user.UserMapper;
+import lt.techin.dto.user.UserRegistrationDTO;
 import lt.techin.dto.user.UserResponseDTO;
 import lt.techin.model.User;
 import lt.techin.service.UserService;
@@ -31,24 +33,22 @@ public class UserController {
     this.userService = userService;
     this.passwordEncoder = passwordEncoder;
   }
-  
 
-  @PostMapping("/users")
-  // Use UserRequestDTO!
-  public ResponseEntity<Object> saveUser(@RequestBody User user) {
 
-    if (this.userService.existsUserByUsername(user.getUsername())) {
+  @PostMapping("/admin")
+  public ResponseEntity<Object> saveAdmin(@Valid @RequestBody AdminRequestDTO adminRequestDTO) {
+
+    if (this.userService.existsUserByUsername(adminRequestDTO.username())) {
       Map<String, String> response = new HashMap<>();
       response.put("username", "Already exists");
 
       return ResponseEntity.badRequest().body(response);
     }
 
-    // Šifruojame slaptažodį prieš saugant duomenų bazėje
-    user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+    String encodedPassword = passwordEncoder.encode(adminRequestDTO.password());
 
-    // Use DTO mapping!
-    User savedUser = this.userService.saveUser(user);
+    User user = UserMapper.toAdmin(adminRequestDTO, encodedPassword);
+    User savedUser = userService.saveUser(user);
 
     return ResponseEntity.created(
                     ServletUriComponentsBuilder.fromCurrentRequest()
@@ -56,9 +56,26 @@ public class UserController {
                             .buildAndExpand(savedUser.getId())
                             .toUri())
             // Use DTO Mapping!
-            .body(savedUser);
+            .body(UserMapper.toDTO(savedUser));
   }
 
+  @PostMapping("/register")
+  public ResponseEntity<Object> register(@Valid @RequestBody UserRegistrationDTO dto) {
+    if (userService.existsUserByUsername(dto.username())) {
+      return ResponseEntity.badRequest().body(Map.of("username", "Already exists"));
+    }
+
+    String encodedPassword = passwordEncoder.encode(dto.password());
+    User user = UserMapper.toUser(dto, encodedPassword);
+    User saved = userService.saveUser(user);
+
+    return ResponseEntity.created(
+            ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(saved.getId())
+                    .toUri()
+    ).body(UserMapper.toDTO(saved));
+  }
 
   @GetMapping("/users")
   public ResponseEntity<List<UserResponseDTO>> getUsers() {

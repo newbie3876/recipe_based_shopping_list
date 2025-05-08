@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import dinner from "../assets/dinner.svg";
 import { loginUser } from "../services/authService";
+import RegistrationModal from "./RegistrationModal";
 
 function LoginPage() {
   const { login } = useAuth();
@@ -16,6 +17,7 @@ function LoginPage() {
 
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
   const onSubmit = async ({ username, password }) => {
     setLoading(true);
@@ -85,10 +87,17 @@ function LoginPage() {
       </form>
       <div className="flex gap-2">
         <p>Dar neturi paskyros?</p>
-        <a href="/register" className="text-blue-500">
+        <button
+          onClick={() => setIsRegisterOpen(true)}
+          className="text-blue-500 hover:underline"
+        >
           Registracija
-        </a>
+        </button>
       </div>
+      <RegistrationModal
+        isOpen={isRegisterOpen}
+        onClose={() => setIsRegisterOpen(false)}
+      />
     </div>
   );
 }
