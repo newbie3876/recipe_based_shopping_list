@@ -1,17 +1,19 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "recipe_categories")
 public class RecipeCategory {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
-  @NotNull
-  @Column(nullable = false, length = 100, unique = true)
+  @Size(max = 150)
+  @NotBlank(message = "Category name cannot be blank.")
+  @Column(nullable = false, length = 150, unique = true)
   private String name;
 
   public RecipeCategory(String name) {
@@ -21,7 +23,7 @@ public class RecipeCategory {
   public RecipeCategory() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 

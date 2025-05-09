@@ -2,16 +2,18 @@ package lt.techin.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "ingredients")
 public class Ingredient {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @NotNull
-  @Column(nullable = false, length = 100)
+  @Size(max = 250)
+  @Column(nullable = false, length = 250)
   private String name;
 
   @ManyToOne
@@ -24,9 +26,10 @@ public class Ingredient {
   }
 
   public Ingredient() {
+
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
