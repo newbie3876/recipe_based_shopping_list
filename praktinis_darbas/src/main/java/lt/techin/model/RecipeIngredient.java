@@ -1,6 +1,7 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -8,21 +9,22 @@ import jakarta.validation.constraints.NotNull;
 public class RecipeIngredient {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @NotNull
+  @Min(value = 1, message = "Quantity cannot be less than 1.")
   @Column(nullable = false)
   private int quantity;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "unit_id", nullable = false)
   private Unit unit;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "ingredient_id", nullable = false)
   private Ingredient ingredient;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "recipe_id", nullable = false)
   private Recipe recipe;
 
@@ -36,7 +38,7 @@ public class RecipeIngredient {
   public RecipeIngredient() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
@@ -72,3 +74,4 @@ public class RecipeIngredient {
     this.recipe = recipe;
   }
 }
+

@@ -1,12 +1,12 @@
 package lt.techin.repository;
 
-import lt.techin.model.RecipeCategory;
+import lt.techin.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface RecipeCategoryRepository extends JpaRepository<RecipeCategory, Long> {
-  Optional<RecipeCategory> findByName(String name);
+public interface RoleRepository extends JpaRepository<Role, Long> {
+  Optional<Role> findByName(String name);
 }
