@@ -19,7 +19,6 @@ public class ShoppingList {
 
   @NotNull
   @Column(nullable = false, name = "created_at")
-  @PastOrPresent(message = "Creation date cannot be in the future!")
   private LocalDate createdAt;
 
   public ShoppingList(User user, LocalDate createdAt) {
