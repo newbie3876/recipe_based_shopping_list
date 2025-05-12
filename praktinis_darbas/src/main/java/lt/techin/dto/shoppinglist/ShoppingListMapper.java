@@ -18,7 +18,7 @@ public class ShoppingListMapper {
     return new ShoppingListResponseDTO(
             shoppingList.getId(),
             List.of(shoppingList.getUser().getId()),
-            shoppingList.getUser().getUsername(), // Assuming User has a username field
+            shoppingList.getUser().getUsername(),
             shoppingList.getCreatedAt()
     );
   }

@@ -1,114 +1,88 @@
 package lt.techin.controller;
 
+import jakarta.validation.Valid;
+import lt.techin.dto.shoppinglist.ShoppingListItemMapper;
+import lt.techin.dto.shoppinglist.ShoppingListItemRequestDTO;
 import lt.techin.dto.shoppinglist.ShoppingListMapper;
 import lt.techin.model.*;
 import lt.techin.repository.RecipeIngredientRepository;
 import lt.techin.repository.UnitRepository;
-import lt.techin.service.ShoppingListService;
+import lt.techin.service.ShoppingListItemService;
 import lt.techin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/shopping-lists/items")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ShoppingListItemController {
 
-  private final ShoppingListService shoppingListService;
+  private final ShoppingListItemService shoppingListItemService;
   private final UserService userService;
   private final RecipeIngredientRepository recipeIngredientRepository;
   private final UnitRepository unitRepository;
   private final ShoppingListMapper shoppingListMapper;
 
-  @Autowired
-  public ShoppingListItemController(ShoppingListService shoppingListService,
+  public ShoppingListItemController(ShoppingListItemService shoppingListItemService,
                                     UserService userService,
                                     RecipeIngredientRepository recipeIngredientRepository,
                                     UnitRepository unitRepository,
                                     ShoppingListMapper shoppingListMapper) {
-    this.shoppingListService = shoppingListService;
+    this.shoppingListItemService = shoppingListItemService;
     this.userService = userService;
     this.recipeIngredientRepository = recipeIngredientRepository;
     this.unitRepository = unitRepository;
     this.shoppingListMapper = shoppingListMapper;
   }
 
-  @PostMapping("/")
-  public ResponseEntity<Object> addItemToShoppingList(@PathVariable Long listId,
-                                                      @RequestBody ShoppingListItemDTO itemDto,
-                                                      @AuthenticationPrincipal UserDetails userDetails) {
-    User user = userService.findUserByUsername(userDetails.getUsername())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+  @Autowired
+  @PostMapping("/items")
+  public ResponseEntity<Object> addItemToShoppingList(@Valid @RequestBody ShoppingListItemRequestDTO shoppingListItemRequestDTO) {
+    ShoppingListItem addedItem = this.shoppingListItemService.addItem(ShoppingListItemMapper.toShoppingListItem(shoppingListItemRequestDTO));
 
-    ShoppingList shoppingList = shoppingListService.getShoppingListById(listId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shopping list not found"));
-
-    if (!shoppingList.getUser().getId().equals(user.getId())) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have access to this shopping list");
-    }
-
-    Ingredient ingredient = recipeIngredientRepository.findById(itemDto.getIngredientId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingredient not found"));
-
-    Unit unit = unitRepository.findById(itemDto.getUnitId())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unit not found"));
-
-    ShoppingListItem savedItem = shoppingListService.addItemToShoppingList(
-            shoppingList, ingredient, itemDto.getQuantity(), unit);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(shoppingListMapper.toDTO(savedItem));
+    return ResponseEntity.created(
+                    ServletUriComponentsBuilder.fromCurrentRequest()
+                            .path("/{id}")
+                            .buildAndExpand(addedItem.getId())
+                            .toUri())
+            .body(ShoppingListItemMapper.toDTO(addedItem));
   }
 
-  @PutMapping("/")
-  public ResponseEntity<ShoppingListItemDTO> updateItemQuantity(@PathVariable Long itemId,
-                                                                @RequestParam int quantity,
-                                                                @AuthenticationPrincipal UserDetails userDetails) {
-    ShoppingListItem item = shoppingListService.getShoppingListItemsById(itemId)
-            .stream()
-            .filter(i -> i.getId().equals(itemId))
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found"));
+  @PutMapping("/items/{id}")
+  public ResponseEntity<Object> updateItemQuantity(@PathVariable long id, @Valid @RequestBody ShoppingListItemRequestDTO shoppingListItemRequestDTO) {
+    Optional<ShoppingListItem> itemFromList = this.shoppingListItemService.findItemById(id);
 
-    User user = userService.findUserByUsername(userDetails.getUsername())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+//    if (itemFromList.isPresent()) {
+//      ShoppingListItem updatedItem = itemFromList.get();
+//
+//      updatedItem.setQuantity(ShoppingListItemRequestDTO.quantity());
+//
+//      return ResponseEntity.ok(ShoppingListItemMapper.toDTO(i));
+//    }
 
-    if (!item.getShoppingList().getUser().getId().equals(user.getId())) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have access to this shopping list item");
-    }
+    ShoppingListItem addedItem = this.shoppingListItemService.addItem(ShoppingListItemMapper.toShoppingListItem(shoppingListItemRequestDTO));
 
-    shoppingListService.updateItemQuantity(itemId, quantity);
-
-    ShoppingListItem updatedItem = shoppingListService.getShoppingListItemsById(item.getShoppingList().getId())
-            .stream()
-            .filter(i -> i.getId().equals(itemId))
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found after update"));
-
-    return ResponseEntity.ok(shoppingListMapper.toDTO(updatedItem));
+    return ResponseEntity.created(
+                    ServletUriComponentsBuilder.fromCurrentRequest()
+                            .replacePath("/api/movies/{id}")
+                            .buildAndExpand(addedItem.getId())
+                            .toUri())
+            .body(ShoppingListItemMapper.toDTO(addedItem));
   }
 
-  @DeleteMapping("/")
-  public ResponseEntity<Void> removeItemFromShoppingList(@PathVariable Long itemId,
-                                                         @AuthenticationPrincipal UserDetails userDetails) {
-    ShoppingListItem item = shoppingListService.getShoppingListItemsById(itemId)
-            .stream()
-            .filter(i -> i.getId().equals(itemId))
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found"));
+  @DeleteMapping("/items/{id}")
+  public ResponseEntity<Void> removeItemFromShoppingList(@PathVariable long id) {
+    Optional<ShoppingListItem> item = this.shoppingListItemService.findItemById(id);
 
-    User user = userService.findUserByUsername(userDetails.getUsername())
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-
-    if (!item.getShoppingList().getUser().getId().equals(user.getId())) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have access to this shopping list item");
+    if(item.isEmpty()) {
+      return ResponseEntity.notFound().build();
     }
 
-    shoppingListService.removeItemFromShoppingList(itemId);
+    this.shoppingListItemService.removeItemById(id);
     return ResponseEntity.noContent().build();
   }
 }

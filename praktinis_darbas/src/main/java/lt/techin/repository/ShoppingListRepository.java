@@ -11,8 +11,6 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, Long
 
   List<ShoppingList> findByUser(User user);
 
-  List<ShoppingList> findByUserOrderByCreatedAtDesc(User user);
-
-  List<ShoppingList> findByUserAndCreatedAtBetween(User user, LocalDate startDate, LocalDate endDate);
+  List<ShoppingList> findByUserAndCreatedAt(User user, LocalDate localDate);
 }
 
