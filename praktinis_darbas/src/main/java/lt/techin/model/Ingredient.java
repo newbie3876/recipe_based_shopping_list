@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 @Entity
 @Table(name = "ingredients")
 public class Ingredient {
@@ -20,13 +22,16 @@ public class Ingredient {
   @JoinColumn(name = "ingredient_category_id", nullable = false)
   private IngredientCategory ingredientCategory;
 
-  public Ingredient(String name, IngredientCategory ingredientCategory) {
+  @OneToMany(mappedBy = "ingredient")
+  private List<ShoppingListItem> shopping_list_items;
+
+  public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shopping_list_items) {
     this.name = name;
     this.ingredientCategory = ingredientCategory;
+    this.shopping_list_items = shopping_list_items;
   }
 
   public Ingredient() {
-
   }
 
   public Long getId() {
@@ -47,5 +52,13 @@ public class Ingredient {
 
   public void setIngredientCategory(IngredientCategory ingredientCategory) {
     this.ingredientCategory = ingredientCategory;
+  }
+
+  public List<ShoppingListItem> getShopping_list_items() {
+    return shopping_list_items;
+  }
+
+  public void setShopping_list_items(List<ShoppingListItem> shopping_list_items) {
+    this.shopping_list_items = shopping_list_items;
   }
 }
