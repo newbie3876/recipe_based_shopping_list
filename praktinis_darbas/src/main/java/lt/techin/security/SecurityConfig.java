@@ -52,6 +52,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()
+
+                    .requestMatchers(HttpMethod.POST, "/api/ingredients").hasRole("USER")
+                    .requestMatchers(HttpMethod.DELETE, "/api//ingredients/{id}").hasRole("USER")
                     .anyRequest().authenticated()
             )
 //            .formLogin(withDefaults()) // leidžia prisijungimą
