@@ -1,6 +1,7 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,12 +11,16 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
+  @NotBlank
+  @Column(nullable = false)
   private String username;
+
+  @NotBlank
+  @Column(nullable = false)
   private String password;
 
   @ManyToMany(fetch = FetchType.EAGER)
@@ -35,7 +40,7 @@ public class User implements UserDetails {
   public User() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 

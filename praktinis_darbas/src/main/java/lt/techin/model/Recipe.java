@@ -1,40 +1,47 @@
 package lt.techin.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "recipes")
 public class Recipe {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @NotNull
-  @Column(nullable = false, length = 100)
+  @Size(max = 150)
+  @Column(nullable = false, length = 150)
   private String name;
 
   @NotNull
-  @Column(nullable = false, length = 100)
+  @Size(max = 350)
+  @Column(nullable = false, length = 350)
   private String description;
 
   @NotNull
+  @Size(max = 255)
   @Column(nullable = false, length = 255)
   private String link;
 
-  @Min(value = 1, message = "At least 1 portion has to be included.")
   @Column(nullable = false)
+  @Min(value = 0, message = "Portions cannot be a negative.")
   private int portions;
 
   @NotNull
   @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "user_id", nullable = false)
+  @JsonBackReference
   private User user;
 
   @NotNull
   @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "recipe_category_id", nullable = false)
+  @JsonBackReference
   private RecipeCategory recipeCategory;
 
   public Recipe(String name, String description, String link, int portions, User user, RecipeCategory recipeCategory) {
@@ -49,7 +56,7 @@ public class Recipe {
   public Recipe() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
