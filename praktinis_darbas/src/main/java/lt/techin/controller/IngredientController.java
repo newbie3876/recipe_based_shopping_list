@@ -24,7 +24,7 @@ public class IngredientController {
 
   @PostMapping("/ingredients")
   public ResponseEntity<Object> saveIngredient(@RequestBody Ingredient ingredient) {
-
+    //
     //if (ingredientService.existsIngredientByName(ingredientRequestDTO.name()))
 
     if (ingredientService.existsIngredientByName(ingredient.getName())) {
@@ -35,9 +35,10 @@ public class IngredientController {
       return ResponseEntity.badRequest().body(response);
     }
 
-    //Ingredient savedIngredient = ingredientService.saveIngredient(IngredientMapper.toIngredient(ingredientRequestDTO));
 
     Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
+
+    //Ingredient savedIngredient = ingredientService.saveIngredient(IngredientMapper.toIngredient(ingredientRequestDTO));
 
     return ResponseEntity.created(
                     ServletUriComponentsBuilder.fromCurrentRequest()
@@ -46,6 +47,7 @@ public class IngredientController {
                             .toUri())
             .body(savedIngredient);
     //body(IngredientMapper.toDTO(savedIngredient));
+    //
   }
 
   @DeleteMapping("/ingredients/{id}")
