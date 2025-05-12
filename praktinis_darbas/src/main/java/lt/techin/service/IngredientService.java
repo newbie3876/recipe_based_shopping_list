@@ -1,6 +1,7 @@
 package lt.techin.service;
 
 import lt.techin.model.Ingredient;
+import lt.techin.repository.IngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
