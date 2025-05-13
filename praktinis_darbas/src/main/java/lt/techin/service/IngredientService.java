@@ -5,6 +5,7 @@ import lt.techin.repository.IngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,6 +32,10 @@ public class IngredientService {
 
   public void deleteIngredientById(Long id) {
     this.ingredientRepository.deleteById(id);
+  }
+
+  public List<Ingredient> findAllIngredients() {
+    return this.ingredientRepository.findAll();
   }
 }
 
