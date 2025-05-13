@@ -14,7 +14,8 @@ public class IngredientMapper {
   public static IngredientResponseDTO toDTO(Ingredient ingredient) {
     return new IngredientResponseDTO(
             ingredient.getId(),
-            ingredient.getName());
+            ingredient.getName()
+    );
   }
 
   public static List<IngredientResponseDTO> toListDTO(List<Ingredient> ingredients) {
@@ -25,4 +26,5 @@ public class IngredientMapper {
   }
 
 }
+
 

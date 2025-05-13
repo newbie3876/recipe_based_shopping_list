@@ -1,5 +1,6 @@
 package lt.techin.controller;
 
+import jakarta.validation.Valid;
 import lt.techin.model.Ingredient;
 import lt.techin.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,9 @@ public class IngredientController {
   }
 
   @PostMapping("/ingredients")
-  public ResponseEntity<Object> saveIngredient(@RequestBody Ingredient ingredient) {
+  public ResponseEntity<Object> saveIngredient(@Valid @RequestBody Ingredient ingredient) {
     //
     //if (ingredientService.existsIngredientByName(ingredientRequestDTO.name()))
-
     if (ingredientService.existsIngredientByName(ingredient.getName())) {
 
       Map<String, String> response = new HashMap<>();
@@ -37,8 +37,7 @@ public class IngredientController {
 
 
     Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
-
-    //Ingredient savedIngredient = ingredientService.saveIngredient(IngredientMapper.toIngredient(ingredientRequestDTO));
+    //Ingredient savedIngredient = ingredientService.saveIngredient(IngredientMapper.toIngredient(ingredientRequestDTO, ingredientCategoryRepository));
 
     return ResponseEntity.created(
                     ServletUriComponentsBuilder.fromCurrentRequest()
