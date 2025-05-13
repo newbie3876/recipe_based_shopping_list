@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +22,27 @@ public class IngredientController {
   @Autowired
   public IngredientController(IngredientService ingredientService) {
     this.ingredientService = ingredientService;
+  }
+
+  @GetMapping("/ingredients")
+  public ResponseEntity<List<Ingredient>> getIngredients() {
+
+    List<Ingredient> ingredients = ingredientService.findAllIngredients();
+
+    return ResponseEntity.ok(ingredients);
+  }
+
+  @GetMapping("/ingredients/{id}")
+  public ResponseEntity<Ingredient> getIngredientById(@PathVariable Long id) {
+
+    Optional<Ingredient> findIngredient = ingredientService.findIngredientById(id);
+
+    if (findIngredient.isEmpty()) {
+      return ResponseEntity.notFound().build();
+
+    }
+
+    return ResponseEntity.ok(findIngredient.get());
   }
 
   @PostMapping("/ingredients")
