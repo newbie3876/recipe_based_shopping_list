@@ -1,7 +1,9 @@
 import React from "react";
 
 function HomePage() {
-  return <div>HomePage</div>;
+  return (
+    <article className="min-h-screen bg-orange-200">HomePage</article>
+  );
 }
 
 export default HomePage;
