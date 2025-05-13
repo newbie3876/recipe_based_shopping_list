@@ -52,6 +52,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/images").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/images").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/api/images/{id}").authenticated()
                     .anyRequest().authenticated()
             )
 //            .formLogin(withDefaults()) // leidžia prisijungimą
