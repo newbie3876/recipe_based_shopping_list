@@ -1,6 +1,8 @@
 package lt.techin.controller;
 
 import jakarta.validation.Valid;
+import lt.techin.dto.ingredient.IngredientMapper;
+import lt.techin.dto.ingredient.IngredientResponseDTO;
 import lt.techin.model.Ingredient;
 import lt.techin.service.IngredientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +27,15 @@ public class IngredientController {
   }
 
   @GetMapping("/ingredients")
-  public ResponseEntity<List<Ingredient>> getIngredients() {
+  public ResponseEntity<List<IngredientResponseDTO>> getIngredients() {
 
     List<Ingredient> ingredients = ingredientService.findAllIngredients();
 
-    return ResponseEntity.ok(ingredients);
+    return ResponseEntity.ok(IngredientMapper.toListDTO(ingredients));
   }
 
   @GetMapping("/ingredients/{id}")
-  public ResponseEntity<Ingredient> getIngredientById(@PathVariable Long id) {
+  public ResponseEntity<IngredientResponseDTO> getIngredientById(@PathVariable Long id) {
 
     Optional<Ingredient> findIngredient = ingredientService.findIngredientById(id);
 
@@ -42,7 +44,7 @@ public class IngredientController {
 
     }
 
-    return ResponseEntity.ok(findIngredient.get());
+    return ResponseEntity.ok(IngredientMapper.toDTO(findIngredient.get()));
   }
 
   @PostMapping("/ingredients")
