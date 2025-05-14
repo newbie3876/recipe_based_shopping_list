@@ -46,12 +46,18 @@ public class SecurityConfig {
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/token").permitAll()
 
-                    .requestMatchers(HttpMethod.GET, "/api/books").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/users").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()
+
+                    .requestMatchers(HttpMethod.GET, "/api/shoppinglists").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/shoppinglists{id}").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/shoppinglists").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/api/shoppinglists{id}").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/api/shoppinglists{id}").permitAll()
+
                     .anyRequest().authenticated()
             )
 //            .formLogin(withDefaults()) // leidžia prisijungimą
