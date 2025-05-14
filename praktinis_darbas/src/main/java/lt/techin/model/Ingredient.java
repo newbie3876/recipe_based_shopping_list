@@ -1,8 +1,6 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -13,9 +11,6 @@ public class Ingredient {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank
-  @Size(max = 250)
-  @Column(nullable = false, length = 250)
   private String name;
 
   @ManyToOne
@@ -25,6 +20,10 @@ public class Ingredient {
   @OneToMany(mappedBy = "ingredient")
   private List<ShoppingListItem> shoppingListItems;
 
+  public Ingredient(String name) {
+    this.name = name;
+  }
+  
   public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shoppingListItems) {
     this.name = name;
     this.ingredientCategory = ingredientCategory;
