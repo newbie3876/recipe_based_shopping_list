@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.List;
+
 @Entity
 @Table(name = "ingredient_categories")
 public class IngredientCategory {
@@ -16,13 +18,13 @@ public class IngredientCategory {
   //@Column(nullable = false, length = 150)
   private String name;
 
-//  @OneToMany(mappedBy = "ingredientCategory")
-//  private List<Ingredient> ingredients;
+  @OneToMany(mappedBy = "ingredientCategory")
+  private List<Ingredient> ingredients;
 
-//  public IngredientCategory(String name, List<Ingredient> ingredients) {
-//    this.name = name;
-//    this.ingredients = ingredients;
-//  }
+  public IngredientCategory(String name, List<Ingredient> ingredients) {
+    this.name = name;
+    this.ingredients = ingredients;
+  }
 
   public IngredientCategory(String name) {
     this.name = name;
@@ -43,11 +45,11 @@ public class IngredientCategory {
     this.name = name;
   }
 
-//  public List<Ingredient> getIngredients() {
-//    return ingredients;
-//  }
-//
-//  public void setIngredients(List<Ingredient> ingredients) {
-//    this.ingredients = ingredients;
-//  }
+  public List<Ingredient> getIngredients() {
+    return ingredients;
+  }
+
+  public void setIngredients(List<Ingredient> ingredients) {
+    this.ingredients = ingredients;
+  }
 }
