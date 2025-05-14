@@ -60,12 +60,13 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/ingredients/{id}").authenticated()
                     .requestMatchers(HttpMethod.POST, "/api/ingredients").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api//ingredients/{id}").authenticated()
-
                     .requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
                     .requestMatchers(HttpMethod.DELETE, "/api/recipes/{id}").permitAll()
                     .requestMatchers(HttpMethod.PUT, "/api/recipes/{id}").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/recipes").permitAll()
-
+                    .requestMatchers(HttpMethod.GET, "/api/images").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/images").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/api/images/{id}").authenticated()
                     .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf.disable())
