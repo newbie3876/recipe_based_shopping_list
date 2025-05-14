@@ -53,10 +53,10 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()
 
-                    .requestMatchers(HttpMethod.GET, "/api/ingredients").hasRole("USER")
-                    .requestMatchers(HttpMethod.GET, "/api/ingredients/{id}").hasRole("USER")
-                    .requestMatchers(HttpMethod.POST, "/api/ingredients").hasRole("USER")
-                    .requestMatchers(HttpMethod.DELETE, "/api//ingredients/{id}").hasRole("USER")
+                    .requestMatchers(HttpMethod.GET, "/api/ingredients").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/ingredients/{id}").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/ingredients").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/api//ingredients/{id}").permitAll()
                     .anyRequest().authenticated()
             )
 //            .formLogin(withDefaults()) // leidžia prisijungimą

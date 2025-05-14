@@ -9,7 +9,9 @@ public record IngredientRequestDTO(
         @NotNull
         @Size(min = 2, max = 250)
         @Column(nullable = false, length = 250)
-        String name
+        String name,
 
+        @NotNull
+        Long ingredientCategoryId
 ) {
 }

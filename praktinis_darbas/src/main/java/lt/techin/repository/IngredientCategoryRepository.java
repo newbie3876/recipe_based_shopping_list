@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface IngredientCategoryRepository extends JpaRepository<IngredientCategory, Long> {
   Optional<IngredientCategory> findByName(String name);
+
+  Optional<IngredientCategory> getCategoryById(Long id);
 }
