@@ -7,7 +7,6 @@ import lt.techin.model.Role;
 import java.util.List;
 
 public record AdminRequestDTO(
-
         @NotNull
         @Size(min = 5, max = 100)
         String password,

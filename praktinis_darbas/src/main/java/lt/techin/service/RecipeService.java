@@ -1,5 +1,6 @@
 package lt.techin.service;
 
+import jakarta.transaction.Transactional;
 import lt.techin.model.Recipe;
 import lt.techin.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,12 @@ public class RecipeService {
     return recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found with id: " + id));
   }
 
+  @Transactional
   public Recipe saveRecipe(Recipe recipe) {
     return recipeRepository.save(recipe);
   }
 
+  @Transactional
   public void deleteRecipeById(long id) {
     if (!recipeRepository.existsById(id)) {
       throw new IllegalArgumentException("Recipe not found with id: " + id);
