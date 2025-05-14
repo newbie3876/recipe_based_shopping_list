@@ -1,7 +1,7 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class Ingredient {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
+  @NotBlank
   @Size(max = 250)
   @Column(nullable = false, length = 250)
   private String name;
@@ -23,12 +23,12 @@ public class Ingredient {
   private IngredientCategory ingredientCategory;
 
   @OneToMany(mappedBy = "ingredient")
-  private List<ShoppingListItem> shopping_list_items;
+  private List<ShoppingListItem> shoppingListItems;
 
-  public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shopping_list_items) {
+  public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shoppingListItems) {
     this.name = name;
     this.ingredientCategory = ingredientCategory;
-    this.shopping_list_items = shopping_list_items;
+    this.shoppingListItems = shoppingListItems;
   }
 
   public Ingredient() {
@@ -54,11 +54,11 @@ public class Ingredient {
     this.ingredientCategory = ingredientCategory;
   }
 
-  public List<ShoppingListItem> getShopping_list_items() {
-    return shopping_list_items;
+  public List<ShoppingListItem> getShoppingListItems() {
+    return shoppingListItems;
   }
 
-  public void setShopping_list_items(List<ShoppingListItem> shopping_list_items) {
-    this.shopping_list_items = shopping_list_items;
+  public void setShoppingListItems(List<ShoppingListItem> shoppingListItems) {
+    this.shoppingListItems = shoppingListItems;
   }
 }

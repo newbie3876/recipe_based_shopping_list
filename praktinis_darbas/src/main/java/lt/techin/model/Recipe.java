@@ -23,34 +23,29 @@ public class Recipe {
   @Column(nullable = false, length = 350)
   private String description;
 
-  @NotNull
+
   @Size(max = 255)
-  @Column(nullable = false, length = 255)
+  @Column(length = 255)
   private String link;
 
-  @Column(nullable = false)
+
   @Min(value = 0, message = "Portions cannot be a negative.")
   private int portions;
 
-  @NotNull
   @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "user_id", nullable = false)
-  @JsonBackReference
+  @JoinColumn(name = "user_id")
+  @JsonBackReference("user_id")
   private User user;
 
-  @NotNull
   @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "recipe_category_id", nullable = false)
-  @JsonBackReference
+  @JoinColumn(name = "recipe_category_id")
+  @JsonBackReference("recipe_category_id")
   private RecipeCategory recipeCategory;
 
-  public Recipe(String name, String description, String link, int portions, User user, RecipeCategory recipeCategory) {
+  public Recipe(String name, String description, int portions) {
     this.name = name;
     this.description = description;
-    this.link = link;
     this.portions = portions;
-    this.user = user;
-    this.recipeCategory = recipeCategory;
   }
 
   public Recipe() {
