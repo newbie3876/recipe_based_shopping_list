@@ -45,8 +45,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/token").permitAll()
-
-                    .requestMatchers(HttpMethod.GET, "/api/books").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/users").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()

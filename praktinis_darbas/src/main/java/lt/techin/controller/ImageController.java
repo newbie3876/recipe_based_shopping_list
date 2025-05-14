@@ -1,6 +1,7 @@
 package lt.techin.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lt.techin.dto.image.ImageMapper;
 import lt.techin.dto.image.ImageRequestDTO;
 import lt.techin.dto.image.ImageResponseDTO;
@@ -27,10 +28,20 @@ public class ImageController {
   }
 
   @GetMapping("/images")
-  public ResponseEntity<List<ImageResponseDTO>> getImages() {
-    List<Image> images = this.imageService.findAllImages();
-
+  public ResponseEntity<List<ImageResponseDTO>> getUserImages() {
+    List<Image> images = this.imageService.findImagesForCurrentUser();
     return ResponseEntity.ok(ImageMapper.toListDTO(images));
+  }
+
+  @GetMapping("/images/{id}")
+  public ResponseEntity<ImageResponseDTO> getImage(@Valid @PathVariable @Min(1) long id) {
+    Optional<Image> image = this.imageService.findImageById(id);
+
+    if (image.isEmpty()) {
+      return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(ImageMapper.toDTO(image.get()));
   }
 
   @PostMapping("/images")

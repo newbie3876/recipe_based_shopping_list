@@ -54,4 +54,16 @@ public class ImageService {
   public void deleteImageById(long id) {
     this.imageRepository.deleteById(id);
   }
+
+  public List<Image> findImagesForCurrentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Jwt jwt = (Jwt) authentication.getPrincipal();
+    String username = jwt.getSubject();
+
+    User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    return imageRepository.findByUser(user);
+  }
+
 }
