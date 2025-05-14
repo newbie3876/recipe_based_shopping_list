@@ -4,7 +4,7 @@ public record IngredientResponseDTO(
 
         long id,
         String name,
-        IngredientCategoryResponseDTO ingredientCategoryResponseDTO
+        IngredientCategoryResponseDTO ingredientCategory
 
 ) {
 }
