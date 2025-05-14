@@ -1,6 +1,7 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -8,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 public class ShoppingListItem {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @ManyToOne
   @JoinColumn(name = "shopping_list_id", nullable = false)
@@ -19,6 +20,7 @@ public class ShoppingListItem {
   private Ingredient ingredient;
 
   @NotNull
+  @Min(value = 1, message = "Quantity must be greater than zero.")
   @Column(nullable = false)
   private int quantity;
 
@@ -36,7 +38,7 @@ public class ShoppingListItem {
   public ShoppingListItem() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class ShoppingList {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @ManyToOne
   @JoinColumn(name = "user_id", nullable = false)
@@ -28,7 +28,7 @@ public class ShoppingList {
   public ShoppingList() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 

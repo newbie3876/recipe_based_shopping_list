@@ -2,16 +2,19 @@ package lt.techin.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 
 @Entity
 @Table(name = "units")
 public class Unit {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   @NotNull
-  @Column(nullable = false, length = 50, unique = true)
+  @Size(max = 80)
+  @Column(nullable = false, length = 80, unique = true)
   private String name;
 
   public Unit(String name) {
@@ -21,7 +24,7 @@ public class Unit {
   public Unit() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 

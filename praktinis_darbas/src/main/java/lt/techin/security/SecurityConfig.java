@@ -45,7 +45,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/token").permitAll()
-
+                    .requestMatchers(HttpMethod.GET, "/api/books").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/users").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
@@ -58,6 +58,10 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.PUT, "/api/shoppinglists{id}").permitAll()
                     .requestMatchers(HttpMethod.DELETE, "/api/shoppinglists{id}").permitAll()
 
+                    .requestMatchers(HttpMethod.GET, "/api/recipes").permitAll()
+                    .requestMatchers(HttpMethod.DELETE, "/api/recipes/{id}").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/api/recipes/{id}").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/recipes").permitAll()
                     .anyRequest().authenticated()
             )
 //            .formLogin(withDefaults()) // leidžia prisijungimą
@@ -72,7 +76,19 @@ public class SecurityConfig {
 
 
     return http.build();
+  }
 
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("http://localhost:5173"));
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
   }
 
   @Bean

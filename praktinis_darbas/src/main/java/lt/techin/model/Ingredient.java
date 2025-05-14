@@ -1,32 +1,40 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 @Entity
 @Table(name = "ingredients")
 public class Ingredient {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
-  @NotNull
-  @Column(nullable = false, length = 100)
+  @NotBlank
+  @Size(max = 250)
+  @Column(nullable = false, length = 250)
   private String name;
 
   @ManyToOne
   @JoinColumn(name = "ingredient_category_id", nullable = false)
   private IngredientCategory ingredientCategory;
 
-  public Ingredient(String name, IngredientCategory ingredientCategory) {
+  @OneToMany(mappedBy = "ingredient")
+  private List<ShoppingListItem> shoppingListItems;
+
+  public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shoppingListItems) {
     this.name = name;
     this.ingredientCategory = ingredientCategory;
+    this.shoppingListItems = shoppingListItems;
   }
 
   public Ingredient() {
   }
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 
@@ -44,5 +52,13 @@ public class Ingredient {
 
   public void setIngredientCategory(IngredientCategory ingredientCategory) {
     this.ingredientCategory = ingredientCategory;
+  }
+
+  public List<ShoppingListItem> getShoppingListItems() {
+    return shoppingListItems;
+  }
+
+  public void setShoppingListItems(List<ShoppingListItem> shoppingListItems) {
+    this.shoppingListItems = shoppingListItems;
   }
 }
