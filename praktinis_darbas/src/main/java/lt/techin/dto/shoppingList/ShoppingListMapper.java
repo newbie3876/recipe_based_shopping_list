@@ -1,11 +1,13 @@
 package lt.techin.dto.shoppingList;
 
+import lt.techin.dto.ingredient.IngredientCategoryResponseDTO;
 import lt.techin.model.*;
 import lt.techin.repository.IngredientRepository;
 import lt.techin.repository.UnitRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +41,11 @@ public class ShoppingListMapper {
                     item.getId(),
                     item.getIngredient().getName(),
                     item.getQuantity(),
-                    item.getUnit().getName()))
+                    item.getUnit().getName(),
+                    Collections.singletonList(new IngredientCategoryResponseDTO(
+                            item.getIngredient().getIngredientCategory().getId(),
+                            item.getIngredient().getIngredientCategory().getName()
+                    ))))
             .collect(Collectors.toList())
             : new ArrayList<>(); // Jei items yra null, grąžiname tuščią sąrašą
 
