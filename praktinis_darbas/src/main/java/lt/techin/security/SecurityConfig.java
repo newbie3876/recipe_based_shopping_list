@@ -48,7 +48,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/token").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/books").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/users").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
@@ -67,6 +66,9 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/images").authenticated()
                     .requestMatchers(HttpMethod.POST, "/api/images").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/images/{id}").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/shoppinglists").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/shoppinglists/{userId}").authenticated()
+                    .requestMatchers(HttpMethod.POST, "/api/shoppinglists").authenticated()
                     .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf.disable())

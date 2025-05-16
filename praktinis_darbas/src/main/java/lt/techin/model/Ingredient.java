@@ -20,14 +20,22 @@ public class Ingredient {
   @OneToMany(mappedBy = "ingredient")
   private List<ShoppingListItem> shoppingListItems;
 
+  @ManyToOne(fetch = FetchType.LAZY) // Užtikrina teisingą ryšį
+  @JoinColumn(name = "user_id", nullable = false) // Aiškiai nurodo DB stulpelį
+  private User user;
+
   public Ingredient(String name) {
     this.name = name;
   }
-  
-  public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shoppingListItems) {
+
+  public Ingredient(String name,
+                    IngredientCategory ingredientCategory,
+                    List<ShoppingListItem> shoppingListItems,
+                    User user) {
     this.name = name;
     this.ingredientCategory = ingredientCategory;
     this.shoppingListItems = shoppingListItems;
+    this.user = user;
   }
 
   public Ingredient() {
@@ -59,5 +67,13 @@ public class Ingredient {
 
   public void setShoppingListItems(List<ShoppingListItem> shoppingListItems) {
     this.shoppingListItems = shoppingListItems;
+  }
+
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
   }
 }
