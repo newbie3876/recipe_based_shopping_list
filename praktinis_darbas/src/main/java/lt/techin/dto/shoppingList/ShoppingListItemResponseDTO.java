@@ -7,7 +7,7 @@ import java.util.List;
 
 public record ShoppingListItemResponseDTO(
 
-        Long id,
+        //Long id,
         String ingredientName,
         BigDecimal quantity,
         String unit,

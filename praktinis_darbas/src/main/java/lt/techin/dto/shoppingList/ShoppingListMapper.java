@@ -38,20 +38,20 @@ public class ShoppingListMapper {
     List<ShoppingListItemResponseDTO> items = shoppingList.getItems() != null
             ? shoppingList.getItems().stream()
             .map(item -> new ShoppingListItemResponseDTO(
-                    item.getId(),
+                    //item.getId(),
                     item.getIngredient().getName(),
                     item.getQuantity(),
                     item.getUnit().getName(),
                     Collections.singletonList(new IngredientCategoryResponseDTO(
-                            item.getIngredient().getIngredientCategory().getId(),
+                            //item.getIngredient().getIngredientCategory().getId(),
                             item.getIngredient().getIngredientCategory().getName()
                     ))))
             .collect(Collectors.toList())
             : new ArrayList<>(); // Jei items yra null, grąžiname tuščią sąrašą
 
     return new ShoppingListResponseDTO(
-            shoppingList.getId(),
-            shoppingList.getUser().getId(),
+            //shoppingList.getId(),
+            //shoppingList.getUser().getId(),
             shoppingList.getCreatedAt(),
             items);
   }

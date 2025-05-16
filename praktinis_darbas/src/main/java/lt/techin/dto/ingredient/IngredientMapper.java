@@ -21,7 +21,7 @@ public class IngredientMapper {
             ingredient.getId(),
             ingredient.getName(),
             new IngredientCategoryResponseDTO(
-                    ingredient.getIngredientCategory().getId(),
+                    //ingredient.getIngredientCategory().getId(),
                     ingredient.getIngredientCategory().getName()
             )
     );
@@ -33,7 +33,7 @@ public class IngredientMapper {
                     ingredient.getId(),
                     ingredient.getName(),
                     new IngredientCategoryResponseDTO(
-                            ingredient.getIngredientCategory().getId(),
+                            //ingredient.getIngredientCategory().getId(),
                             ingredient.getIngredientCategory().getName()
                     )
             )).toList();
