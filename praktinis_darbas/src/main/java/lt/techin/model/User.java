@@ -35,6 +35,12 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Image> images = new ArrayList<>();
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<ShoppingList> shoppingLists = new ArrayList<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Ingredient> ingredients = new ArrayList<>();
+
   public User(String password, String username, List<Role> roles) {
     this.password = password;
     this.username = username;
@@ -85,5 +91,21 @@ public class User implements UserDetails {
 
   public void setImages(List<Image> images) {
     this.images = images;
+  }
+
+  public List<ShoppingList> getShoppingLists() {
+    return shoppingLists;
+  }
+
+  public void setShoppingLists(List<ShoppingList> shoppingLists) {
+    this.shoppingLists = shoppingLists;
+  }
+
+  public List<Ingredient> getIngredients() {
+    return ingredients;
+  }
+
+  public void setIngredients(List<Ingredient> ingredients) {
+    this.ingredients = ingredients;
   }
 }
