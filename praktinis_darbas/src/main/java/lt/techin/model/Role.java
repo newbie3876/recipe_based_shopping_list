@@ -56,4 +56,3 @@ public class Role implements GrantedAuthority {
     return this.name;
   }
 }
-

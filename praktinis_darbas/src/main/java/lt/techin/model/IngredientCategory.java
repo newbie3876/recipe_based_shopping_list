@@ -15,7 +15,6 @@ public class IngredientCategory {
 
   @NotNull
   @Size(max = 150)
-  //@Column(nullable = false, length = 150)
   private String name;
 
   @OneToMany(mappedBy = "ingredientCategory")

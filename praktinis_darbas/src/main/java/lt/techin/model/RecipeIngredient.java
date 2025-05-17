@@ -74,4 +74,3 @@ public class RecipeIngredient {
     this.recipe = recipe;
   }
 }
-
