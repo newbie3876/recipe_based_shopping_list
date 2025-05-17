@@ -1,10 +1,11 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "shopping_lists")
@@ -13,21 +14,34 @@ public class ShoppingList {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", nullable = false)
+  @ManyToOne(fetch = FetchType.LAZY) // Užtikrina teisingą ryšį
+  @JoinColumn(name = "user_id", nullable = false) // Aiškiai nurodo DB stulpelį
   private User user;
 
-  @NotNull
-  @Column(nullable = false, name = "created_at")
+  @Column(name = "created_at", nullable = false)
   @PastOrPresent(message = "Creation date cannot be in the future!")
-  private LocalDate createdAt;
+  private LocalDateTime createdAt;
 
-  public ShoppingList(User user, LocalDate createdAt) {
-    this.user = user;
-    this.createdAt = createdAt;
+  public <E> ShoppingList(User user, LocalDateTime now, ArrayList<E> es, Object o) {
   }
 
+  @PrePersist
+  protected void onCreate() {
+    if (this.createdAt == null) {
+      this.createdAt = LocalDateTime.now();
+    }
+  }
+
+  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<ShoppingListItem> items = new ArrayList<>();
+
   public ShoppingList() {
+  }
+
+  public ShoppingList(User user, LocalDateTime createdAt, List<ShoppingListItem> items) {
+    this.user = user;
+    this.createdAt = createdAt;
+    this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
   }
 
   public Long getId() {
@@ -42,11 +56,19 @@ public class ShoppingList {
     this.user = user;
   }
 
-  public LocalDate getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDate createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
+  }
+
+  public List<ShoppingListItem> getItems() {
+    return items;
+  }
+
+  public void setItems(List<ShoppingListItem> items) {
+    this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
   }
 }
