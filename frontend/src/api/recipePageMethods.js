@@ -52,3 +52,19 @@ export async function deleteRecipeById(id) {
     if (!res.ok) throw new Error("Nepavyko ištrinti recepto.");
     return true;
 }
+
+export async function addIngredientToRecipe({ recipeId, name, quantity }) {
+    const response = await fetch(`/api/recipes/${recipeId}/ingredients`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, quantity }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Nepavyko pridėti ingrediento");
+    }
+    return await response.json();
+}
+

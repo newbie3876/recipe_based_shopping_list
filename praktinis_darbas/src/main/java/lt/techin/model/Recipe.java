@@ -27,10 +27,13 @@ public class Recipe {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "recipe_category_id")
   @JsonIgnoreProperties("recipes")
   private RecipeCategory recipeCategory;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  private Ingredient ingredients;
 
   public Recipe(String name, String description, String link, int portions, User user, RecipeCategory recipeCategory) {
     this.name = name;

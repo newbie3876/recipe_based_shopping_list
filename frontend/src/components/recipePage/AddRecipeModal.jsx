@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { createRecipe } from "../../api/recipePageMethods";
+import AddIngredientModal from "./AddIngredientModal";
 
 export default function AddRecipeModal({ onClose, onRecipeAdded }) {
     const [name, setName] = useState("");
@@ -7,6 +8,9 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
     const [portions, setPortions] = useState("");
     const [link, setLink] = useState("");
     const [categoryId, setCategoryId] = useState("");
+    const [ingredient, setIngredient] = useState("");
+    const [recipeId, setRecipeId] = useState(null);
+    const [showIngredientModal, setShowIngredientModal] = useState(false);
 
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -17,6 +21,7 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
         setError(null);
 
         const portionsNumber = parseInt(portions, 10);
+
         if(isNaN(portionsNumber) || portionsNumber <= 0){
             alert("Įveskite bent vieną porciją.");
             setLoading(false);
@@ -30,10 +35,11 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
                 categoryId: parseInt(categoryId, 10),
                 portions: portionsNumber,
                 link,
+                ingredient
             });
-
-            onRecipeAdded(newRecipe); // iš RecipePage – įtraukia į sąrašą
-            onClose(); // uždaro modalą
+            setRecipeId(newRecipe.id);
+            onRecipeAdded(newRecipe);
+            setShowIngredientModal(true);
         } catch (err) {
             console.error("Klaida kuriant receptą:", err);
             setError("Nepavyko sukurti recepto.");
@@ -48,6 +54,12 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
         setPortions("");
         setLink("");
         setCategoryId("");
+        setIngredient("");
+    };
+
+    const handleIngredientModalClose = () => {
+        setShowIngredientModal(false);
+        onClose();
     };
 
     return (
@@ -126,6 +138,16 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
                     </div>
                 </form>
             </div>
+
+             {showIngredientModal && recipeId && (
+                <AddIngredientModal
+                    recipeId={recipeId}
+                    onIngredientAdded={(ingredient) => {
+                        console.log("Pridėtas ingredientas:", ingredient);
+                    }}
+                    onClose={handleIngredientModalClose}
+                />
+            )}
         </section>
     );
 }
