@@ -16,12 +16,19 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
         setLoading(true);
         setError(null);
 
+        const portionsNumber = parseInt(portions, 10);
+        if(isNaN(portionsNumber) || portionsNumber <= 0){
+            alert("Įveskite bent vieną porciją.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const newRecipe = await createRecipe({
                 name,
                 description,
                 categoryId: parseInt(categoryId, 10),
-                portions,
+                portions: portionsNumber,
                 link,
             });
 
@@ -35,7 +42,7 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
         }
     };
 
-    const handleChange = () => {
+    const clearForm = () => {
         setName("");
         setDescription("");
         setPortions("");
@@ -72,6 +79,8 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
                         onChange={(e) => setPortions(e.target.value)}
                         className="w-full px-3 py-2 border rounded"
                         placeholder="Porcijų skaičius"
+                        min="1"
+                        step="1"
                         required
                     />
 
@@ -105,8 +114,8 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
 
                         <button
                             type="button"
-                            onClick={handleChange}
-                            className="px-4 py-2 bg-red-500 hover:bg-red-700 text-white rounded"
+                            onClick={clearForm}
+                            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded"
                         > Išvalyti </button>
 
                         <button

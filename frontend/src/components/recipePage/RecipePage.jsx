@@ -35,7 +35,7 @@ export default function RecipePage() {
                 onDelete={(recipe) => setRecipeToDelete(recipe)}
             />
 
-            <button onClick={() => setIsAddFormOpen(true)} className="m-4 px-4 py-2 bg-green-500 text-white rounded">
+            <button onClick={() => setIsAddFormOpen(true)} className="m-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded">
                 Pridėti receptą
             </button>
 

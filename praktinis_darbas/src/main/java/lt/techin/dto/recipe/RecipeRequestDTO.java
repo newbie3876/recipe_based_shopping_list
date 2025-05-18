@@ -15,7 +15,7 @@ public class RecipeRequestDTO {
   @Min(value = 1, message = "Turi būti bent viena porcija.")
   private int portions;
 
-  @Size(max = 255)
+  @Size(max = 512)
   private String link;
 
   private Long categoryId;

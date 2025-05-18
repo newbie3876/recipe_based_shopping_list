@@ -14,17 +14,17 @@ public class Recipe {
   @Column(nullable = false, length = 150)
   private String name;
 
-  @Column(nullable = false, length = 350)
+  @Column(length = 350)
   private String description;
 
-  @Column(length = 255)
+  @Column(length = 512)
   private String link;
 
   private int portions;
 
   @JsonIgnore
-  @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "user_id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @ManyToOne(fetch = FetchType.EAGER)
