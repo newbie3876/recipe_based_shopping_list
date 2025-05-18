@@ -41,9 +41,9 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Ingredient> ingredients = new ArrayList<>();
 
-  public User(String username, String password, List<Role> roles) {
-    this.username = username;
+  public User(String password, String username, List<Role> roles) {
     this.password = password;
+    this.username = username;
     this.roles = roles != null ? new ArrayList<>(roles) : new ArrayList<>();
   }
 
