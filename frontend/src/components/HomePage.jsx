@@ -2,7 +2,7 @@ import React from "react";
 
 function HomePage() {
   return (
-    <article className="min-h-screen bg-orange-200">HomePage</article>
+    <article className="h-screen bg-orange-200">HomePage</article>
   );
 }
 

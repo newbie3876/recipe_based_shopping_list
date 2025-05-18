@@ -1,6 +1,8 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
@@ -11,18 +13,20 @@ public class ShoppingListItem {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "shopping_list_id", nullable = false)
   private ShoppingList shoppingList;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "ingredient_id", nullable = false)
   private Ingredient ingredient;
 
-  //  @Min(value = 1, message = "Quantity must be greater than zero.")
-  @Column(nullable = false)
+  @DecimalMin(value = "1.0", inclusive = true, message = "Kiekis turėtų būti daugiau už 1 arba lygus 1.")
   private BigDecimal quantity;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "unit_id", nullable = false)
   private Unit unit;
@@ -35,9 +39,6 @@ public class ShoppingListItem {
   }
 
   public ShoppingListItem() {
-  }
-
-  public ShoppingListItem(Object o, ShoppingList shoppingList, Ingredient ingredient, BigDecimal quantity, Unit unit) {
   }
 
   public Long getId() {

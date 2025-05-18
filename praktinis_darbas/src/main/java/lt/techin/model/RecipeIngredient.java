@@ -2,7 +2,6 @@ package lt.techin.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "recipes_ingredients")
@@ -11,16 +10,15 @@ public class RecipeIngredient {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
-  @Min(value = 1, message = "Quantity cannot be less than 1.")
+  @Min(value = 1, message = "Kiekis negali būti mažesnis nei 1.")
   @Column(nullable = false)
   private int quantity;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
+  @ManyToOne
   @JoinColumn(name = "unit_id", nullable = false)
   private Unit unit;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
+  @ManyToOne
   @JoinColumn(name = "ingredient_id", nullable = false)
   private Ingredient ingredient;
 
@@ -74,4 +72,3 @@ public class RecipeIngredient {
     this.recipe = recipe;
   }
 }
-

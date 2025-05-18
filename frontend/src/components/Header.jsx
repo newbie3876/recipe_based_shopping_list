@@ -7,20 +7,18 @@ function Header() {
   return (
     <header className="p-4 bg-gray-200 flex justify-evenly">
       <h1>My App</h1>
+
       {isAuthenticated ? (
         <div>
           <nav className="flex justify-evenly gap-[1rem]">
             <Link to="/">
-              <button>Į pradinį puslapį</button>
+              <button>Pradinis</button>
             </Link>
             <Link to="/recipes">
-              <button>Į receptų puslapį</button>
+              <button>Mano receptai</button>
             </Link>
             <Link to="/shoppinglists">
-              <button>Į pirkinių krepšelių puslapį</button>
-            </Link>
-            <Link to="/reciperegistration">
-              <button>Į receptų registracijos formą</button>
+              <button>Pirkinių krepšeliai</button>
             </Link>
             <Link to="/photoalbum">
               <button>Foto albumas</button>

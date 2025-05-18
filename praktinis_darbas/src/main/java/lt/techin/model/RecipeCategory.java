@@ -1,9 +1,8 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -13,13 +12,11 @@ public class RecipeCategory {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Size(max = 150)
-  @NotBlank(message = "Category name cannot be blank.")
-  @Column(nullable = false, length = 150, unique = true)
+  @Column(length = 150)
   private String name;
 
   @OneToMany(mappedBy = "recipeCategory")
-  private List<Recipe> recipes;
+  private List<Recipe> recipes = new ArrayList<>();
 
   public RecipeCategory(String name, List<Recipe> recipes) {
     this.name = name;
