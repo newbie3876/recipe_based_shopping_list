@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 
 @Entity
-@Table(name = "recipes_ingredients")
+@Table(name = "recipe_ingredients")
 public class RecipeIngredient {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
