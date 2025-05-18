@@ -22,9 +22,6 @@ public class ShoppingList {
   @PastOrPresent(message = "Creation date cannot be in the future!")
   private LocalDateTime createdAt;
 
-  public <E> ShoppingList(User user, LocalDateTime now, ArrayList<E> es, Object o) {
-  }
-
   @PrePersist
   protected void onCreate() {
     if (this.createdAt == null) {

@@ -41,9 +41,6 @@ public class ShoppingListItem {
   public ShoppingListItem() {
   }
 
-  public ShoppingListItem(Object o, ShoppingList shoppingList, Ingredient ingredient, BigDecimal quantity, Unit unit) {
-  }
-
   public Long getId() {
     return id;
   }
