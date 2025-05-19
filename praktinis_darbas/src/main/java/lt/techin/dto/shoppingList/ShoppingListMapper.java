@@ -38,7 +38,7 @@ public class ShoppingListMapper {
     List<ShoppingListItemResponseDTO> items = shoppingList.getItems() != null
             ? shoppingList.getItems().stream()
             .map(item -> new ShoppingListItemResponseDTO(
-                    //item.getId(),
+                    item.getId(),
                     item.getIngredient().getName(),
                     item.getQuantity(),
                     item.getUnit().getName(),

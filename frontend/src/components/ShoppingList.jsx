@@ -37,12 +37,12 @@ const ShoppingList = ({ userId }) => {
             
             <div className="overflow-x-auto">
               <div className="grid grid-cols-6 w-full border border-orange-300">
-                <div className="bg-orange-200 p-2 font-medium">#</div>
-                <div className="bg-orange-200 p-2 font-medium">Ingredientai</div>
-                <div className="bg-orange-200 p-2 font-medium">Kiekis</div>
-                <div className="bg-orange-200 p-2 font-medium">Vienetas</div>
-                <div className="bg-orange-200 p-2 font-medium">Kategorija</div>
-                <div className="bg-orange-200 p-2 font-medium">Įsigytas</div>
+                <div className="bg-orange-200 p-2 font-medium text-center">#</div>
+                <div className="bg-orange-200 p-2 font-medium text-center">Ingredientai</div>
+                <div className="bg-orange-200 p-2 font-medium text-center">Kiekis</div>
+                <div className="bg-orange-200 p-2 font-medium text-center">Vienetas</div>
+                <div className="bg-orange-200 p-2 font-medium text-center">Kategorija</div>
+                <div className="bg-orange-200 p-2 font-medium text-center">Įsigytas</div>
               </div>
               
               <div className="grid grid-cols-1 w-full">
@@ -51,7 +51,7 @@ const ShoppingList = ({ userId }) => {
                 </div>
               </div>
               <div className="grid grid-cols-1 w-full">
-                <div className="bg-orange-100 p-3 text-center border border-orange-300 text-orange-800">
+                <div className="bg-orange-100 p-2 text-center border border-orange-300 text-orange-800">
                   Dar nepridėjote jokių receptų ingredientų
                 </div>
               </div>
@@ -61,19 +61,18 @@ const ShoppingList = ({ userId }) => {
                   Kiti ingredientai
                 </div>
               </div>
-              <div className="bg-orange-100 p-4 rounded-lg border border-orange-200 shadow-md h-full">
+              <div className="bg-orange-100 rounded-lg border border-orange-200 shadow-md h-full">
                 <div>
                   {loading && <p>⏳ Įkeliama...</p>}
                   {error && <p style={{ color: "red" }}>{error}</p>}
                   {!loading && shoppingLists.length === 0 && <p>⚠️ Nėra pirkinių sąrašų.</p>}
-
                   {shoppingLists.map((list) => (
-                    <div key={list.id} className="shopping-list grid grid-cols-1 gap-4 text-center">
-          
-                      <table >
+                    <div key={list.id} className="shopping-list grid grid-cols-1 text-center">
+                      <table>
                         <tbody>
                           {list.items.map((item, index) => (
-                            <tr key={index}>
+                            <tr key={index} className="grid grid-cols-6 w-full">
+                              <td className="p-2 text-center">{item.id}</td>
                               <td className="p-2 text-center">{item.ingredientName}</td>
                               <td className="p-2 text-center">{item.quantity}</td>
                               <td className="p-2 text-center">{item.unit}</td>
