@@ -14,6 +14,7 @@ function App() {
   if (!token) {
     return <LoginPage />;
   }
+  
 
   return (
     <main>
@@ -22,7 +23,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/recipes" element={<RecipePage />} />
-          <Route path="/shoppinglists" element={<ShoppingList />} />
+          <Route path="/shoppinglists" element={<ShoppingList userId={1}/>} />
           <Route path="/reciperegistration" element={<AddRecipeForm />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
         </Routes>
