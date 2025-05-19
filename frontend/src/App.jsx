@@ -14,8 +14,9 @@ function App() {
   if (!token) {
     return <LoginPage />;
   }
-  
+
   return (
+    
     <main>
       <div className="App">
         <Header />
@@ -28,7 +29,14 @@ function App() {
         </Routes>
       </div>
     </main>
+
   );
 }
 
 export default App;
+
+
+// export const UserContext = createContext();
+
+//   export const UserProvider = ({ children }) => {
+//   const [userId, setUserId] = useState(1); // Inicialus userId
