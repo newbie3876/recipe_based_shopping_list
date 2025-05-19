@@ -15,7 +15,6 @@ function App() {
     return <LoginPage />;
   }
   
-
   return (
     <main>
       <div className="App">
