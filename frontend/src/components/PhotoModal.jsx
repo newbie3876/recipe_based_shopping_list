@@ -21,13 +21,13 @@ function PhotoModal({ isOpen, onClose, image }) {
           onClick={() => onClose()}
           className="absolute top-2 right-2 cursor-pointer hover:opacity-50"
         >
-          <img src={modal_close_icon} className="w-6" alt="close icon" />
+          <img src={modal_close_icon} className="w-6 " alt="close icon" />
         </button>
         <div>
           <img
             src={`data:${image.contentType};base64,${image.imageData}`}
             alt={image.imageName}
-            className="h-96 w-mx-full"
+            className="h-96 w-mx-full mt-5"
           />
           <p className="flex justify-center mt-2">{image.imageName}</p>
         </div>

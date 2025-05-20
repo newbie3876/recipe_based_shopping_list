@@ -2,11 +2,9 @@ import LoginPage from "./components/LoginPage";
 import Header from "./components/Header";
 import HomePage from "./components/HomePage";
 import { useAuth } from "./context/AuthContext";
-import RecipePage from "./components/RecipePage";
+import RecipePage from "./components/recipePage/RecipePage";
 import { Routes, Route } from "react-router-dom";
-import NavBar from "./components/NavBar";
-import ShoppingList from "./components/ShoppingList";
-import AddRecipeForm from "./components/RecipeRegistration";
+import ShoppingList from "./components/ShoppingList"
 import PhotoAlbum from "./components/PhotoAlbum";
 
 function App() {
@@ -24,7 +22,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/recipes" element={<RecipePage />} />
           <Route path="/shoppinglists" element={<ShoppingList userId={1}/>} />
-          <Route path="/reciperegistration" element={<AddRecipeForm />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
         </Routes>
       </div>
@@ -34,9 +31,3 @@ function App() {
 }
 
 export default App;
-
-
-// export const UserContext = createContext();
-
-//   export const UserProvider = ({ children }) => {
-//   const [userId, setUserId] = useState(1); // Inicialus userId
