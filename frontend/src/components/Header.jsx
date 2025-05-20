@@ -47,16 +47,12 @@ function Header() {
       )}
 
       <div className="flex-shrink-0">
-        {isAuthenticated ? (
-          <button
-            onClick={logout}
-            className="text-red-500 cursor-pointer hover:text-red-300"
-          >
-            Atsijungti
-          </button>
-        ) : (
-          <p className="text-green-500">Neprisijungęs</p>
-        )}
+        <button
+          onClick={logout}
+          className="text-red-500 cursor-pointer hover:text-red-300"
+        >
+          Atsijungti
+        </button>
       </div>
     </header>
   );
