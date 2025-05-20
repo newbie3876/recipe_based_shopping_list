@@ -41,6 +41,3 @@ public class ShoppingListController {
 //
 //    return ResponseEntity.ok(ShoppingListMapper.toListDTO(allLists));
 //  }
-
-
-
