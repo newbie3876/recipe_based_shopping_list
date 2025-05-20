@@ -1,9 +1,6 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-
 
 @Entity
 @Table(name = "units")
@@ -12,9 +9,7 @@ public class Unit {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
-  @Size(max = 80)
-  @Column(nullable = false, length = 80, unique = true)
+  @Column(length = 80, nullable = false, unique = true)
   private String name;
 
   public Unit(String name) {

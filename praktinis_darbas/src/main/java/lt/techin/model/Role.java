@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -18,7 +19,7 @@ public class Role implements GrantedAuthority {
   private String name;
 
   @ManyToMany(mappedBy = "roles")
-  private List<User> users;
+  private List<User> users = new ArrayList<>();
 
   public Role(String name) {
     this.name = name;
@@ -56,4 +57,3 @@ public class Role implements GrantedAuthority {
     return this.name;
   }
 }
-

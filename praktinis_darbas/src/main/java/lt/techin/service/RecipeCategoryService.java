@@ -1,5 +1,6 @@
 package lt.techin.service;
 
+import jakarta.transaction.Transactional;
 import lt.techin.model.RecipeCategory;
 import lt.techin.repository.RecipeCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,17 @@ public class RecipeCategoryService {
   }
 
   public RecipeCategory getRecipeCategoryById(long id) {
-    return recipeCategoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe category not found with id: " + id));
+    return recipeCategoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Recepto kategorija nerasta su ID: " + id));
   }
 
   public RecipeCategory saveRecipeCategory(RecipeCategory category) {
     return recipeCategoryRepository.save(category);
   }
 
+  @Transactional
   public void deleteRecipeCategoryById(long id) {
     if (!recipeCategoryRepository.existsById(id)) {
-      throw new IllegalArgumentException("Recipe category not found with id: " + id);
+      throw new IllegalArgumentException("Recepto kategorija nerasta su ID: " + id);
     }
     recipeCategoryRepository.deleteById(id);
   }
