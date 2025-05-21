@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PhotoModal from "./PhotoModal";
 
 function PhotoAlbum() {
@@ -7,9 +7,16 @@ function PhotoAlbum() {
   const [imageName, setImageName] = useState("");
   const [isPhotoModalOpen, setIsFhotoModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [fileName, setFileName] = useState("");
+
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
+    const file = event.target.files[0];
+    if (file) {
+      setFileName(file.name);
+    }
   };
 
   const handleNameChange = (event) => {
@@ -49,6 +56,9 @@ function PhotoAlbum() {
           alert("Foto: " + result.imageName + " sėkmingai išsaugotas.");
           fetchImages();
           setImageName("");
+          setFile(null);
+          setFileName("");
+          fileInputRef.current.value = "";
         } else {
           const errorData = await response.json();
           console.error("Klaida:", errorData);
@@ -126,20 +136,35 @@ function PhotoAlbum() {
   return (
     <div className=" bg-orange-200 min-h-screen">
       <div className="flex flex-col gap-2 items-center">
-        <h2 className="text-xl font-bold text-center">Paveikslėlio įkėlimas</h2>
+        <h2 className="text-xl font-bold text-center mt-4">
+          Paveikslėlio įkėlimas
+        </h2>
         <input
           type="text"
           placeholder="Paveikslėlio pavadinimas"
           value={imageName}
-          className="w-lg border rounded p-2 mt-1"
+          className=" border rounded p-2 mt-1"
           onChange={handleNameChange}
         />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="bg-orange-100 p-2 rounded-xl shadow-md max-w-xs"
-        />
+        <div className="flex flex-col items-center gap-4">
+          <label className="bg-orange-100 p-2 rounded-xl shadow-md max-w-xs cursor-pointer text-center block">
+            Pasirinkti nuotrauką
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+              ref={fileInputRef}
+            />
+          </label>
+
+          {fileName && (
+            <p className="text-sm text-gray-700">
+              Pasirinktas failas: <strong>{fileName}</strong>
+            </p>
+          )}
+        </div>
+
         <button
           onClick={uploadImage}
           className="bg-orange-100 p-2 rounded-xl shadow-md max-w-xs"
@@ -147,13 +172,16 @@ function PhotoAlbum() {
           Įkelti
         </button>
       </div>
-      <h3 className="text-xl font-bold text-center mt-3 ">
+      <h3 className="text-xl font-bold text-center mt-20 ">
         Paveikslėlių galerija
       </h3>
-      <div className="flex flex-wrap gap-4 m-5">
+      <div className="flex flex-wrap gap-5 m-5 ">
         {images.map((image) => (
           <div key={image.id}>
-            <button className="cursor-pointer" onClick={() => openModal(image)}>
+            <button
+              className="cursor-pointer border border-gray-300 rounded-xl p-2 shadow-md focus:outline-none focus:ring-2 focus:ring-orange-300 transition duration-200"
+              onClick={() => openModal(image)}
+            >
               <img
                 src={`data:${image.contentType};base64,${image.imageData}`}
                 alt={image.imageName}
@@ -163,7 +191,7 @@ function PhotoAlbum() {
             <p>{image.imageName}</p>
             <button
               onClick={() => deleteImage(image.id)}
-              className="bg-orange-500 text-white p-0.5 mt-0.5 rounded-md"
+              className="bg-orange-500 text-white p-0.5 mt-0.5 rounded-md hover:cursor-pointer hover:bg-orange-600"
             >
               Pašalinti
             </button>
