@@ -12,5 +12,6 @@ public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
   List<Ingredient> findByUser(User user);
 
+  //boolean existsByUserId(Long userId, String ingredientName);
 }
 

@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 public class ShoppingListMapper {
   public static ShoppingList toShoppingList(ShoppingListRequestDTO requestDTO, User user,
                                             IngredientRepository ingredientRepository, UnitRepository unitRepository) {
+
     // 1. Sukuriame naują pirkinių sąrašą su vartotoju
     ShoppingList shoppingList = new ShoppingList(user, LocalDateTime.now(), new ArrayList<>());
-    //shoppingList.setItems(new ArrayList<>());
 
     // 2️. Iteruojame per gautus ingredientus ir konvertuojame į ShoppingListItem
     for (ShoppingListItemRequestDTO itemDTO : requestDTO.items()) {
@@ -43,15 +43,15 @@ public class ShoppingListMapper {
                     item.getQuantity(),
                     item.getUnit().getName(),
                     Collections.singletonList(new IngredientCategoryResponseDTO(
-                            item.getIngredient().getIngredientCategory().getId(),
+                            //item.getIngredient().getIngredientCategory().getId(),
                             item.getIngredient().getIngredientCategory().getName()
                     ))))
             .collect(Collectors.toList())
             : new ArrayList<>(); // Jei items yra null, grąžiname tuščią sąrašą
 
     return new ShoppingListResponseDTO(
-            shoppingList.getId(),
-            shoppingList.getUser().getId(),
+            //shoppingList.getId(),
+            //shoppingList.getUser().getId(),
             shoppingList.getCreatedAt(),
             items);
   }

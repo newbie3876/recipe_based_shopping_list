@@ -13,13 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,23 +36,33 @@ public class ShoppingListService {
   }
 
   public List<ShoppingListResponseDTO> getShoppingListsByUserId(Long userId) {
-    return shoppingListRepository.findByUserId(userId).stream()
+    User user = getAuthenticatedUser();
+
+    return shoppingListRepository.findByUserId(user.getId()).stream()
             .map(ShoppingListMapper::toDTO)
             .collect(Collectors.toList());
   }
 
+  public User getAuthenticatedUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null || !authentication.isAuthenticated()) {
+      throw new RuntimeException("User is not authenticated");
+    }
+
+    String username = authentication.getName(); // Gausime prisijungusio vartotojo vardą
+
+    return userRepository.findByUsername(username) // Surandame vartotoją pagal vardą
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+  }
+
+
   public ShoppingListResponseDTO createShoppingList(ShoppingListRequestDTO requestDTO) {
+    User user = getAuthenticatedUser();// ✅ Automatiškai gauname vartotoją iš Spring Security
 
-
-    // 1. Surandame vartotoją pagal userId (jei neegzistuoja, išmetame klaidą)
-    User user = userRepository.findById(requestDTO.userId())
-            .orElseThrow(() -> new RuntimeException("User not found"));
-
-    // 2. Sukuriame naują ShoppingList objektą su vartotoju
     ShoppingList shoppingList = new ShoppingList(user, LocalDateTime.now(), new ArrayList<>());
     shoppingList.setItems(new ArrayList<>());
 
-    // 3. Pridedame produktus į pirkinių sąrašą
     for (ShoppingListItemRequestDTO itemDTO : requestDTO.items()) {
       Ingredient ingredient = ingredientRepository.findById(itemDTO.ingredientId())
               .orElseThrow(() -> new RuntimeException("Ingredient not found"));
@@ -66,44 +74,8 @@ public class ShoppingListService {
       shoppingList.getItems().add(item);
     }
 
-    // 4. Išsaugome sąrašą į duomenų bazę
     ShoppingList savedShoppingList = shoppingListRepository.save(shoppingList);
-
     return ShoppingListMapper.toDTO(savedShoppingList);
   }
 
-
-  public Optional<ShoppingList> findShoppingListById(Long id) {
-    return shoppingListRepository.findById(id);
-  }
-
-  public ShoppingList saveShoppingList(ShoppingListRequestDTO shoppingListRequestDTO) {
-
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-    Jwt jwt = (Jwt) authentication.getPrincipal();
-    String username = jwt.getSubject();
-
-    User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-    ShoppingList shoppingList = ShoppingListMapper.toShoppingList(shoppingListRequestDTO, user, ingredientRepository, unitRepository);
-
-    return shoppingListRepository.save(shoppingList);
-  }
-
-  public void deleteShoppingListById(long id) {
-    shoppingListRepository.deleteById(id);
-  }
-
-  public List<ShoppingList> findShoppingListsForCurrentUser() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Jwt jwt = (Jwt) authentication.getPrincipal();
-    String username = jwt.getSubject();
-
-    User user = userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-    return shoppingListRepository.findByUser(user);
-  }
 }

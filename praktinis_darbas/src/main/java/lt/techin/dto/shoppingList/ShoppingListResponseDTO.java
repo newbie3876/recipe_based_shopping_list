@@ -5,8 +5,8 @@ import java.util.List;
 
 public record ShoppingListResponseDTO(
 
-        Long id,
-        Long userId,
+        //Long id,
+        //Long userId,
         LocalDateTime createdAt,
         List<ShoppingListItemResponseDTO> items
 

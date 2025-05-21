@@ -106,8 +106,6 @@ const ShoppingList = ({ userId }) => {
 
 export default ShoppingList;
 
-
-
 // <div>
     //   <h2>🛒 Pirkinių sąrašai</h2>
     //   {loading && <p>⏳ Įkeliama...</p>}
