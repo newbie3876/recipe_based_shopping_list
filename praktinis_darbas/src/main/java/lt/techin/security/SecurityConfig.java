@@ -51,7 +51,8 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/register-admin").hasAuthority("SCOPE_ROLE_ADMIN")
                     .requestMatchers(HttpMethod.GET, "/api/users").hasAuthority("SCOPE_ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.GET, "/api/users/{id}").hasAuthority("SCOPE_ROLE_ADMIN")
+                    .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                    .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()
 

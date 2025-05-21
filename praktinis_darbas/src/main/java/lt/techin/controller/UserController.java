@@ -8,10 +8,14 @@ import lt.techin.dto.user.UserMapper;
 import lt.techin.dto.user.UserRegistrationDTO;
 import lt.techin.dto.user.UserResponseDTO;
 import lt.techin.model.User;
+import lt.techin.repository.UserRepository;
 import lt.techin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -27,11 +31,23 @@ public class UserController {
 
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
+  private final UserRepository userRepository;
 
   @Autowired
-  public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+  public UserController(UserService userService, PasswordEncoder passwordEncoder, UserRepository userRepository) {
     this.userService = userService;
     this.passwordEncoder = passwordEncoder;
+    this.userRepository = userRepository;
+  }
+
+  @GetMapping("users/me")
+  public ResponseEntity<UserResponseDTO> getCurrentUser(@AuthenticationPrincipal Jwt principal) {
+    String username = principal.getClaim("sub"); // arba "preferred_username"
+    User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    UserResponseDTO dto = UserMapper.toDTO(user);
+    return ResponseEntity.ok(dto);
   }
 
 

@@ -4,25 +4,33 @@ import HomePage from "./components/HomePage";
 import { useAuth } from "./context/AuthContext";
 import RecipePage from "./components/recipePage/RecipePage";
 import { Routes, Route } from "react-router-dom";
-import ShoppingList from "./components/ShoppingList"
+import ShoppingList from "./components/ShoppingList";
 import PhotoAlbum from "./components/PhotoAlbum";
+import Admin from "./components/Admin";
 
 function App() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+
   if (!token) {
     return <LoginPage />;
   }
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
+  const isAdmin = user?.roles?.some((role) => role.name === "ROLE_ADMIN");
 
   return (
     <main>
       <div className="App">
         <Header />
-
         <Routes>
-          <Route path="/" element={<HomePage/>} />
-          <Route path="/recipes" element={<RecipePage/>} />
-          <Route path="/shoppinglists" element={<ShoppingList/>} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/recipes" element={<RecipePage />} />
+          <Route path="/shoppinglists" element={<ShoppingList />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
+          {isAdmin && <Route path="/admin" element={<Admin />} />}
         </Routes>
       </div>
     </main>
