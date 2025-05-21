@@ -35,7 +35,7 @@ public class UserController {
   }
 
 
-  @PostMapping("/admin")
+  @PostMapping("/register-admin")
   public ResponseEntity<Object> saveAdmin(@Valid @RequestBody AdminRequestDTO adminRequestDTO) {
 
     if (this.userService.existsUserByUsername(adminRequestDTO.username())) {

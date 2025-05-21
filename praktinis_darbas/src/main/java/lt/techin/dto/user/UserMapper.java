@@ -8,10 +8,16 @@ import java.util.List;
 public class UserMapper {
 
   public static User toAdmin(AdminRequestDTO adminRequestDTO, String encodedPassword) {
+    Role userRole = new Role();
+    userRole.setId(1L);
+
+    Role adminRole = new Role();
+    adminRole.setId(2L);
+
     return new User(
             encodedPassword,
             adminRequestDTO.username(),
-            adminRequestDTO.roles()
+            List.of(userRole, adminRole)
     );
   }
 
