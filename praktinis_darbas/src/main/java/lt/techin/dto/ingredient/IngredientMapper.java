@@ -2,16 +2,20 @@ package lt.techin.dto.ingredient;
 
 import lt.techin.model.Ingredient;
 import lt.techin.model.IngredientCategory;
+import lt.techin.model.User;
 
 import java.util.List;
 
 public class IngredientMapper {
 
-  public static Ingredient toIngredient(IngredientRequestDTO ingredientRequestDTO, IngredientCategory ingredientCategory) {
+  public static Ingredient toIngredient(IngredientRequestDTO ingredientRequestDTO,
+                                        IngredientCategory ingredientCategory,
+                                        User user) {
     Ingredient ingredient = new Ingredient();
 
     ingredient.setName(ingredientRequestDTO.name());
     ingredient.setIngredientCategory(ingredientCategory);
+    ingredient.setUser(user);
 
     return ingredient;
   }
@@ -21,7 +25,7 @@ public class IngredientMapper {
             ingredient.getId(),
             ingredient.getName(),
             new IngredientCategoryResponseDTO(
-                    ingredient.getIngredientCategory().getId(),
+//                    ingredient.getIngredientCategory().getId(),
                     ingredient.getIngredientCategory().getName()
             )
     );
@@ -33,7 +37,7 @@ public class IngredientMapper {
                     ingredient.getId(),
                     ingredient.getName(),
                     new IngredientCategoryResponseDTO(
-                            ingredient.getIngredientCategory().getId(),
+//                            ingredient.getIngredientCategory().getId(),
                             ingredient.getIngredientCategory().getName()
                     )
             )).toList();
