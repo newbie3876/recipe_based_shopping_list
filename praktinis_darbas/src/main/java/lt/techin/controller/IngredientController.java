@@ -6,10 +6,14 @@ import lt.techin.dto.ingredient.IngredientRequestDTO;
 import lt.techin.dto.ingredient.IngredientResponseDTO;
 import lt.techin.model.Ingredient;
 import lt.techin.model.IngredientCategory;
+import lt.techin.model.User;
+import lt.techin.security.SecurityUtils;
 import lt.techin.service.IngredientCategoryService;
 import lt.techin.service.IngredientService;
+import lt.techin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,12 +29,18 @@ public class IngredientController {
 
   private final IngredientService ingredientService;
   private final IngredientCategoryService ingredientCategoryService;
+  private final UserService userService;
 
-  @Autowired
-  public IngredientController(IngredientService ingredientService, IngredientCategoryService ingredientCategoryService) {
+  public IngredientController(IngredientService ingredientService,
+                              IngredientCategoryService ingredientCategoryService,
+                              UserService userService) {
     this.ingredientService = ingredientService;
     this.ingredientCategoryService = ingredientCategoryService;
+    this.userService = userService;
   }
+
+  @Autowired
+
 
   @GetMapping("/ingredients")
   public ResponseEntity<List<IngredientResponseDTO>> getIngredients() {
@@ -64,8 +74,13 @@ public class IngredientController {
     IngredientCategory ingredientCategory = ingredientCategoryService.getCategoryById(ingredientRequestDTO.ingredientCategoryId())
             .orElseThrow(() -> new IllegalArgumentException("Ingredient category does not exits!"));
 
+//    paimam autentifikuotą user
+    String username = SecurityUtils.getCurrentUsername();
+    User user = userService.findUserByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
     // 3. Map DTO → Ingredient (now includes category name)
-    Ingredient newIngredient = IngredientMapper.toIngredient(ingredientRequestDTO, ingredientCategory);
+    Ingredient newIngredient = IngredientMapper.toIngredient(ingredientRequestDTO, ingredientCategory, user);
 
     // 4. Save the ingredient
     Ingredient savedIngredient = ingredientService.saveIngredient(newIngredient);
