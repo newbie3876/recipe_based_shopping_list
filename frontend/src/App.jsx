@@ -4,9 +4,7 @@ import HomePage from "./components/HomePage";
 import { useAuth } from "./context/AuthContext";
 import RecipePage from "./components/recipePage/RecipePage";
 import { Routes, Route } from "react-router-dom";
-
-import ShoppingList from "./components/ShoppingList";
-import AddRecipeForm from "./components/RecipeRegistration";
+import ShoppingListPage from "./components/shoppingListPage/ShoppingListPage";
 import PhotoAlbum from "./components/PhotoAlbum";
 
 function App() {
@@ -24,7 +22,6 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/recipes" element={<RecipePage />} />
           <Route path="/shoppinglists" element={<ShoppingListPage />} />
-          <Route path="/reciperegistration" element={<AddRecipeForm />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
         </Routes>
       </div>
