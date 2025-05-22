@@ -1,10 +1,8 @@
 package lt.techin.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "recipes")
@@ -13,39 +11,34 @@ public class Recipe {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
-  @Size(max = 150)
   @Column(nullable = false, length = 150)
   private String name;
 
-  @NotNull
-  @Size(max = 350)
-  @Column(nullable = false, length = 350)
+  @Column(length = 350)
   private String description;
 
-
-  @Size(max = 255)
-  @Column(length = 255)
+  @Column(length = 512)
   private String link;
 
-
-  @Min(value = 0, message = "Portions cannot be a negative.")
   private int portions;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
-  @JoinColumn(name = "user_id")
-  @JsonBackReference("user_id")
+  @JsonIgnore
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne(cascade = CascadeType.MERGE)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "recipe_category_id")
-  @JsonBackReference("recipe_category_id")
+  @JsonIgnoreProperties("recipes")
   private RecipeCategory recipeCategory;
 
-  public Recipe(String name, String description, int portions) {
+  public Recipe(String name, String description, String link, int portions, User user, RecipeCategory recipeCategory) {
     this.name = name;
     this.description = description;
+    this.link = link;
     this.portions = portions;
+    this.user = user;
+    this.recipeCategory = recipeCategory;
   }
 
   public Recipe() {

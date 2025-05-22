@@ -1,5 +1,6 @@
 package lt.techin.service;
 
+import jakarta.transaction.Transactional;
 import lt.techin.model.RecipeIngredient;
 import lt.techin.repository.RecipeIngredientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,17 @@ public class RecipeIngredientService {
   }
 
   public RecipeIngredient getRecipeIngredientById(long id) {
-    return recipeIngredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe ingredient not found with id: " + id));
+    return recipeIngredientRepository.findById(id).orElseThrow(() -> new RuntimeException("Recepto ingredientas nerastas su ID: " + id));
   }
 
   public RecipeIngredient saveRecipe(RecipeIngredient ingredient) {
     return recipeIngredientRepository.save(ingredient);
   }
 
+  @Transactional
   public void deleteRecipeById(long id) {
     if (!recipeIngredientRepository.existsById(id)) {
-      throw new IllegalArgumentException("Recipe ingredient not found with id: " + id);
+      throw new IllegalArgumentException("Recepto ingredientas nerastas su ID: " + id);
     }
     recipeIngredientRepository.deleteById(id);
   }

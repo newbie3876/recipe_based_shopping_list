@@ -17,7 +17,7 @@ public class User implements UserDetails {
   private Long id;
 
   @NotBlank
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String username;
 
   @NotBlank
@@ -30,7 +30,7 @@ public class User implements UserDetails {
           joinColumns = @JoinColumn(name = "user_id"),
           inverseJoinColumns = @JoinColumn(name = "role_id")
   )
-  private List<Role> roles;
+  private List<Role> roles = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Image> images = new ArrayList<>();
@@ -44,7 +44,7 @@ public class User implements UserDetails {
   public User(String password, String username, List<Role> roles) {
     this.password = password;
     this.username = username;
-    this.roles = roles;
+    this.roles = roles != null ? new ArrayList<>(roles) : new ArrayList<>();
   }
 
   public User() {
@@ -107,5 +107,25 @@ public class User implements UserDetails {
 
   public void setIngredients(List<Ingredient> ingredients) {
     this.ingredients = ingredients;
+  }
+
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
   }
 }

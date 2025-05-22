@@ -1,39 +1,59 @@
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import dinner from "../assets/dinner.svg";
 
 function Header() {
   const { logout, isAuthenticated } = useAuth();
 
-  return (
-    <header className="p-4 bg-gray-200 flex justify-evenly">
-      <h1>My App</h1>
-      {isAuthenticated ? (
-        <div>
-          <nav className="flex justify-evenly gap-[1rem]">
-            <Link to="/">
-              <button>Į pradinį puslapį</button>
-            </Link>
-            <Link to="/recipes">
-              <button>Į receptų puslapį</button>
-            </Link>
-            <Link to="/shoppinglists">
-              <button>Į pirkinių krepšelių puslapį</button>
-            </Link>
-            <Link to="/reciperegistration">
-              <button>Į receptų registracijos formą</button>
-            </Link>
-            <Link to="/photoalbum">
-              <button>Foto albumas</button>
-            </Link>
-          </nav>
+  const getNavLinkClass = (isActive) =>
+    isActive ? "underline font-semibold" : "hover:underline";
 
-          <button onClick={logout} className="text-red-500">
-            Atsijungti
-          </button>
-        </div>
-      ) : (
-        <p className="text-green-500">Neprisijungęs</p>
+  return (
+    <header className="p-4 bg-orange-300 flex items-center">
+      <div className="flex-shrink-0">
+        <img className="w-15" src={dinner} alt="dinner plate logo" />
+      </div>
+
+      {isAuthenticated && (
+        <nav className="flex-1 flex justify-center gap-6">
+          <NavLink
+            to="/"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Pradinis
+          </NavLink>
+
+          <NavLink
+            to="/recipes"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Mano receptai
+          </NavLink>
+
+          <NavLink
+            to="/shoppinglists"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Pirkinių krepšeliai
+          </NavLink>
+
+          <NavLink
+            to="/photoalbum"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Foto albumas
+          </NavLink>
+        </nav>
       )}
+
+      <div className="flex-shrink-0">
+        <button
+          onClick={logout}
+          className="text-red-500 cursor-pointer hover:text-red-300"
+        >
+          Atsijungti
+        </button>
+      </div>
     </header>
   );
 }

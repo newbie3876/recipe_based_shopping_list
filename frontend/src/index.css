@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 * {
-  font-family: "Jost", sans-serif;
+  font-family: "Work Sans", sans-serif;
   font-optical-sizing: auto;
+  font-style: normal;
 }
+
+input::placeholder {
+  text-align: center;
+}
+
