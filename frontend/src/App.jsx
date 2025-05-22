@@ -5,7 +5,7 @@ import { useAuth } from "./context/AuthContext";
 import RecipePage from "./components/RecipePage";
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import ShoppingList from "./components/ShoppingList";
+import ShoppingListPage from "./components/shoppingListPage/ShoppingListPage";
 import AddRecipeForm from "./components/RecipeRegistration";
 import PhotoAlbum from "./components/PhotoAlbum";
 
@@ -22,7 +22,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/recipes" element={<RecipePage />} />
-          <Route path="/shoppinglists" element={<ShoppingList />} />
+          <Route path="/shoppinglists" element={<ShoppingListPage />} />
           <Route path="/reciperegistration" element={<AddRecipeForm />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
         </Routes>

@@ -13,11 +13,12 @@ import java.util.stream.Collectors;
 
 
 public class ShoppingListMapper {
-  public static ShoppingList toShoppingList(ShoppingListRequestDTO requestDTO, User user,
-                                            IngredientRepository ingredientRepository, UnitRepository unitRepository) {
+  public static ShoppingList toShoppingList(ShoppingListRequestDTO requestDTO,
+                                            User user,
+                                            IngredientRepository ingredientRepository,
+                                            UnitRepository unitRepository) {
     // 1. Sukuriame naują pirkinių sąrašą su vartotoju
     ShoppingList shoppingList = new ShoppingList(user, LocalDateTime.now(), new ArrayList<>());
-    //shoppingList.setItems(new ArrayList<>());
 
     // 2️. Iteruojame per gautus ingredientus ir konvertuojame į ShoppingListItem
     for (ShoppingListItemRequestDTO itemDTO : requestDTO.items()) {
@@ -54,5 +55,11 @@ public class ShoppingListMapper {
 //            shoppingList.getUser().getId(),
             shoppingList.getCreatedAt(),
             items);
+  }
+
+  public static List<ShoppingListResponseDTO> toDTO(List<ShoppingList> shoppingLists) {
+    return shoppingLists.stream()
+            .map(ShoppingListMapper::toDTO)
+            .collect(Collectors.toList());
   }
 }
