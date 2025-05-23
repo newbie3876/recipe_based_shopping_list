@@ -7,8 +7,10 @@ import { Routes, Route } from "react-router-dom";
 import ShoppingList from "./components/ShoppingList"
 import PhotoAlbum from "./components/PhotoAlbum";
 import AddIngredient from "./components/AddIngredient";
-//import AddShoppingListModal from "./components/shoppingListPage/AddShoppingListModal";
-import ShoppingListForm from "./components/ShoppingListForm";
+import AddShoppingListModal from "./components/shoppingListPage/AddShoppingListModal";
+import Ingredientai from "./components/Ingredientai";
+//import ShoppingListForm from "./components/ShoppingListForm";
+//import ShoppingListReview from "./components/ShoppingListReview";
 
 
 function App() {
@@ -28,7 +30,9 @@ function App() {
           <Route path="/shoppinglists" element={<ShoppingList />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
           <Route path="/add-ingredient" element={<AddIngredient userId={1}/>} />
-          <Route path="/create-shoppinglists" element={<ShoppingListForm userId={1}/>} />
+          <Route path="/create-shoppinglists" element={<AddShoppingListModal userId={1}/>} />
+          <Route path="/create-shoppinglists" element={<Ingredientai />} />
+          
         </Routes>
       </div>
     </main>
@@ -39,3 +43,5 @@ function App() {
 export default App;
 
 //<Route path="/create-shoppinglists" element={<AddShoppingListModal userId={1}/>} />
+//<Route path="/create-shoppinglists" element={<ShoppingListForm userId={1}/>} />
+//<Route path="/shoppinglist-review" element={<ShoppingListReview />} />

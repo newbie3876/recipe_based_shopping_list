@@ -13,6 +13,8 @@ public record ShoppingListItemRequestDTO(
         @NotNull
         BigDecimal quantity,
         @NotNull
+        String unit,
+        @NotNull
         Long unitId,
         List<IngredientCategoryRequestDTO> ingredientCategory
 

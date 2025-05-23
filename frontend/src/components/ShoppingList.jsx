@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 const ShoppingList = ({ userId }) => {
   const location = useLocation();
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  
 
   const [shoppingLists, setShoppingLists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,6 +116,9 @@ const ShoppingList = ({ userId }) => {
 };
 
 export default ShoppingList;
+
+
+
 
 
 
