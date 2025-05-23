@@ -19,7 +19,7 @@ public class Role implements GrantedAuthority {
   private String name;
 
   @ManyToMany(mappedBy = "roles")
-  private List<User> users = new ArrayList<>();
+  private final List<User> users = new ArrayList<>();
 
   public Role(String name) {
     this.name = name;
@@ -44,16 +44,23 @@ public class Role implements GrantedAuthority {
     this.name = name;
   }
 
-  public List<User> getUsers() {
-    return users;
-  }
-
-  public void setUsers(List<User> users) {
-    this.users = users;
-  }
-
   @Override
   public String getAuthority() {
     return this.name;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;                      // tas pats objektas
+    if (o == null || getClass() != o.getClass()) return false;  // ne tas pats tipas arba null
+
+    Role role = (Role) o;
+
+    return name != null ? name.equals(role.name) : role.name == null;  // lyginame pagal name
+  }
+
+  @Override
+  public int hashCode() {
+    return name != null ? name.hashCode() : 0;
   }
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ShoppingList from "./ShoppingList";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import AddShoppingListModal from "./AddShoppingListModal";
+import RecipeSelector from "./RecipeSelector";
 import { fetchShoppingLists, deleteShoppingListById} from "../../services/shoppingListMethods";
 
 export default function ShoppingListPage() {
@@ -14,6 +15,7 @@ export default function ShoppingListPage() {
         setLoading(true);
         fetchShoppingLists()
             .then(data => {
+                console.log("Gauti pirkinių krepšeliai:", data);
                 setShoppingLists(data);
                 setLoading(false);
             })
@@ -23,9 +25,41 @@ export default function ShoppingListPage() {
             });
     }, []);
 
+    const handleCreateFromRecipe = (recipeIds) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.error("Tokenas nerastas.");
+        return;
+    }
+
+    fetch("http://localhost:8080/api/shoppinglists/from-recipes", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(recipeIds),
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error(`Klaida kuriant krepšelį: ${res.status}`);
+            }
+            return res.json();
+        })
+        .then(newList => {
+            setShoppingLists(prev => [...prev, newList]);
+        })
+        .catch(err =>
+            console.error("Nepavyko sukurti krepšelio iš recepto", err)
+        );
+    };
+
+
     return (
         <main className="h-screen bg-orange-200 flex flex-col items-center">
             <h1 className="text-2xl text-center font-bold py-4">Mano pirkinių krepšeliai</h1>
+
+            <RecipeSelector onRecipeSelected={handleCreateFromRecipe} />
 
             <ShoppingList 
                 shoppingLists={shoppingLists}
@@ -33,7 +67,7 @@ export default function ShoppingListPage() {
             />
 
             <button onClick={() => setIsAddFormOpen(true)} className="m-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded">
-                Pridėti prekių krepšelį
+                Pridėti pirkinių krepšelį
             </button>
 
             {isAddFormOpen && (
@@ -50,6 +84,10 @@ export default function ShoppingListPage() {
                     shoppingList={shoppingListToDelete}
                     onCancel={() => setShoppingListToDelete(null)}
                     onConfirm={() => {
+                        if (!shoppingListToDelete?.id) {
+                            console.error("Neteisingas arba neegzistuojantis krepšelio ID:", shoppingListToDelete);
+                            return;
+                        }
                         deleteShoppingListById(shoppingListToDelete.id)
                             .then(() => {
                                 setShoppingLists(prev => prev.filter(l => l.id !== shoppingListToDelete.id));

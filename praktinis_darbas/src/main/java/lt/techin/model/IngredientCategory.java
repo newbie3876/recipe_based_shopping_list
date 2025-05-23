@@ -2,6 +2,7 @@ package lt.techin.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,15 +12,11 @@ public class IngredientCategory {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(length = 255)
   private String name;
 
-  @OneToMany(mappedBy = "ingredientCategory")
-  private List<Ingredient> ingredients;
-
-  public IngredientCategory(String name, List<Ingredient> ingredients) {
-    this.name = name;
-    this.ingredients = ingredients;
-  }
+  @OneToMany(mappedBy = "ingredientCategory", cascade = CascadeType.ALL, orphanRemoval = true)
+  private final List<Ingredient> ingredients = new ArrayList<>();
 
   public IngredientCategory(String name) {
     this.name = name;
@@ -42,9 +39,5 @@ public class IngredientCategory {
 
   public List<Ingredient> getIngredients() {
     return ingredients;
-  }
-
-  public void setIngredients(List<Ingredient> ingredients) {
-    this.ingredients = ingredients;
   }
 }
