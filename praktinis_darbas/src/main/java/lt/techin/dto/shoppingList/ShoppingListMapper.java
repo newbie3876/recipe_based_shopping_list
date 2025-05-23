@@ -1,6 +1,8 @@
 package lt.techin.dto.shoppingList;
 
-import lt.techin.dto.ingredient.IngredientCategoryResponseDTO;
+import lt.techin.dto.ingredientCategory.IngredientCategoryResponseDTO;
+import lt.techin.dto.shoppingListItem.ShoppingListItemRequestDTO;
+import lt.techin.dto.shoppingListItem.ShoppingListItemResponseDTO;
 import lt.techin.model.*;
 import lt.techin.repository.IngredientRepository;
 import lt.techin.repository.UnitRepository;
@@ -39,20 +41,20 @@ public class ShoppingListMapper {
     List<ShoppingListItemResponseDTO> items = shoppingList.getItems() != null
             ? shoppingList.getItems().stream()
             .map(item -> new ShoppingListItemResponseDTO(
-//                    item.getId(),
+                    item.getId(),
                     item.getIngredient().getName(),
                     item.getQuantity(),
                     item.getUnit().getName(),
                     Collections.singletonList(new IngredientCategoryResponseDTO(
-//                            item.getIngredient().getIngredientCategory().getId(),
+                            item.getIngredient().getIngredientCategory().getId(),
                             item.getIngredient().getIngredientCategory().getName()
                     ))))
             .collect(Collectors.toList())
             : new ArrayList<>(); // Jei items yra null, grąžiname tuščią sąrašą
 
     return new ShoppingListResponseDTO(
-//            shoppingList.getId(),
-//            shoppingList.getUser().getId(),
+            shoppingList.getId(),
+            shoppingList.getUser().getId(),
             shoppingList.getCreatedAt(),
             items);
   }

@@ -1,7 +1,6 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "recipe_ingredients")
@@ -10,16 +9,19 @@ public class RecipeIngredient {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Min(value = 1, message = "Kiekis negali būti mažesnis nei 1.")
-  private int quantity;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "recipe_id", nullable = false)
+  private Recipe recipe;
 
-  @Column(nullable = false, length = 255)
-  private String name;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "ingredient_id", nullable = false)
+  private Ingredient ingredient;
 
-  public RecipeIngredient(int quantity, String name) {
-    this.quantity = quantity;
-    this.name = name;
-  }
+  private Double quantity;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = " unit_id")
+  private Unit unit;
 
   public RecipeIngredient() {
   }
@@ -28,19 +30,35 @@ public class RecipeIngredient {
     return id;
   }
 
-  public int getQuantity() {
+  public Recipe getRecipe() {
+    return recipe;
+  }
+
+  public void setRecipe(Recipe recipe) {
+    this.recipe = recipe;
+  }
+
+  public Ingredient getIngredient() {
+    return ingredient;
+  }
+
+  public void setIngredient(Ingredient ingredient) {
+    this.ingredient = ingredient;
+  }
+
+  public Double getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(int quantity) {
+  public void setQuantity(Double quantity) {
     this.quantity = quantity;
   }
 
-  public String getName() {
-    return name;
+  public Unit getUnit() {
+    return unit;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setUnit(Unit unit) {
+    this.unit = unit;
   }
 }

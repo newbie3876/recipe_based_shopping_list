@@ -1,14 +1,13 @@
-package lt.techin.dto.shoppingList;
+package lt.techin.dto.shoppingListItem;
 
-import lt.techin.dto.ingredient.IngredientCategoryResponseDTO;
+import lt.techin.dto.ingredientCategory.IngredientCategoryResponseDTO;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public record ShoppingListItemResponseDTO(
-//        Long id,
+        Long id,
         String ingredientName,
-        BigDecimal quantity,
+        Double quantity,
         String unit,
         List<IngredientCategoryResponseDTO> ingredientCategory
 ) {

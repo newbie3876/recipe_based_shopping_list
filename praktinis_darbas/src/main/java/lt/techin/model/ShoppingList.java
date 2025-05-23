@@ -29,16 +29,22 @@ public class ShoppingList {
     }
   }
 
+  @Column(length = 255)
+  private String name;
+
   @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<ShoppingListItem> items = new ArrayList<>();
 
-  public ShoppingList() {
-  }
+//  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//  private final List<Ingredient> ingredients = new ArrayList<>();
 
   public ShoppingList(User user, LocalDateTime createdAt, List<ShoppingListItem> items) {
     this.user = user;
     this.createdAt = createdAt;
     this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
+  }
+
+  public ShoppingList() {
   }
 
   public Long getId() {

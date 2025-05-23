@@ -1,8 +1,7 @@
-package lt.techin.dto.ingredient;
+package lt.techin.dto.ingredientCategory;
 
 public record IngredientCategoryResponseDTO(
-
-//        long id,
+        Long id,
         String name
 
 ) {
