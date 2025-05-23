@@ -8,6 +8,7 @@ import java.util.List;
 
 public record IngredientRequestDTO(
 
+        Long ingredientId,
         @NotNull
         @Size(min = 2, max = 250)
         //@Column(nullable = false, length = 250)

@@ -1,115 +1,3 @@
-// import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-
-// export default function AddIngredient() {
-//   const [name, setName] = useState("");
-//   const [amount, setAmount] = useState("");
-//   const [unit, setUnit] = useState("");
-//   const [category, setCategory] = useState("");
-//   const navigate = useNavigate();
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-    
-//     // Tikriname, ar vartotojas įvedė visus laukus
-//     if (!name || !amount || !unit || !category) {
-//       alert("Prašome užpildyti visus laukus!");
-//       return;
-//     }
-
-//     // Tikriname, ar kiekis yra teisingas skaičius
-//     if (isNaN(amount) || amount <= 0) {
-//       alert("Prašome įvesti teisingą kiekį!");
-//       return;
-//     }
-
-
-//     const newIngredient = { name, amount, unit, category };
-
-//     try {
-//       const response = await fetch("http://localhost:8080/api/ingredients", {
-//         method: "POST",
-//         headers:  { 
-//             "Content-Type": "application/json",
-//             Authorization: `Bearer ${localStorage.getItem("token")}`
-//         },
-//         body: JSON.stringify(newIngredient),
-//       });
-
-//       if (!response.ok) {
-//         throw new Error("Serverio klaida");
-//       }
-
-//       alert("Ingredientas sėkmingai pridėtas!");
-//       navigate("/");
-//     } catch (error) {
-//       alert("Klaida pridedant ingredientą: " + error.message);
-//     }
-
-    
-//   };
-
-//   return (
-//     <div style={{ textAlign: "center", padding: "20px" }}>
-//       <h2>Pridėti naują ingredientą</h2>
-//       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px", maxWidth: "350px", margin: "auto" }}>
-        
-//         <input 
-//           type="text" 
-//           placeholder="Ingrediento pavadinimas" 
-//           value={name} 
-//           onChange={(e) => setName(e.target.value)} 
-//           required 
-//           style={{ padding: "8px", borderRadius: "5px", border: "1px solid gray" }}
-//         />
-
-//         <input 
-//           type="number" 
-//           placeholder="Kiekis" 
-//           value={amount} 
-//           onChange={(e) => setAmount(e.target.value)} 
-//           required 
-//           style={{ padding: "8px", borderRadius: "5px", border: "1px solid gray" }}
-//         />
-
-//         <input 
-//           type="text" 
-//           placeholder="Vienetai (pvz., g, ml, vnt.)" 
-//           value={unit} 
-//           onChange={(e) => setUnit(e.target.value)} 
-//           required 
-//           style={{ padding: "8px", borderRadius: "5px", border: "1px solid gray" }}
-//         />
-
-//         <select 
-//           value={category} 
-//           onChange={(e) => setCategory(e.target.value)} 
-//           required 
-//           style={{ padding: "8px", borderRadius: "5px", border: "1px solid gray" }}
-//         >
-//           <option value="">Pasirinkti kategoriją</option>
-//           <option value="Vaisiai">Vaisiai</option>
-//           <option value="Daržovės">Daržovės</option>
-//           <option value="Baltymai">Baltymai</option>
-//           <option value="Grūdai">Grūdai</option>
-//           <option value="Pieno produktai">Pieno produktai</option>
-//           <option value="Prieskoniai">Prieskoniai</option>
-//         </select>
-
-//         <button 
-//           type="submit" 
-//           style={{ padding: "10px", backgroundColor: "#4CAF50", color: "white", border: "none", cursor: "pointer", borderRadius: "5px", fontWeight: "bold" }}
-//         >
-//           Išsaugoti ingredientą
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
-
-
-
-
 
 //   return (
 //     <div style={{ textAlign: "center", padding: "20px" }}>
@@ -394,18 +282,21 @@ export default function AddIngredient() {
   // Vienetų pasirinkimai
   const unitOptions = [
     { id: 1, label: "Gramai (g)" },
-    { id: 2, label: "Mililitrai (ml)" },
-    { id: 3, label: "Vienetai (vnt.)" },
+    { id: 2, label: "Kilogramai (kg)" },
+    { id: 3, label: "Litrai (l)" },
+    { id: 4, label: "Mililitrai (ml)" },
+    { id: 5, label: "Vienetai (vnt.)" },
   ];
 
   // Kategorijų pasirinkimai
   const categoryOptions = [
-    { id: 1, label: "Vaisiai" },
-    { id: 2, label: "Daržovės" },
-    { id: 3, label: "Baltymai" },
-    { id: 4, label: "Grūdai" },
-    { id: 5, label: "Pieno produktai" },
-    { id: 6, label: "Prieskoniai" },
+    { id: 1, label: "Pienas ir jo gaminiai" },
+    { id: 2, label: "Mėsa, žuvis ir kiaušiniai" },
+    { id: 3, label: "Bulvės, ankštiniai augalai ir riešutai" },
+    { id: 4, label: "Daržovės" },
+    { id: 5, label: "Vaisiai" },
+    { id: 6, label: "Duona, makaronai, grūdai, cukrus ir saldainiai" },
+    { id: 7, label: "Riebalai, aliejus ir sviestas" },
   ];
 
   const handleSubmit = async (e) => {

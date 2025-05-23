@@ -2,7 +2,7 @@ package lt.techin.dto.ingredient;
 
 public record IngredientCategoryResponseDTO(
 
-        //Long id,
+        Long id,
         String categoryName
 
 ) {

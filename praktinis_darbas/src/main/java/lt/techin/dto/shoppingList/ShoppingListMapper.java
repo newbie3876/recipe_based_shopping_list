@@ -42,8 +42,9 @@ public class ShoppingListMapper {
                     item.getIngredient().getName(),
                     item.getQuantity(),
                     item.getUnit().getName(),
+                    item.getUnit().getId(),
                     Collections.singletonList(new IngredientCategoryResponseDTO(
-                            //item.getIngredient().getIngredientCategory().getId(),
+                            item.getIngredient().getIngredientCategory().getId(),
                             item.getIngredient().getIngredientCategory().getName()
                     ))))
             .collect(Collectors.toList())

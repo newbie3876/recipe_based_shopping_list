@@ -62,7 +62,7 @@ public class IngredientMapper {
             ingredient.getName(),
             ingredient.getIngredientCategory() != null ?
                     new IngredientCategoryResponseDTO(
-                            //ingredient.getIngredientCategory().getId(), // ID pridedamas, jei būtinas
+                            ingredient.getIngredientCategory().getId(), // ID pridedamas, jei būtinas
                             ingredient.getIngredientCategory().getName()
                     )
                     : null // Jei nėra kategorijos, grąžinama null
@@ -88,7 +88,7 @@ public class IngredientMapper {
                     ingredient.getName(),
                     ingredient.getIngredientCategory() != null ?
                             new IngredientCategoryResponseDTO(
-                                    //ingredient.getIngredientCategory().getId(),
+                                    ingredient.getIngredientCategory().getId(),
                                     ingredient.getIngredientCategory().getName()
                             )
                             : null

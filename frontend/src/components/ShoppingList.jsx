@@ -1,26 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { fetchShoppingLists } from "../services/shoppingListService";
+import { useLocation } from "react-router-dom";
 
 const ShoppingList = ({ userId }) => {
+  const location = useLocation();
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
+
   const [shoppingLists, setShoppingLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!userId) return;
-
-    const fetchData = async () => {
+    const saved = localStorage.getItem("selectedIngredients");
+    if (saved) {
       try {
-        const data = await fetchShoppingLists(userId);
-        setShoppingLists(data);
+        setSelectedIngredients(JSON.parse(saved));
       } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        console.error("❌ Nepavyko nuskaityti ingredientų iš localStorage", err);
       }
-    };
+    }
+  }, []);
 
+  const fetchData = async () => {
+  try {
+    setLoading(true);
+    const data = await fetchShoppingLists(userId);
+    setShoppingLists(data);
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+  };
+
+  useEffect(() => {
+    if (!userId) return;
     fetchData();
+    console.log("Selected ingredients changed:", selectedIngredients);
   }, [userId]);
 
   return (
@@ -63,28 +79,22 @@ const ShoppingList = ({ userId }) => {
               </div>
               <div className="bg-orange-100 rounded-lg border border-orange-200 shadow-md h-full">
                 <div>
-                  {loading && <p>⏳ Įkeliama...</p>}
-                  {error && <p style={{ color: "red" }}>{error}</p>}
-                  {!loading && shoppingLists.length === 0 && <p>⚠️ Nėra pirkinių sąrašų.</p>}
-                  {shoppingLists.map((list) => (
-                    <div key={list.id} className="shopping-list grid grid-cols-1 text-center">
-                      <table>
-                        <tbody>
-                          {list.items.map((item, index) => (
-                            <tr key={index} className="grid grid-cols-6 w-full">
-                              <td className="p-2 text-center">{item.id}</td>
-                              <td className="p-2 text-center">{item.ingredientName}</td>
-                              <td className="p-2 text-center">{item.quantity}</td>
-                              <td className="p-2 text-center">{item.unit}</td>
-                              <td className="p-2 text-center">
-                                {item.ingredientCategory.map(category => category.categoryName).join(", ")}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ))}
+                  <table className="w-full mt-4 border border-orange-300 text-center">
+  
+  <tbody>
+    {selectedIngredients.map((ing, i) => (
+      <tr key={i} className="bg-orange-50">
+        <td className="p-2 border border-orange-300">{i + 1}</td>
+        <td className="p-2 border border-orange-300">{ing.ingredientName}</td>
+        <td className="p-2 border border-orange-300">{ing.quantity}</td>
+        <td className="p-2 border border-orange-300">{ing.unit}</td>
+        <td className="p-2 border border-orange-300">
+          {ing.ingredientCategory?.map(cat => cat.categoryName).join(", ") || "–"}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
                 </div>
               </div>
             </div>
@@ -106,40 +116,42 @@ const ShoppingList = ({ userId }) => {
 
 export default ShoppingList;
 
-// <div>
-    //   <h2>🛒 Pirkinių sąrašai</h2>
-    //   {loading && <p>⏳ Įkeliama...</p>}
-    //   {error && <p style={{ color: "red" }}>{error}</p>}
-    //   {!loading && shoppingLists.length === 0 && <p>⚠️ Nėra pirkinių sąrašų.</p>}
 
-    //   {shoppingLists.map((list) => (
-    //     <div key={list.id} className="shopping-list">
-    //       <h3>{`Sąrašas #${list.id}`}</h3>
-    //       <p>Sukurta: {new Date(list.createdAt).toLocaleString()}</p>
+
+// // <div>
+//     //   <h2>🛒 Pirkinių sąrašai</h2>
+//     //   {loading && <p>⏳ Įkeliama...</p>}
+//     //   {error && <p style={{ color: "red" }}>{error}</p>}
+//     //   {!loading && shoppingLists.length === 0 && <p>⚠️ Nėra pirkinių sąrašų.</p>}
+
+//     //   {shoppingLists.map((list) => (
+//     //     <div key={list.id} className="shopping-list">
+//     //       <h3>{`Sąrašas #${list.id}`}</h3>
+//     //       <p>Sukurta: {new Date(list.createdAt).toLocaleString()}</p>
           
-    //       <table className="shopping-table">
-    //         <thead>
-    //           <tr>
-    //             <th>Ingredientas</th>
-    //             <th>Kiekis</th>
-    //             <th>Vienetas</th>
-    //             <th>Kategorija</th>
-    //           </tr>
-    //         </thead>
-    //         <tbody>
-    //           {list.items.map((item, index) => (
-    //             <tr key={index}>
-    //               <td>{item.ingredientName}</td>
-    //               <td>{item.quantity}</td>
-    //               <td>{item.unit}</td>
-    //               <td>
-    //                 {item.ingredientCategory.map(category => category.categoryName).join(", ")}
-    //               </td>
-    //             </tr>
-    //           ))}
-    //         </tbody>
-    //       </table>
-    //     </div>
-    //   ))}
-    // </div>
-  //);
+//     //       <table className="shopping-table">
+//     //         <thead>
+//     //           <tr>
+//     //             <th>Ingredientas</th>
+//     //             <th>Kiekis</th>
+//     //             <th>Vienetas</th>
+//     //             <th>Kategorija</th>
+//     //           </tr>
+//     //         </thead>
+//     //         <tbody>
+//     //           {list.items.map((item, index) => (
+//     //             <tr key={index}>
+//     //               <td>{item.ingredientName}</td>
+//     //               <td>{item.quantity}</td>
+//     //               <td>{item.unit}</td>
+//     //               <td>
+//     //                 {item.ingredientCategory.map(category => category.categoryName).join(", ")}
+//     //               </td>
+//     //             </tr>
+//     //           ))}
+//     //         </tbody>
+//     //       </table>
+//     //     </div>
+//     //   ))}
+//     // </div>
+//   //);

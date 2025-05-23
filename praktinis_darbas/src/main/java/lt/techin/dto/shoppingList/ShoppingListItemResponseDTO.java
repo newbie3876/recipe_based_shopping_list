@@ -11,6 +11,7 @@ public record ShoppingListItemResponseDTO(
         String ingredientName,
         BigDecimal quantity,
         String unit,
+        Long unitId,
         List<IngredientCategoryResponseDTO> ingredientCategory
 
 ) {
