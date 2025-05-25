@@ -8,7 +8,7 @@ import ShoppingList from "./components/ShoppingList"
 import PhotoAlbum from "./components/PhotoAlbum";
 import AddIngredient from "./components/AddIngredient";
 import AddShoppingListModal from "./components/shoppingListPage/AddShoppingListModal";
-import Ingredientai from "./components/Ingredientai";
+//import Ingredientai from "./components/Ingredientai";
 //import ShoppingListForm from "./components/ShoppingListForm";
 //import ShoppingListReview from "./components/ShoppingListReview";
 
@@ -27,12 +27,10 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/recipes" element={<RecipePage />} />
-          <Route path="/shoppinglists" element={<ShoppingList />} />
+          <Route path="/shoppinglists" element={<ShoppingList userId={1} />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
           <Route path="/add-ingredient" element={<AddIngredient userId={1}/>} />
           <Route path="/create-shoppinglists" element={<AddShoppingListModal userId={1}/>} />
-          <Route path="/create-shoppinglists" element={<Ingredientai />} />
-          
         </Routes>
       </div>
     </main>
@@ -45,3 +43,4 @@ export default App;
 //<Route path="/create-shoppinglists" element={<AddShoppingListModal userId={1}/>} />
 //<Route path="/create-shoppinglists" element={<ShoppingListForm userId={1}/>} />
 //<Route path="/shoppinglist-review" element={<ShoppingListReview />} />
+//<Route path="/create-shoppinglists" element={<Ingredientai />} />

@@ -99,28 +99,27 @@ export const fetchShoppingLists = async (userId) => {
 //   }
 // };
 
-export async function createShoppingList(shoppingListData) {
-  try {
-    const token = localStorage.getItem("token"); // arba iš konteksto
+export async function createShoppingList(data) {
+    try {
+        const token = localStorage.getItem(token);
+        
+        const response = await fetch('/api/shoppinglists', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        });
 
-    const response = await fetch("/api/shoppinglists", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-      body: JSON.stringify(shoppingListData),
-    });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Serverio klaida: ${response.status} - ${errorText}`);
+        }
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Serverio atsakymas:", response.status, errorText);
-      throw new Error("Serverio klaida kuriant pirkinių sąrašą.");
+        return await response.json();
+    } catch (error) {
+        console.error("createShoppingList klaida:", error);
+        throw error;
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error("❌ Klaida createShoppingList funkcijoje:", error);
-    throw error;
-  }
 }
