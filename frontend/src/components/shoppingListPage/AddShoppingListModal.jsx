@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchShoppingLists, createShoppingList  } from "../../services/shoppingListService";
 
-export default function AddShoppingListModal({ userId }) {
+export default function AddShoppingListModal({ userId, ingredient }) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [createdAt, setCreatedAt] = useState("");
@@ -12,6 +12,7 @@ export default function AddShoppingListModal({ userId }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   const handleCancel = () => {
     navigate("/"); // Nukreipiame vartotoją į pagrindinį puslapį
@@ -51,14 +52,32 @@ export default function AddShoppingListModal({ userId }) {
   }, [userId]);
 
   // Funkcija kelių ingredientų pasirinkimui
-  const handleAddIngredient = (e) => {
-    const selectedOptions = Array.from(e.target.selectedOptions).map((option) => Number(option.value));
+//   const handleAddIngredient = (e) => {
+//     const selectedOptions = Array.from(e.target.selectedOptions).map((option) => Number(option.value));
 
-    const selectedIngredients = ingredients.filter((ingredient) => selectedOptions.includes(ingredient.ingredientId));
+//     const selectedIngredients = ingredients.filter((ingredient) => selectedOptions.includes(ingredient.ingredientId));
 
-    setIndependentIngredients(selectedIngredients);
-    setSelectedIds(selectedOptions);
-  };
+//     setIndependentIngredients(selectedIngredients);
+//     setSelectedIds(selectedOptions);
+//   };
+
+    const handleAddIngredient = (e, ingredient) => {
+  const ingredientId = ingredient.ingredientId;
+  let updatedSelectedIds = [];
+
+  if (e.target.checked) {
+    updatedSelectedIds = [...selectedIds, ingredientId];
+  } else {
+    updatedSelectedIds = selectedIds.filter((id) => id !== ingredientId);
+  }
+
+  const updatedSelectedIngredients = ingredients.filter((ing) =>
+    updatedSelectedIds.includes(ing.ingredientId)
+  );
+
+  setSelectedIds(updatedSelectedIds);
+  setIndependentIngredients(updatedSelectedIngredients);
+    };
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -97,14 +116,38 @@ export default function AddShoppingListModal({ userId }) {
     localStorage.setItem("independentIngredientsByUser", JSON.stringify(existing));
 
     // Siunčiam į serverį
-    await createShoppingList({
-      userId,
+    // await createShoppingList({
+    //   userId,
+    //   createdAt: new Date().toISOString(),
+    //   items,
+    // }, token);
+
+    const newList = {
+      id: Date.now(), // paprastas unikalus ID
+      name,
       createdAt: new Date().toISOString(),
-      items,
-    }, token);
+      items: validItems,
+      userId,
+    };
+
+    // Gauti visą objektą iš localStorage
+    const allData = JSON.parse(localStorage.getItem("shoppingListsByUser") || "{}");
+
+    // Patikrinti ar jau yra sąrašų šiam vartotojui
+    const userLists = allData[userId] || [];
+
+    // Pridėti naują sąrašą
+    userLists.push(newList);
+
+    // Atnaujinti pagrindinį objektą
+    allData[userId] = userLists;
+
+    // Išsaugoti atgal
+    localStorage.setItem("shoppingListsByUser", JSON.stringify(allData));
+
 
     // Perkeliame į ShoppingList
-    navigate("/shoppinglists");
+    navigate("/shoppinglist");
 
   } catch (err) {
     console.error("❌ Klaida kuriant prekių krepšelį:", err);
@@ -117,15 +160,17 @@ export default function AddShoppingListModal({ userId }) {
   const clearForm = () => {
     setName("");
     setCreatedAt("");
+    setSelectedIds([]);
     setRecipeIngredients("");
-    setIndependentIngredients([]);
+    //setIndependentIngredients([]);
   };
 
   
 
   return (
-    <section className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+    <div className="bg-orange-200 h-screen">
+        <section className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 text-center">Pridėti naują pirkinių krepšelį</h2>
 
         {error && <p className="text-red-600 mb-2">{error}</p>}
@@ -154,7 +199,7 @@ export default function AddShoppingListModal({ userId }) {
           </select>
 
           <label className="block text-center font-medium">Pasirinkite ingredientus:</label>
-          <select
+          {/* <select
             multiple
             onChange={handleAddIngredient}
             className="block w-full p-2 border rounded mt-2"
@@ -165,7 +210,43 @@ export default function AddShoppingListModal({ userId }) {
                 {ingredient.ingredientName} - {ingredient.quantity} {ingredient.unit}
               </option>
             ))}
-          </select>
+          </select> */}
+
+          <div
+        style={{
+          maxHeight: "100px",
+          overflowY: "auto",
+          border: "1px solid #ccc",
+          borderRadius: "5px",
+          padding: "10px",
+        }}
+      >
+        {ingredients.map((ingredient) => (
+          <label
+            key={ingredient.ingredientId}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "8px",
+              cursor: "pointer",
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={selectedIds.includes(ingredient.ingredientId)}
+              onChange={(e) => handleAddIngredient(e, ingredient)}
+              style={{ marginRight: "10px" }}
+            />
+            <div>
+              <strong>{ingredient.ingredientName}</strong>{" "}
+              <span style={{ color: "#555", fontSize: "0.9em" }}>
+                ({ingredient.quantity} {ingredient.unit})
+              </span>
+            </div>
+          </label>
+        ))}
+      </div>
+
 
           {/* Pasirinktų ingredientų lentelė */}
             {/* <table className="w-full border border-orange-300 text-center mb-4">
@@ -213,7 +294,8 @@ export default function AddShoppingListModal({ userId }) {
           </div>
         </form>
       </div>
-    </section>
+        </section>
+    </div>
   );
 }
 

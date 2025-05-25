@@ -4,14 +4,12 @@ import HomePage from "./components/HomePage";
 import { useAuth } from "./context/AuthContext";
 import RecipePage from "./components/recipePage/RecipePage";
 import { Routes, Route } from "react-router-dom";
-import ShoppingList from "./components/ShoppingList"
+import ShoppingList from "./components/ShoppingList";
+import ShoppingListReview from "./components/ShoppingListReview";
 import PhotoAlbum from "./components/PhotoAlbum";
 import AddIngredient from "./components/AddIngredient";
 import AddShoppingListModal from "./components/shoppingListPage/AddShoppingListModal";
-//import Ingredientai from "./components/Ingredientai";
-//import ShoppingListForm from "./components/ShoppingListForm";
-//import ShoppingListReview from "./components/ShoppingListReview";
-
+import AllIngredients from "./components/AllIngredients";
 
 function App() {
   const { token } = useAuth();
@@ -27,9 +25,11 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/recipes" element={<RecipePage />} />
-          <Route path="/shoppinglists" element={<ShoppingList userId={1} />} />
+          <Route path="/shoppinglist" element={<ShoppingList userId={1} />} />
+          <Route path="/shoppinglists" element={<ShoppingListReview userId={1} />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
           <Route path="/add-ingredient" element={<AddIngredient userId={1}/>} />
+          <Route path="/all-ingredients" element={<AllIngredients userId={1}/>} />
           <Route path="/create-shoppinglists" element={<AddShoppingListModal userId={1}/>} />
         </Routes>
       </div>
@@ -39,8 +39,3 @@ function App() {
 }
 
 export default App;
-
-//<Route path="/create-shoppinglists" element={<AddShoppingListModal userId={1}/>} />
-//<Route path="/create-shoppinglists" element={<ShoppingListForm userId={1}/>} />
-//<Route path="/shoppinglist-review" element={<ShoppingListReview />} />
-//<Route path="/create-shoppinglists" element={<Ingredientai />} />

@@ -31,6 +31,20 @@ function Header() {
           </NavLink>
 
           <NavLink
+            to="/add-ingredient"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Mano ingredientai
+          </NavLink>
+
+          <NavLink
+            to="/create-shoppinglists"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Sukurti naują pirkinių krepšelį
+          </NavLink>
+
+          <NavLink
             to="/shoppinglists"
             className={({ isActive }) => getNavLinkClass(isActive)}
           >

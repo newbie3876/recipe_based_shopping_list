@@ -5,11 +5,11 @@ export default function Homepage() {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="bg-orange-200 h-screen">
       <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
         <div style={{ border: "1px solid gray", padding: "15px", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", textAlign: "center" }}>
           <button 
-            onClick={() => navigate("/add-ingredient")}
+            onClick={() => navigate("/all-ingredients")}
             style={{
               padding: "10px",
               borderRadius: "5px",
@@ -23,7 +23,7 @@ export default function Homepage() {
             Rodyti visus ingredientus
           </button>
         </div>
-        <div style={{ border: "1px solid gray", padding: "15px", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", textAlign: "center" }}>
+        {/* <div style={{ border: "1px solid gray", padding: "15px", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", textAlign: "center" }}>
           <button 
             onClick={() => navigate("/add-ingredient")}
             style={{
@@ -38,12 +38,12 @@ export default function Homepage() {
           >
             Pridėti naują ingredientą
           </button>
-        </div>
+        </div> */}
       </div>
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
+      {/* <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
         <div style={{ border: "1px solid gray", padding: "15px", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", textAlign: "center" }}>
           <button 
-            onClick={() => navigate("/add-ingredient")}
+            onClick={() => navigate("/")}
             style={{
               padding: "10px",
               borderRadius: "5px",
@@ -54,10 +54,10 @@ export default function Homepage() {
               boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.2)"
             }}
           >
-            Peržiūrėti visus prekių krepšelius
+            Peržiūrėti visus pirkinių sąrašus
           </button>
-        </div>
-        <div style={{ border: "1px solid gray", padding: "15px", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", textAlign: "center" }}>
+        </div> */}
+        {/* <div style={{ border: "1px solid gray", padding: "15px", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", textAlign: "center" }}>
           <button 
             onClick={() => navigate("/create-shoppinglists")}
             style={{
@@ -70,10 +70,10 @@ export default function Homepage() {
               boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.2)"
             }}
           >
-            Sukurti naują prekių krepšelį
+            Sukurti naują pirkinių krepšelį
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
     
   );

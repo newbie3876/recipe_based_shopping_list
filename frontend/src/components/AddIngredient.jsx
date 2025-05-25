@@ -324,7 +324,8 @@ export default function AddIngredient() {
   };
 
   return (
-    <div style={{ textAlign: "center", padding: "20px", backgroundColor: "#ffffff", border: "1px solid gray", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", maxWidth: "400px", margin: "auto" }}>
+    <div className="bg-orange-200 h-screen">
+      <div style={{ textAlign: "center", padding: "20px", backgroundColor: "#ffffff", border: "1px solid gray", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", maxWidth: "400px", margin: "auto" }}>
       <h2 style={{ color: "#333" }}>Pridėti naują ingredientą</h2>
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "15px", padding: "20px" }}>
         <input type="text" placeholder="Ingrediento pavadinimas" value={ingredientName} onChange={(e) => setIngredientName(e.target.value)} required style={{ padding: "10px", borderRadius: "5px", border: "1px solid gray" }} />
@@ -350,6 +351,7 @@ export default function AddIngredient() {
           Išsaugoti ingredientą
         </button>
       </form>
-    </div>
+      </div>
+    </div> 
   );
 }

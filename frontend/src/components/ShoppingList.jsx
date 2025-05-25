@@ -266,6 +266,7 @@
 
 import React, { useState, useEffect } from "react";
 import { fetchShoppingLists } from "../services/shoppingListService";
+import { useNavigate } from "react-router-dom";
 
 const ShoppingList = ({ userId }) => {
   const [selectedIngredients, setSelectedIngredients] = useState([]);
@@ -273,6 +274,7 @@ const ShoppingList = ({ userId }) => {
   const [shoppingLists, setShoppingLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   
 
   // Receptų ingredientai iš localStorage
@@ -321,6 +323,10 @@ const ShoppingList = ({ userId }) => {
     if (!userId) return;
     fetchData();
   }, [userId]);
+
+  const handleBack = () => {
+    navigate('/create-shoppinglists'); // norimas adresas
+  };
 
   return (
     <div className="min-h-screen w-full bg-orange-50 flex flex-col">
@@ -409,7 +415,9 @@ const ShoppingList = ({ userId }) => {
             <button className="bg-orange-200 hover:bg-orange-300 px-4 py-2 rounded text-orange-900 border border-orange-300">
               Ištrinti
             </button>
-            <button className="bg-green-500 hover:bg-green-700 px-4 py-2 rounded text-white border border-green-600">
+            <button
+              onClick={handleBack}
+              className="bg-green-500 hover:bg-green-700 px-4 py-2 rounded text-white border border-green-600">
               Grįžti atgal
             </button>
           </div>
