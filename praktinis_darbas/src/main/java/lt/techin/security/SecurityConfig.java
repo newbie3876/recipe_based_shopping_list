@@ -54,7 +54,7 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
                     .requestMatchers(HttpMethod.PUT, "/api/users/{id}").authenticated()
-                    .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").authenticated()
+                    .requestMatchers(HttpMethod.DELETE, "/api/users/{id}").hasAuthority("SCOPE_ROLE_ADMIN")
 
                     .requestMatchers(HttpMethod.GET, "/api/ingredients").authenticated()
                     .requestMatchers(HttpMethod.GET, "/api/ingredients/{id}").authenticated()

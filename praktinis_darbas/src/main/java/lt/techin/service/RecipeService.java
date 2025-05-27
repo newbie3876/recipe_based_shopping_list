@@ -1,31 +1,48 @@
 package lt.techin.service;
 
 import jakarta.transaction.Transactional;
+import lt.techin.dto.ingredientCategory.IngredientCategoryResponseDTO;
 import lt.techin.dto.recipe.RecipeRequestDTO;
 import lt.techin.dto.recipe.RecipeResponseDTO;
+import lt.techin.dto.recipeIngredient.RecipeIngredientRequestDTO;
+import lt.techin.dto.recipeIngredient.RecipeIngredientResponseDTO;
+import lt.techin.exceptions.RecipeNotFoundException;
+import lt.techin.exceptions.UserNotFoundException;
+import lt.techin.model.Ingredient;
 import lt.techin.model.Recipe;
+import lt.techin.model.RecipeIngredient;
 import lt.techin.model.User;
-import lt.techin.repository.RecipeCategoryRepository;
-import lt.techin.repository.RecipeRepository;
-import lt.techin.repository.UserRepository;
+import lt.techin.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
+import static lt.techin.security.SecurityUtils.getCurrentAuthenticatedUsername;
 
 @Service
 public class RecipeService {
   private final RecipeRepository recipeRepository;
   private final UserRepository userRepository;
   private final RecipeCategoryRepository recipeCategoryRepository;
+  private final UnitRepository unitRepository;
+  private final IngredientRepository ingredientRepository; // pridedam ingredientų repo
 
-  public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, RecipeCategoryRepository recipeCategoryRepository) {
+  @Autowired
+  public RecipeService(
+          RecipeRepository recipeRepository,
+          UserRepository userRepository,
+          RecipeCategoryRepository recipeCategoryRepository,
+          UnitRepository unitRepository,
+          IngredientRepository ingredientRepository) {
     this.recipeRepository = recipeRepository;
     this.userRepository = userRepository;
     this.recipeCategoryRepository = recipeCategoryRepository;
+    this.unitRepository = unitRepository;
+    this.ingredientRepository = ingredientRepository;
   }
 
   public List<RecipeResponseDTO> getAllUserRecipes() {
@@ -35,15 +52,20 @@ public class RecipeService {
             .toList();
   }
 
+  public Recipe getRecipeById(Long id) {
+    return recipeRepository.findById(id)
+            .orElseThrow(() -> new RecipeNotFoundException(id));
+  }
+
   @Transactional
   public void deleteRecipeById(long id) {
-    Recipe recipe = recipeRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Receptas nerastas su ID: " + id));
+    Recipe recipe = getRecipeById(id);
+    String currentUsername = getCurrentAuthenticatedUsername();
 
-    String currentUsername = getCurrentUsername();
     if (!recipe.getUser().getUsername().equals(currentUsername)) {
-      throw new AccessDeniedException("Negalima ištrinti kitų žmonių receptų.");
+      throw new AccessDeniedException("Negalima ištrinti kito vartotojo recepto.");
     }
+
     recipeRepository.delete(recipe);
   }
 
@@ -51,55 +73,132 @@ public class RecipeService {
   public Recipe saveRecipeFromDTO(RecipeRequestDTO dto, User user) {
     Recipe recipe = new Recipe();
     recipe.setUser(user);
-    applyRecipeDTOToEntity(recipe, dto);
+    applyRecipeDTOtoEntity(recipe, dto);
     return recipeRepository.save(recipe);
   }
 
   @Transactional
   public Recipe updateRecipeFromDTO(Long id, RecipeRequestDTO dto, User user) {
-    Recipe existingRecipe = recipeRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Receptas nerastas su ID: " + id));
+    Recipe recipe = getRecipeById(id);
 
-    if (!existingRecipe.getUser().equals(user)) {
+    if (!recipe.getUser().equals(user)) {
       throw new AccessDeniedException("Neturite teisės redaguoti šio recepto.");
     }
-    applyRecipeDTOToEntity(existingRecipe, dto);
-    return recipeRepository.save(existingRecipe);
+
+    applyRecipeDTOtoEntity(recipe, dto);
+    return recipeRepository.save(recipe);
   }
 
   public RecipeResponseDTO convertToResponseDTO(Recipe recipe) {
+    List<RecipeIngredientResponseDTO> ingredientDTOs = recipe.getRecipeIngredients().stream()
+            .map(this::convertRecipeIngredientToResponseDTO)
+            .toList();
+
     return new RecipeResponseDTO(
             recipe.getId(),
             recipe.getName(),
             recipe.getDescription(),
             recipe.getPortions(),
             recipe.getLink(),
-            recipe.getRecipeCategory() != null ? recipe.getRecipeCategory().getName() : null
+            recipe.getRecipeCategory() != null ? recipe.getRecipeCategory().getName() : null,
+            ingredientDTOs
     );
   }
 
-  private User getCurrentUser() {
-    String username = getCurrentUsername();
-    return userRepository.findByUsername(username)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Toks vartotojas nerastas: " + username));
+  private RecipeIngredientResponseDTO convertRecipeIngredientToResponseDTO(RecipeIngredient ri) {
+    Ingredient ingredient = ri.getIngredient();
+    IngredientCategoryResponseDTO categoryDTO = null;
+
+    if (ingredient.getIngredientCategory() != null) {
+      categoryDTO = new IngredientCategoryResponseDTO(
+              ingredient.getIngredientCategory().getId(),
+              ingredient.getIngredientCategory().getName()
+      );
+    }
+
+    return new RecipeIngredientResponseDTO(
+            ri.getId(),                 // RecipeIngredient ID
+            ingredient.getName(),       // Ingredient pavadinimas
+            categoryDTO,
+            ri.getQuantity(),
+            ri.getUnit() != null ? ri.getUnit().getId() : null,
+            ri.getUnit() != null ? ri.getUnit().getName() : null
+    );
   }
 
-  private void applyRecipeDTOToEntity(Recipe recipe, RecipeRequestDTO dto) {
-    recipe.setName(dto.getName());
-    recipe.setDescription(dto.getDescription());
-    recipe.setLink(dto.getLink());
-    recipe.setPortions(dto.getPortions());
+  private void applyRecipeDTOtoEntity(Recipe recipe, RecipeRequestDTO dto) {
+    recipe.setName(dto.name());
+    recipe.setDescription(dto.description());
+    recipe.setLink(dto.link());
+    recipe.setPortions(dto.portions());
 
-    if (dto.getCategoryId() != null) {
-      var category = recipeCategoryRepository.findById(dto.getCategoryId())
-              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Kategorija nerasta su ID: " + dto.getCategoryId()));
+    if (dto.categoryId() != null) {
+      var category = recipeCategoryRepository.findById(dto.categoryId())
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Kategorija nerasta"));
       recipe.setRecipeCategory(category);
     } else {
       recipe.setRecipeCategory(null);
     }
+
+    // Pašalinam recepto ingredientus, kurie nėra DTO sąraše
+    recipe.getRecipeIngredients().removeIf(existing ->
+            dto.ingredients().stream()
+                    .noneMatch(dtoIng -> dtoIng.id() != null && dtoIng.id().equals(existing.getId()))
+    );
+
+    for (var ingredientDTO : dto.ingredients()) {
+      RecipeIngredient ri;
+      if (ingredientDTO.id() != null) {
+        // Update existing
+        ri = recipe.getRecipeIngredients().stream()
+                .filter(i -> i.getId().equals(ingredientDTO.id()))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingredientas nerastas"));
+      } else {
+        ri = new RecipeIngredient();
+        ri.setRecipe(recipe);
+        recipe.getRecipeIngredients().add(ri);
+      }
+      updateRecipeIngredientFromDTO(ri, ingredientDTO);
+    }
   }
 
-  private String getCurrentUsername() {
-    return SecurityContextHolder.getContext().getAuthentication().getName();
+  private void updateRecipeIngredientFromDTO(RecipeIngredient ri, RecipeIngredientRequestDTO dto) {
+    Ingredient ingredient;
+
+    if (dto.ingredientId() != null) {
+      ingredient = ingredientRepository.findById(dto.ingredientId())
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingredientas nerastas"));
+    } else if (dto.ingredientName() != null && !dto.ingredientName().isBlank()) {
+      ingredient = new Ingredient();
+      ingredient.setName(dto.ingredientName());
+      ingredientRepository.save(ingredient);
+    } else {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IngredientId arba ingredientName būtinas");
+    }
+
+    ri.setIngredient(ingredient);
+    ri.setQuantity(dto.quantity());
+
+    if (dto.unitId() != null) {
+      var unit = unitRepository.findById(dto.unitId())
+              .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vienetas nerastas"));
+      ri.setUnit(unit);
+    } else {
+      ri.setUnit(null);
+    }
+  }
+
+  public List<RecipeIngredient> getRecipeIngredientsByRecipeId(Long recipeId) {
+    Recipe recipe = recipeRepository.findById(recipeId)
+            .orElseThrow(() -> new RecipeNotFoundException(recipeId));
+    return recipe.getRecipeIngredients();
+  }
+
+  private User getCurrentUser() {
+    String username = getCurrentAuthenticatedUsername();
+    return userRepository.findByUsername(username)
+            .orElseThrow(() -> new UserNotFoundException(username));
   }
 }
+

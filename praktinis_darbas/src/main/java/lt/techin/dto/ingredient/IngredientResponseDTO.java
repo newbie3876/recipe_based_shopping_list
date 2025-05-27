@@ -1,7 +1,9 @@
 package lt.techin.dto.ingredient;
 
+import lt.techin.dto.ingredientCategory.IngredientCategoryResponseDTO;
+
 public record IngredientResponseDTO(
-        long id,
+        Long id,
         String name,
         IngredientCategoryResponseDTO ingredientCategory) {
 }
