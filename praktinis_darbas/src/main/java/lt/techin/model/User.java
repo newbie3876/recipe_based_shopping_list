@@ -38,7 +38,7 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ShoppingList> shoppingLists = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   private List<Ingredient> ingredients = new ArrayList<>();
 
   public User(String password, String username, List<Role> roles) {

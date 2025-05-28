@@ -1,11 +1,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import modal_close_icon from "../assets/modalCloseIcon.webp";
-import { registerUser } from "../services/registrationService";
+import { registerAdmin } from "../services/registrationService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function RegistrationModal({ isOpen, onClose }) {
+function AdminRegistrationModal({ isOpen, onClose }) {
   const {
     register,
     handleSubmit,
@@ -20,7 +20,7 @@ function RegistrationModal({ isOpen, onClose }) {
     setServerError("");
 
     try {
-      await registerUser(data);
+      await registerAdmin(data);
       toast.success("Registracija sėkminga!");
       reset();
       onClose();
@@ -123,4 +123,4 @@ function RegistrationModal({ isOpen, onClose }) {
   );
 }
 
-export default RegistrationModal;
+export default AdminRegistrationModal;

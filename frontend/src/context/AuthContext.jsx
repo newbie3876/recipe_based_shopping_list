@@ -1,38 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import api, { setupInterceptors } from "../services/api";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [user, setUser] = useState(null);
-
-  // Fetch vartotojo duomenys pagal token
-  const fetchUser = async (token) => {
-    try {
-      const response = await axios.get("/api/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUser(response.data); // Nustatyti gautus vartotojo duomenis
-    } catch (error) {
-      console.error("Nepavyko gauti vartotojo duomenų:", error);
-      setUser(null); // Jei klaida, nustatyti null vartotoją
-    }
-  };
-
-  // Auto-login jei yra token ir gauti vartotojo duomenis
-  useEffect(() => {
-    if (token) {
-      fetchUser(token); // Užklausa į backend gauti vartotojo duomenis
-    }
-  }, [token]);
-
-  const login = (newToken) => {
-    localStorage.setItem("token", newToken);
-    setToken(newToken);
-  };
+  const [loading, setLoading] = useState(true);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -40,16 +14,50 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const isAuthenticated = !!token;
+  // Nustatome axios interceptorius vieną kartą
+  useEffect(() => {
+    setupInterceptors(logout);
+  }, []);
+
+  const fetchUser = async (token) => {
+    try {
+      const response = await api.get("/users/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(response.data);
+    } catch (error) {
+      console.error("Nepavyko gauti vartotojo duomenų:", error);
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Auto-login jei yra token
+  useEffect(() => {
+    if (token) {
+      fetchUser(token);
+    } else {
+      setLoading(false);
+    }
+  }, [token]);
+
+  const login = (newToken) => {
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
+    setLoading(true);
+    fetchUser(newToken);
+  };
+
+  const isAuthenticated = !!token && !!user;
 
   return (
     <AuthContext.Provider
-      value={{ token, user, login, logout, isAuthenticated }}
+      value={{ token, user, login, logout, isAuthenticated, loading }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook
 export const useAuth = () => useContext(AuthContext);
