@@ -4,7 +4,7 @@ import HomePage from "./components/HomePage";
 import { useAuth } from "./context/AuthContext";
 import RecipePage from "./components/recipePage/RecipePage";
 import { Routes, Route } from "react-router-dom";
-import ShoppingList from "./components/ShoppingList";
+import ShoppingList from "./components/shoppingListPage/ShoppingList";
 import ShoppingListPage from "./components/shoppingListPage/ShoppingListPage";
 import PhotoAlbum from "./components/PhotoAlbum";
 import Admin from "./components/Admin";
