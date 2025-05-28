@@ -38,6 +38,7 @@ function App() {
           <Route path="/shoppinglists" element={<ShoppingList />} />
           <Route path="/shoppinglists" element={<ShoppingListPage />} />
           <Route path="/photoalbum" element={<PhotoAlbum />} />
+
           {isAdmin && <Route path="/admin" element={<Admin />} />}
         </Routes>
         <ToastContainer position="top-center" autoClose={3000} />
