@@ -1,8 +1,14 @@
 package lt.techin.service;
 
 import lt.techin.model.Ingredient;
+import lt.techin.model.User;
 import lt.techin.repository.IngredientRepository;
+import lt.techin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +18,12 @@ import java.util.Optional;
 public class IngredientService {
 
   private final IngredientRepository ingredientRepository;
+  private final UserRepository userRepository;
 
   @Autowired
-  public IngredientService(IngredientRepository ingredientRepository) {
+  public IngredientService(IngredientRepository ingredientRepository, UserRepository userRepository) {
     this.ingredientRepository = ingredientRepository;
+    this.userRepository = userRepository;
   }
 
   public Optional<Ingredient> findIngredientById(Long id) {
@@ -38,8 +46,15 @@ public class IngredientService {
     return this.ingredientRepository.save(newIngredient);
   }
 
-//  public boolean existsIngredientByUserId(Long userId, String ingredientName) {
-//    return this.ingredientRepository.existsByUserId(userId, ingredientName);
-//  }
+  public List<Ingredient> findIngredientForCurrentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Jwt jwt = (Jwt) authentication.getPrincipal();
+    String username = jwt.getSubject();
+
+    User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    return ingredientRepository.findByUser(user);
+  }
 }
 

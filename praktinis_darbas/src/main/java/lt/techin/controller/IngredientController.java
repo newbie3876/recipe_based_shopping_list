@@ -42,7 +42,7 @@ public class IngredientController {
   @GetMapping("/ingredients")
   public ResponseEntity<List<IngredientResponseDTO>> getIngredients() {
 
-    List<Ingredient> ingredients = ingredientService.findAllIngredients();
+    List<Ingredient> ingredients = ingredientService.findIngredientForCurrentUser();
 
     return ResponseEntity.ok(IngredientMapper.toListDTO(ingredients));
   }
