@@ -11,9 +11,9 @@ export default function AllIngredients({userId}) {
       const fetchData = async () => {
         setLoading(true);
         try {
-          // fetchIngredients turėtų tiesiog grąžinti ingredientus, o ne pirkinių sąrašus
+          //fetchIngredients turėtų tiesiog grąžinti ingredientus, o ne pirkinių sąrašus
           const data = await fetchShoppingLists(userId);
-          // Jei fetchIngredients grąžina tiesiog ingredientų masyvą, nereikia daryti flatMap
+          //Jei fetchIngredients grąžina tiesiog ingredientų masyvą, nereikia daryti flatMap
   
           const allIngredients = data.flatMap(list =>
               list.items?.map(item => ({
@@ -37,6 +37,31 @@ export default function AllIngredients({userId}) {
   
       fetchData();
     }, [userId]);
+
+    
+
+    const fetchIngredients = async () => {
+    try {
+      const response = await fetch("/api/ingredients", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+ 
+      if (response.ok) {
+        const data = await response.json();
+        setIngredients(data);
+      } else {
+        console.error("Nepavyko gauti paveikslėlių");
+      }
+    } catch (error) {
+      console.error("Klaida gaunant paveikslėlius:", error);
+    }
+    };
+
+    useEffect(() => {
+    fetchIngredients();
+    }, []);
 
   return (
     <div>
