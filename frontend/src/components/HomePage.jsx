@@ -3,7 +3,7 @@ import soup4 from "../images/soup4.jpg";
 
 function HomePage() {
   return (
-    <div className="relative" style={{ height: 'calc(100vh - 92px)' }}>
+    <div className="relative min-h-screen w-full">
       <div className="absolute inset-0 z-0">
         <img src={soup4} alt="background with a plate full of soup" className="w-full h-full object-cover" />
       </div>

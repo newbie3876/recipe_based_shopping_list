@@ -134,46 +134,62 @@ function PhotoAlbum() {
   };
 
   return (
-    <div className=" bg-orange-200 min-h-screen">
-      <div className="flex flex-col gap-2 items-center">
-        <h2 className="text-xl font-bold text-center mt-4">
-          Paveikslėlio įkėlimas
-        </h2>
-        <input
-          type="text"
-          placeholder="Paveikslėlio pavadinimas"
-          value={imageName}
-          className=" border rounded p-2 mt-1"
-          onChange={handleNameChange}
-        />
-        <div className="flex flex-col items-center gap-4">
-          <label className="bg-orange-100 p-2 rounded-xl shadow-md max-w-xs cursor-pointer text-center block">
-            Pasirinkti nuotrauką
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="hidden"
-              ref={fileInputRef}
-            />
-          </label>
+    <div className="min-h-screen min-w-screen bg-gradient-to-t from-orange-100 via-transparent to-orange-300 pt-12">
+      <div className="max-w-3xl mx-auto bg-orange-100 rounded-xl p-8 text-center">
+        <div className="flex flex-col gap-2 items-center">
+          <h2 className="text-3xl font-bold text-black mb-4">
+            Pasidalinkite savo patiekalo nuotraukomis!
+          </h2>
+          <p className="text-lg text-black max-w-2xl mx-auto mb-5">
+            Suteikite savo patiekalui pavadinimą ir įkelkite jo nuotrauką iš savo įrenginio:
+          </p>
 
-          {fileName && (
-            <p className="text-sm text-gray-700">
-              Pasirinktas failas: <strong>{fileName}</strong>
-            </p>
-          )}
+          <div className="text-sm text-gray-600 mr-48">
+            Įveskite patiekalo pavadinimą:
+          </div>
+          <input
+            type="text"
+            placeholder="Patiekalo pavadinimas"
+            value={imageName}
+            onChange={handleNameChange}
+            className=" border-2 border-orange-200 w-100 rounded p-2 mb-5 bg-white hover:border-orange-400"
+          />
+          <div className="flex flex-col items-center gap-4">
+            <label className="bg-orange-300 w-50 p-2 rounded-md shadow-md max-w-xs cursor-pointer text-center block">
+              Pasirinkti nuotrauką
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+                ref={fileInputRef}
+              />
+            </label>
+
+            {fileName && (
+              <p className="text-sm text-gray-700">
+                Pasirinktas failas: <strong>{fileName}</strong>
+              </p>
+            )}
+          </div>
+
+          <button
+            onClick={uploadImage}
+            className="bg-orange-300 p-2 rounded-md w-20 shadow-md max-w-xs"
+          >
+            Įkelti
+          </button>
         </div>
-
-        <button
-          onClick={uploadImage}
-          className="bg-orange-100 p-2 rounded-xl shadow-md max-w-xs"
-        >
-          Įkelti
-        </button>
       </div>
-      <h3 className="text-xl font-bold text-center mt-20 ">
-        Paveikslėlių galerija
+
+      <h3 className="text-2xl font-bold text-black text-center mt-10 ">
+        Nuotraukų galerija
+        <div className="flex justify-center mt-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#f97316" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" >
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+          <circle cx="12" cy="13" r="4" />
+        </svg>
+      </div>
       </h3>
       <div className="flex flex-wrap gap-5 m-5 ">
         {images.map((image) => (
