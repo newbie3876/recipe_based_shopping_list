@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchShoppingLists, createShoppingList  } from "../../services/shoppingListService";
+import { fetchIngredients } from "../../services/ingredientService";
+//import { fetchShoppingLists, createShoppingList  } from "../../services/shoppingListService";
 
 export default function AddShoppingListModal({ userId, ingredient }) {
   const navigate = useNavigate();
@@ -19,30 +20,23 @@ export default function AddShoppingListModal({ userId, ingredient }) {
   };
 
   useEffect(() => {
-    if (!userId) return;
-
     const fetchData = async () => {
       setLoading(true);
       try {
-        // fetchIngredients turėtų tiesiog grąžinti ingredientus, o ne pirkinių sąrašus
-        const data = await fetchShoppingLists(userId);
-        // Jei fetchIngredients grąžina tiesiog ingredientų masyvą, nereikia daryti flatMap
+        const data = await fetchIngredients(); // Gaunami ingredientai iš API
 
-        const allIngredients = data.flatMap(list =>
-            list.items?.map(item => ({
-            ingredientId: item.ingredientId ?? item.id,
-            ingredientName: item.ingredientName,
-            quantity: item.quantity,
-            //unitId: item.unitId,
-            unit: item.unit,
-            ingredientCategory: item.ingredientCategory ?? []
-        })) || []
-      );
+        const formattedIngredients = data.map((item) => ({
+          //ingredientId: item.id, // ar `item.ingredientId` – priklauso nuo API struktūros
+          ingredientName: item.ingredientName,
+          quantity: item.quantity,
+          unitName: item.unitName,
+          //categoryName: item.categoryName || []
+        }));
 
-      setIngredients(allIngredients);
-
+        setIngredients(formattedIngredients);
       } catch (err) {
-        setError("Nepavyko gauti ingredientų.");
+        console.error(err);
+        setError("Nepavyko gauti ingredientų iš serverio.");
       } finally {
         setLoading(false);
       }
@@ -240,7 +234,7 @@ export default function AddShoppingListModal({ userId, ingredient }) {
             <div>
               <strong>{ingredient.ingredientName}</strong>{" "}
               <span style={{ color: "#555", fontSize: "0.9em" }}>
-                ({ingredient.quantity} {ingredient.unit})
+                ({ingredient.quantity} {ingredient.unitName})
               </span>
             </div>
           </label>

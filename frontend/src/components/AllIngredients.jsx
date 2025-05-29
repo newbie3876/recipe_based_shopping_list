@@ -17,11 +17,10 @@ export default function AllIngredients({userId}) {
 
           setIngredients(
             data.map(item => ({
-              //ingredientId: item.ingredientId ?? item.id,
               ingredientName: item.ingredientName,
               quantity: item.quantity,
-              unit: item.unit,
-              categoryNames: item.ingredientCategory?.map(cat => cat.categoryName) ?? []
+              unitName: item.unitName,
+              categoryName: item.categoryName
             }))
           );
   
@@ -54,12 +53,8 @@ export default function AllIngredients({userId}) {
               <td className="p-2 border border-orange-300">{i + 1}</td>
               <td className="p-2 border border-orange-300">{ing.ingredientName || "–"}</td>
               <td className="p-2 border border-orange-300">{ing.quantity || "–"}</td>
-              <td className="p-2 border border-orange-300">{ing.unit || "–"}</td>
-              <td className="p-2 border border-orange-300">
-                {Array.isArray(ing.categoryNames) && ing.categoryNames.length > 0
-                  ? ing.categoryNames.join(", ")
-                  : "–"}
-              </td>
+              <td className="p-2 border border-orange-300">{ing.unitName || "–"}</td>
+              <td className="p-2 border border-orange-300">{ing.categoryName || "–"}</td>
             </tr>
           ))}
         </tbody>

@@ -12,7 +12,7 @@ public class ShoppingListItem {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "shopping_list_id", nullable = false)
+  @JoinColumn(name = "shopping_list_id", nullable = true)
   private ShoppingList shoppingList;
 
   @ManyToOne(fetch = FetchType.LAZY)

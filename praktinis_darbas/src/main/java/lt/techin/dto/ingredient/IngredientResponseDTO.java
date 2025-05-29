@@ -1,13 +1,14 @@
 package lt.techin.dto.ingredient;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 public record IngredientResponseDTO(
 
-        //Long userId,
-        //Long ingredientId,
+        Long id,
         String ingredientName,
-        List<IngredientCategoryResponseDTO> ingredientCategory
+        String categoryName,
+        BigDecimal quantity,
+        String unitName
 
 ) {
 }

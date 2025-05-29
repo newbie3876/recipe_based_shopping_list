@@ -17,7 +17,7 @@ public class Ingredient {
   @JoinColumn(name = "ingredient_category_id", nullable = false)
   private IngredientCategory ingredientCategory;
 
-  @OneToMany(mappedBy = "ingredient")
+  @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ShoppingListItem> shoppingListItems;
 
   @ManyToOne(fetch = FetchType.LAZY) // Užtikrina teisingą ryšį
