@@ -47,52 +47,21 @@ export const fetchShoppingLists = async (userId) => {
 };
 
 
-// export const createShoppingList = async (ingredientData) => {
-//   try {
-//     const token = localStorage.getItem("token"); // 📌 Pasiimame JWT tokeną
-//     if (!token) throw new Error("❌ Nepavyko gauti autentifikacijos tokeno!");
 
-//     const response = await fetch(API_URL, {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify(ingredientData),
-//     });
+// services/shoppingListService.js
+export async function createShoppingList(newList, token) {
+  const response = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`, // jei reikia autentifikacijos
+    },
+    body: JSON.stringify(newList),
+  });
 
-//     if (!response.ok) {
-//       const errorData = await response.json();
-//       throw new Error(errorData.message || `Serverio klaida! Statusas: ${response.status}`);
-//     }
+  if (!response.ok) {
+    throw new Error("Nepavyko sukurti pirkinių krepšelio.");
+  }
 
-//     return await response.json(); // ✅ Grąžiname serverio atsakymą (ResponseDTO)
-//   } catch (err) {
-//     throw new Error(`❌ Klaida pridedant ingredientą: ${err.message}`);
-//   }
-// };
-
-export async function createShoppingList(data) {
-    try {
-        const token = localStorage.getItem(token);
-        
-        const response = await fetch('/api/shoppinglists', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(data),
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Serverio klaida: ${response.status} - ${errorText}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error("createShoppingList klaida:", error);
-        throw error;
-    }
+  return await response.json();
 }

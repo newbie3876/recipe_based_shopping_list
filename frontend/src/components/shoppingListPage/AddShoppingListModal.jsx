@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { fetchIngredients } from "../../services/ingredientService";
-//import { fetchShoppingLists, createShoppingList  } from "../../services/shoppingListService";
+import { createShoppingList } from "../../services/shoppingListService";
 
-export default function AddShoppingListModal({ userId, ingredient }) {
+export default function AddShoppingListModal({ userId }) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [createdAt, setCreatedAt] = useState("");
@@ -26,11 +26,11 @@ export default function AddShoppingListModal({ userId, ingredient }) {
         const data = await fetchIngredients(); // Gaunami ingredientai iš API
 
         const formattedIngredients = data.map((item) => ({
-          //ingredientId: item.id, // ar `item.ingredientId` – priklauso nuo API struktūros
+          ingredientId: item.id, // ar `item.ingredientId` – priklauso nuo API struktūros
           ingredientName: item.ingredientName,
           quantity: item.quantity,
           unitName: item.unitName,
-          //categoryName: item.categoryName || []
+          categoryName: item.categoryName || []
         }));
 
         setIngredients(formattedIngredients);
@@ -45,110 +45,101 @@ export default function AddShoppingListModal({ userId, ingredient }) {
     fetchData();
   }, [userId]);
 
-  // Funkcija kelių ingredientų pasirinkimui
-//   const handleAddIngredient = (e) => {
-//     const selectedOptions = Array.from(e.target.selectedOptions).map((option) => Number(option.value));
+  const handleAddIngredient = (e, ingredient) => {
+    const ingredientId = ingredient.ingredientId;
+    let updatedSelectedIds = [];
 
-//     const selectedIngredients = ingredients.filter((ingredient) => selectedOptions.includes(ingredient.ingredientId));
+    if (e.target.checked) {
+      updatedSelectedIds = [...selectedIds, ingredientId];
+    } else {
+      updatedSelectedIds = selectedIds.filter((id) => id !== ingredientId);
+    }
 
-//     setIndependentIngredients(selectedIngredients);
-//     setSelectedIds(selectedOptions);
-//   };
-
-    const handleAddIngredient = (e, ingredient) => {
-  const ingredientId = ingredient.ingredientId;
-  let updatedSelectedIds = [];
-
-  if (e.target.checked) {
-    updatedSelectedIds = [...selectedIds, ingredientId];
-  } else {
-    updatedSelectedIds = selectedIds.filter((id) => id !== ingredientId);
-  }
-
-  const updatedSelectedIngredients = ingredients.filter((ing) =>
-    updatedSelectedIds.includes(ing.ingredientId)
-  );
-
-  setSelectedIds(updatedSelectedIds);
-  setIndependentIngredients(updatedSelectedIngredients);
-    };
-
-  const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
-
-  try {
-    const token = localStorage.getItem('authToken'); // arba iš context / redux
-      console.log('Token:', token);
-        if (!token) {
-            throw new Error("Neprisijungta: trūksta autentifikacijos žetono");
-        }
-
-
-    const validItems = independentIngredients.filter(i =>
-      ingredients.some(ing => ing.ingredientId === i.ingredientId)
+    const updatedSelectedIngredients = ingredients.filter((ing) =>
+      updatedSelectedIds.includes(ing.ingredientId)
     );
 
-    if (validItems.length !== independentIngredients.length) {
-      setError("Kai kurie ingredientai turi netinkamą ID – prašome pasirinkti iš naujo.");
+    setSelectedIds(updatedSelectedIds);
+    setIndependentIngredients(updatedSelectedIngredients);
+  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+
+  //   const selectedIngredientsDetailed = ingredients
+  //     .filter((ingredient) => selectedIds.includes(ingredient.ingredientId))
+  //     .map((ingredient) => ({
+  //       ingredientId: ingredient.ingredientId,
+  //       ingredientName: ingredient.ingredientName,
+  //       quantity: ingredient.quantity,
+  //       unitName: ingredient.unitName,
+  //       categoryName: ingredient.categoryName || "–",
+  //     }));
+
+  //   if (selectedIngredientsDetailed.length === 0) {
+  //     setError("Pasirinkite bent vieną ingredientą.");
+  //     return;
+  //   }
+
+  //   // Saugojimas į localStorage pagal userId
+  //   const allData = JSON.parse(localStorage.getItem("independentIngredientsByUser") || "{}");
+  //   allData[userId] = selectedIngredientsDetailed;
+  //   localStorage.setItem("independentIngredientsByUser", JSON.stringify(allData));
+
+  //   // Navigavimas į pirkinių krepšelio puslapį
+  //   navigate("/shoppinglist");
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    if (!name.trim()) {
+      setError("Įveskite pirkinių krepšelio pavadinimą.");
       setLoading(false);
       return;
     }
 
-    const items = validItems.map((i) => ({
-      ingredientId: Number(i.ingredientId),
-      ingredientName: i.ingredientName,
-      quantity: Number(i.quantity) || 1,
-      unit: i.unit,
-      ingredientCategory: i.ingredientCategory ?? []
-    }));
+    const selectedIngredientsDetailed = ingredients
+      .filter((ingredient) => selectedIds.includes(ingredient.ingredientId))
+      .map((ingredient) => ({
+        ingredientId: ingredient.ingredientId,
+        ingredientName: ingredient.ingredientName,
+        quantity: ingredient.quantity,
+        unitName: ingredient.unitName,
+        categoryName: ingredient.categoryName || "–",
+      }));
 
-    // Saugojam pasirinktus NE receptų ingredientus
-    const existing = JSON.parse(localStorage.getItem("independentIngredientsByUser") || "{}");
-    existing[userId] = items;
-    localStorage.setItem("independentIngredientsByUser", JSON.stringify(existing));
+    if (selectedIngredientsDetailed.length === 0) {
+      setError("Pasirinkite bent vieną ingredientą.");
+      setLoading(false);
+      return;
+    }
 
-    // Siunčiam į serverį
-    // await createShoppingList({
-    //   userId,
-    //   createdAt: new Date().toISOString(),
-    //   items,
-    // }, token);
+    const token = localStorage.getItem("authToken"); // jei naudoji JWT
+    if (!token) {
+      setError("Reikia būti prisijungus.");
+      setLoading(false);
+      return;
+    }
 
     const newList = {
-      id: Date.now(), // paprastas unikalus ID
       name,
       createdAt: new Date().toISOString(),
-      items: validItems,
       userId,
+      items: selectedIngredientsDetailed,
     };
 
-    // Gauti visą objektą iš localStorage
-    const allData = JSON.parse(localStorage.getItem("shoppingListsByUser") || "{}");
-
-    // Patikrinti ar jau yra sąrašų šiam vartotojui
-    const userLists = allData[userId] || [];
-
-    // Pridėti naują sąrašą
-    userLists.push(newList);
-
-    // Atnaujinti pagrindinį objektą
-    allData[userId] = userLists;
-
-    // Išsaugoti atgal
-    localStorage.setItem("shoppingListsByUser", JSON.stringify(allData));
-
-
-    // Perkeliame į ShoppingList
-    navigate("/shoppinglist");
-
-  } catch (err) {
-    console.error("❌ Klaida kuriant prekių krepšelį:", err);
-    setError("Nepavyko sukurti prekių krepšelio.");
-  } finally {
-    setLoading(false);
-  }
+    try {
+      await createShoppingList(newList, token);
+      navigate("/shoppinglist");
+    } catch (err) {
+      console.error("❌ Klaida:", err);
+      setError("Nepavyko išsaugoti krepšelio į duomenų bazę.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const clearForm = () => {
@@ -193,74 +184,40 @@ export default function AddShoppingListModal({ userId, ingredient }) {
           </select>
 
           <label className="block text-center font-medium">Pasirinkite ingredientus:</label>
-          {/* <select
-            multiple
-            onChange={handleAddIngredient}
-            className="block w-full p-2 border rounded mt-2"
-            style={{ maxHeight: "150px", overflowY: "auto" }}
-          >
-            {ingredients.map((ingredient, index) => (
-              <option key={ingredient.ingredientId || index} value={ingredient.ingredientId}>
-                {ingredient.ingredientName} - {ingredient.quantity} {ingredient.unit}
-              </option>
-            ))}
-          </select> */}
-
           <div
-        style={{
-          maxHeight: "100px",
-          overflowY: "auto",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-          padding: "10px",
-        }}
-      >
-        {ingredients.map((ingredient) => (
-          <label
-            key={ingredient.ingredientId}
             style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "8px",
-              cursor: "pointer",
+              maxHeight: "100px",
+              overflowY: "auto",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              padding: "10px",
             }}
           >
-            <input
-              type="checkbox"
-              checked={selectedIds.includes(ingredient.ingredientId)}
-              onChange={(e) => handleAddIngredient(e, ingredient)}
-              style={{ marginRight: "10px" }}
-            />
-            <div>
-              <strong>{ingredient.ingredientName}</strong>{" "}
-              <span style={{ color: "#555", fontSize: "0.9em" }}>
-                ({ingredient.quantity} {ingredient.unitName})
-              </span>
-            </div>
-          </label>
-        ))}
-      </div>
-
-
-          {/* Pasirinktų ingredientų lentelė */}
-            {/* <table className="w-full border border-orange-300 text-center mb-4">
-            <tbody>
-            {independentIngredients.map((ing, i) => (
-                <tr key={ing.ingredientId || i}>
-                    <td className="p-2 border border-orange-300">{i + 1}</td>
-                    <td className="p-2 border border-orange-300">{ing.ingredientName || "–"}</td>
-                    <td className="p-2 border border-orange-300">{ing.quantity ?? 1}</td>
-                    <td className="p-2 border border-orange-300">{ing.unit || "–"}</td>
-                    <td className="p-2 border border-orange-300">
-                        {Array.isArray(ing.ingredientCategory) && ing.ingredientCategory.length > 0
-                        ? ing.ingredientCategory.map(cat => cat.categoryName).join(", ")
-                        : "–"}
-                    </td>
-                </tr>
+            {ingredients.map((ingredient) => (
+              <label
+                key={ingredient.ingredientId}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginBottom: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedIds.includes(ingredient.ingredientId)}
+                  onChange={(e) => handleAddIngredient(e, ingredient)}
+                  style={{ marginRight: "10px" }}
+                />
+                <div>
+                  <strong>{ingredient.ingredientName}</strong>{" "}
+                  <span style={{ color: "#555", fontSize: "0.9em" }}>
+                    ({ingredient.quantity} {ingredient.unitName})
+                  </span>
+                </div>
+              </label>
             ))}
-            </tbody>
-            </table> */}
-
+          </div>
           <div className="flex gap-[1rem] justify-center">
             <button
               type="button"

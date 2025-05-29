@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { fetchShoppingLists } from "../services/shoppingListService";
+import { fetchIngredients } from "../services/ingredientService";
 import { useNavigate } from "react-router-dom";
 
 const ShoppingList = ({ userId }) => {
@@ -11,7 +11,7 @@ const ShoppingList = ({ userId }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   
-
+  
   // Receptų ingredientai iš localStorage
   // useEffect(() => {
   //   const saved = localStorage.getItem("selectedIngredients");
@@ -23,6 +23,7 @@ const ShoppingList = ({ userId }) => {
   //     }
   //   }
   // }, []);
+  
 
   // Kiti ingredientai iš localStorage (independent)
   useEffect(() => {
@@ -45,7 +46,7 @@ const ShoppingList = ({ userId }) => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const data = await fetchShoppingLists(userId);
+      const data = await fetchIngredients(userId);
       setShoppingLists(data);
     } catch (err) {
       setError(err.message);
@@ -98,10 +99,11 @@ const ShoppingList = ({ userId }) => {
                     <div className="p-2">{i + 1}</div>
                     <div className="p-2">{ing.ingredientName}</div>
                     <div className="p-2">{ing.quantity}</div>
-                    <div className="p-2">{ing.unit}</div>
-                    <div className="p-2">
+                    <div className="p-2">{ing.unitName}</div>
+                    <div className="p-2">{ing.categoryName}</div>
+                    {/* <div className="p-2">
                       {ing.ingredientCategory?.map(cat => cat.categoryName).join(", ") || "–"}
-                    </div>
+                    </div> */}
                     <div className="p-2">✘</div>
                   </div>
                 ))
@@ -126,13 +128,9 @@ const ShoppingList = ({ userId }) => {
                       <tr key={ing.ingredientId || i} className="grid grid-cols-6 border border-orange-300 bg-orange-50 text-center">
                         <td className="p-2 border-orange-300">{i + 1}</td>
                         <td className="p-2 border-orange-300">{ing.ingredientName || "–"}</td>
-                        <td className="p-2 border-orange-300">{ing.quantity ?? 1}</td>
-                        <td className="p-2 border-orange-300">{ing.unit || "–"}</td>
-                        <td className="p-2 border-orange-300">
-                          {Array.isArray(ing.ingredientCategory) && ing.ingredientCategory.length > 0
-                            ? ing.ingredientCategory.map(cat => cat.categoryName).join(", ")
-                            : "–"}
-                        </td>
+                        <td className="p-2 border-orange-300">{ing.quantity}</td>
+                        <td className="p-2 border-orange-300">{ing.unitName || "–"}</td>
+                        <td className="p-2 border-orange-300">{ing.categoryName || "–"}</td>
                         <td className="p-2 border-orange-300">✘</td>
                       </tr>
                     ))}

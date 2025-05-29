@@ -34,6 +34,7 @@ public class ShoppingListMapper {
     return shoppingList;
   }
 
+
   public static ShoppingListResponseDTO toDTO(ShoppingList shoppingList) {
     List<ShoppingListItemResponseDTO> items = shoppingList.getItems() != null
             ? shoppingList.getItems().stream()

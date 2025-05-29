@@ -32,6 +32,8 @@ public class ShoppingListController {
     ShoppingListResponseDTO createdShoppingList = shoppingListService.createShoppingList(shoppingListRequestDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdShoppingList);
   }
+
+
 }
 
 //  @GetMapping("/shoppinglists")

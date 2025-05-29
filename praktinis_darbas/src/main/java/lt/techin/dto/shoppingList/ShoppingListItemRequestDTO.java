@@ -1,10 +1,8 @@
 package lt.techin.dto.shoppingList;
 
 import jakarta.validation.constraints.NotNull;
-import lt.techin.dto.ingredient.IngredientCategoryRequestDTO;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public record ShoppingListItemRequestDTO(
 
@@ -12,11 +10,11 @@ public record ShoppingListItemRequestDTO(
         Long ingredientId,
         @NotNull
         BigDecimal quantity,
+//        @NotNull
+//        String unit,
         @NotNull
-        String unit,
-        @NotNull
-        Long unitId,
-        List<IngredientCategoryRequestDTO> ingredientCategory
+        Long unitId
+//        List<IngredientCategoryRequestDTO> ingredientCategory
 
 ) {
 }

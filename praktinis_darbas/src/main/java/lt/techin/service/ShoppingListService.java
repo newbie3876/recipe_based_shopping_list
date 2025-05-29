@@ -78,4 +78,5 @@ public class ShoppingListService {
     return ShoppingListMapper.toDTO(savedShoppingList);
   }
 
+
 }

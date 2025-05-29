@@ -26,6 +26,7 @@ export const addIngredient = async (ingredientData) => {
 };
 
 
+
 export const fetchIngredients = async () => {
   try {
     const token = localStorage.getItem("token");
