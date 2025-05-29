@@ -1,11 +1,13 @@
 package lt.techin.dto.ingredient;
 
+import java.util.List;
+
 public record IngredientResponseDTO(
 
         //Long userId,
-        Long ingredientId,
+        //Long ingredientId,
         String ingredientName,
-        IngredientCategoryResponseDTO ingredientCategory
+        List<IngredientCategoryResponseDTO> ingredientCategory
 
 ) {
 }

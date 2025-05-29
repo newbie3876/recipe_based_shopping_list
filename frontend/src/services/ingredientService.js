@@ -26,24 +26,28 @@ export const addIngredient = async (ingredientData) => {
 };
 
 
-export const fetchIngredients = async (userId) => {
+export const fetchIngredients = async () => {
   try {
-    const token = localStorage.getItem("token"); // 🔹 Pasiimame JWT tokeną iš localStorage
-    if (!token) throw new Error("❌ Nepavyko gauti autentifikacijos tokeno!");
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw new Error("❌ Nepavyko gauti autentifikacijos tokeno!");
+    }
 
-    const response = await fetch(`${API_URL}/${userId}`, {
-      method: "GET", // 🔹 Nurodome metodą
+    const response = await fetch(API_URL, {
+      method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`, // 🔹 Pridedame autentifikacijos header
-        "Content-Type": "application/json", // 🔹 Nurodome turinio tipą
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      credentials: "include", // 🔹 Jei backend'as naudoja session cookies
     });
 
-    if (!response.ok) throw new Error(`HTTP klaida! Statusas: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`HTTP klaida! Statusas: ${response.status}`);
+    }
 
-    return await response.json(); // 🔹 Parsisiunčiame JSON duomenis
+    const data = await response.json();
+    return data;
   } catch (err) {
-    throw new Error(`❌ Klaida gaunant pirkinių sąrašus: ${err.message}`);
+    throw new Error(`❌ Klaida gaunant ingredientus: ${err.message}`);
   }
 };

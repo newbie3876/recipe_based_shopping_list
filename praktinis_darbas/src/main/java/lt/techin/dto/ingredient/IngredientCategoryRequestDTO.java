@@ -10,7 +10,6 @@ public record IngredientCategoryRequestDTO(
 
         @NotNull
         @Size(max = 150)
-        //@Column(nullable = false, length = 150)
         String categoryName
 
 ) {

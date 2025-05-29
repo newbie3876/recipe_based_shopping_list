@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { fetchShoppingLists } from "../services/shoppingListService";
+import { fetchIngredients } from "../services/ingredientService";
 
 export default function AllIngredients({userId}) {
-  const [independentIngredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
       if (!userId) return;
@@ -11,22 +12,18 @@ export default function AllIngredients({userId}) {
       const fetchData = async () => {
         setLoading(true);
         try {
-          //fetchIngredients turėtų tiesiog grąžinti ingredientus, o ne pirkinių sąrašus
-          const data = await fetchShoppingLists(userId);
-          //Jei fetchIngredients grąžina tiesiog ingredientų masyvą, nereikia daryti flatMap
-  
-          const allIngredients = data.flatMap(list =>
-              list.items?.map(item => ({
-              ingredientId: item.ingredientId ?? item.id,
+
+          const data = await fetchIngredients(userId);
+
+          setIngredients(
+            data.map(item => ({
+              //ingredientId: item.ingredientId ?? item.id,
               ingredientName: item.ingredientName,
               quantity: item.quantity,
-              //unitId: item.unitId,
               unit: item.unit,
-              ingredientCategory: item.ingredientCategory ?? []
-          })) || []
-        );
-  
-        setIngredients(allIngredients);
+              categoryNames: item.ingredientCategory?.map(cat => cat.categoryName) ?? []
+            }))
+          );
   
         } catch (err) {
           setError("Nepavyko gauti ingredientų.");
@@ -37,31 +34,6 @@ export default function AllIngredients({userId}) {
   
       fetchData();
     }, [userId]);
-
-    
-
-    const fetchIngredients = async () => {
-    try {
-      const response = await fetch("/api/ingredients", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
- 
-      if (response.ok) {
-        const data = await response.json();
-        setIngredients(data);
-      } else {
-        console.error("Nepavyko gauti paveikslėlių");
-      }
-    } catch (error) {
-      console.error("Klaida gaunant paveikslėlius:", error);
-    }
-    };
-
-    useEffect(() => {
-    fetchIngredients();
-    }, []);
 
   return (
     <div>
@@ -77,15 +49,15 @@ export default function AllIngredients({userId}) {
           </tr>
         </thead>
         <tbody>
-          {independentIngredients.map((ing, i) => (
+          {ingredients.map((ing, i) => (
             <tr key={ing.ingredientId || i}>
               <td className="p-2 border border-orange-300">{i + 1}</td>
               <td className="p-2 border border-orange-300">{ing.ingredientName || "–"}</td>
-              <td className="p-2 border border-orange-300">{ing.quantity ?? 1}</td>
+              <td className="p-2 border border-orange-300">{ing.quantity || "–"}</td>
               <td className="p-2 border border-orange-300">{ing.unit || "–"}</td>
               <td className="p-2 border border-orange-300">
-                {Array.isArray(ing.ingredientCategory) && ing.ingredientCategory.length > 0
-                  ? ing.ingredientCategory.map(cat => cat.categoryName).join(", ")
+                {Array.isArray(ing.categoryNames) && ing.categoryNames.length > 0
+                  ? ing.categoryNames.join(", ")
                   : "–"}
               </td>
             </tr>

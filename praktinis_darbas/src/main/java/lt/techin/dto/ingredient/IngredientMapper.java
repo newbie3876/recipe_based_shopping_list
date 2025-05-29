@@ -35,76 +35,40 @@ public class IngredientMapper {
 
     return ingredient;
   }
-//  public static Ingredient toIngredient(IngredientRequestDTO ingredientRequestDTO,
-//                                        IngredientCategory ingredientCategory,
-//                                        User user) {
-//    Ingredient ingredient = new Ingredient();
-//
-//    //ingredient.setName(ingredientRequestDTO.ingredientName());
-//    //ingredient.setIngredientCategory(ingredientCategory);
-//    ingredient.setShoppingListItems(new ShoppingListItem(
-//            ingredientRequestDTO.ingredientCategory(),
-//            ingredientRequestDTO.ingredientName(),
-//            ingredientRequestDTO.quantity(),
-//            ingredientRequestDTO.unitId()
-//
-//    ));
-//    //ingredient.setShoppingListItems(ingredientRequestDTO.unitId());
-//    //ingredient.setIngredientCategory(ingredientCategory);
-//    ingredient.setUser(user);
-//
-//    return ingredient;
-//  }
 
   public static IngredientResponseDTO toDTO(Ingredient ingredient) {
+    List<IngredientCategoryResponseDTO> categoryDTOs = ingredient.getIngredientCategory() != null
+            ? List.of(new IngredientCategoryResponseDTO(
+            ingredient.getIngredientCategory().getId(),
+            ingredient.getIngredientCategory().getName()
+    ))
+            : List.of(); // tuščias sąrašas, jei kategorijos nėra
+
     return new IngredientResponseDTO(
-            ingredient.getId(),
+            //ingredient.getId(),
             ingredient.getName(),
-            ingredient.getIngredientCategory() != null ?
-                    new IngredientCategoryResponseDTO(
-                            ingredient.getIngredientCategory().getId(), // ID pridedamas, jei būtinas
-                            ingredient.getIngredientCategory().getName()
-                    )
-                    : null // Jei nėra kategorijos, grąžinama null
+            categoryDTOs
     );
   }
 
-//  public static IngredientResponseDTO toDTO(Ingredient ingredient) {
-//    return new IngredientResponseDTO(
-//            ingredient.getId(),
-//            ingredient.getName(),
-//            new IngredientCategoryResponseDTO(
-//                    //ingredient.getIngredientCategory().getId(),
-//                    ingredient.getIngredientCategory().getName()
-//            )
-//    );
-//  }
-
-
   public static List<IngredientResponseDTO> toListDTO(List<Ingredient> ingredients) {
     return ingredients.stream()
-            .map(ingredient -> new IngredientResponseDTO(
-                    ingredient.getId(),
-                    ingredient.getName(),
-                    ingredient.getIngredientCategory() != null ?
-                            new IngredientCategoryResponseDTO(
-                                    ingredient.getIngredientCategory().getId(),
-                                    ingredient.getIngredientCategory().getName()
-                            )
-                            : null
-            )).toList();
+            .map(ingredient -> {
+              List<IngredientCategoryResponseDTO> categoryDTOs = ingredient.getIngredientCategory() != null
+                      ? List.of(new IngredientCategoryResponseDTO(
+                      ingredient.getIngredientCategory().getId(),
+                      ingredient.getIngredientCategory().getName()
+              ))
+                      : List.of(); // tuščias sąrašas, jei nėra kategorijos
+
+              return new IngredientResponseDTO(
+                      //ingredient.getId(),
+                      ingredient.getName(),
+                      categoryDTOs
+              );
+            })
+            .toList();
   }
-//  public static List<IngredientResponseDTO> toListDTO(List<Ingredient> ingredients) {
-//    return ingredients.stream()
-//            .map(ingredient -> new IngredientResponseDTO(
-//                    ingredient.getId(),
-//                    ingredient.getName(),
-//                    new IngredientCategoryResponseDTO(
-//                            //ingredient.getIngredientCategory().getId(),
-//                            ingredient.getIngredientCategory().getName()
-//                    )
-//            )).toList();
-//  }
 
 }
 
