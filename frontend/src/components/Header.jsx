@@ -3,10 +3,17 @@ import { NavLink } from "react-router-dom";
 import dinner from "../assets/dinner.svg";
 
 function Header() {
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated, user } = useAuth();
+
+  // Čia deklaruojam isAdmin
+  const isAdmin =
+    user?.roles?.some((role) => role?.name === "ROLE_ADMIN") || false;
 
   const getNavLinkClass = (isActive) =>
     isActive ? "underline font-semibold" : "hover:underline";
+
+  // const getNavLinkClass = (isActive) =>
+  //   isActive ? "underline font-semibold" : "hover:underline";
 
   return (
     <header className="p-4 bg-orange-300 flex items-center">
@@ -57,6 +64,15 @@ function Header() {
           >
             Foto albumas
           </NavLink>
+
+          {user && isAdmin && (
+            <NavLink
+              to="/admin"
+              className={({ isActive }) => getNavLinkClass(isActive)}
+            >
+              Admin
+            </NavLink>
+          )}
         </nav>
       )}
 

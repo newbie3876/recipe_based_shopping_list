@@ -37,9 +37,14 @@ public class ShoppingList {
     }
   }
 
+//  @Column(length = 255)
+//  private String name;
+
   @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<ShoppingListItem> items = new ArrayList<>();
 
+  //  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//  private final List<Ingredient> ingredients = new ArrayList<>();
   public ShoppingList() {
   }
 
@@ -49,7 +54,6 @@ public class ShoppingList {
     this.createdAt = createdAt;
     this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
   }
-
 
   public Long getId() {
     return id;

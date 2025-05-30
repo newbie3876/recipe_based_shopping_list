@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/recipes";
+const API_BASE = "http://localhost:8080";
 
 function getToken() {
     const token = localStorage.getItem("token");
@@ -7,7 +7,7 @@ function getToken() {
 }
 
 export async function fetchRecipes() {
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${API_BASE}/api/recipes`, {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -17,7 +17,7 @@ export async function fetchRecipes() {
 }
 
 export async function createRecipe(recipeData) {
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${API_BASE}/api/recipes`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export async function createRecipe(recipeData) {
 }
 
 export async function updateRecipe(id, updatedData) {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await fetch(`${API_BASE}/api/recipes/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export async function updateRecipe(id, updatedData) {
 }
 
 export async function deleteRecipeById(id) {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await fetch(`${API_BASE}/api/recipes/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${getToken()}`
@@ -52,3 +52,20 @@ export async function deleteRecipeById(id) {
     if (!res.ok) throw new Error("Nepavyko ištrinti recepto.");
     return true;
 }
+
+export async function addIngredientToRecipe({ recipeId, name, quantity, unitId, ingredientCategoryId }) {
+    const response = await fetch(`${API_BASE}/api/ingredients`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ recipeId, name, quantity, unitId, ingredientCategoryId }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Nepavyko pridėti ingrediento");
+    }
+    return await response.json();
+}
+

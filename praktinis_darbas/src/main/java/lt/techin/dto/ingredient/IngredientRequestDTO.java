@@ -1,12 +1,14 @@
 package lt.techin.dto.ingredient;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
 public record IngredientRequestDTO(
-
+        //Long id,
+        //@NotBlank
         @NotNull
         @Size(min = 2, max = 250)
         String ingredientName,
@@ -15,7 +17,5 @@ public record IngredientRequestDTO(
         @NotNull
         BigDecimal quantity,
         @NotNull
-        Long unitId
-
-) {
+        Long unitId) {
 }

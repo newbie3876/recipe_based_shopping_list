@@ -1,5 +1,6 @@
 package lt.techin.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -16,12 +17,8 @@ public class RecipeCategory {
   private String name;
 
   @OneToMany(mappedBy = "recipeCategory")
-  private List<Recipe> recipes = new ArrayList<>();
-
-  public RecipeCategory(String name, List<Recipe> recipes) {
-    this.name = name;
-    this.recipes = recipes;
-  }
+  @JsonIgnoreProperties("recipeCategory")
+  private final List<Recipe> recipes = new ArrayList<>();
 
   public RecipeCategory(String name) {
     this.name = name;
@@ -40,13 +37,5 @@ public class RecipeCategory {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public List<Recipe> getRecipes() {
-    return recipes;
-  }
-
-  public void setRecipes(List<Recipe> recipes) {
-    this.recipes = recipes;
   }
 }

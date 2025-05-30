@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createRecipe } from "../../api/recipePageMethods";
+import { createRecipe } from "../../services/recipePageMethods";
 
 export default function AddRecipeModal({ onClose, onRecipeAdded }) {
     const [name, setName] = useState("");
@@ -7,6 +7,7 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
     const [portions, setPortions] = useState("");
     const [link, setLink] = useState("");
     const [categoryId, setCategoryId] = useState("");
+    const [recipeId, setRecipeId] = useState(null);
 
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -17,8 +18,17 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
         setError(null);
 
         const portionsNumber = parseInt(portions, 10);
+        const categoryIdNum = parseInt(categoryId, 10);
+
         if(isNaN(portionsNumber) || portionsNumber <= 0){
             alert("Įveskite bent vieną porciją.");
+            setLoading(false);
+            return;
+        }
+
+
+        if (isNaN(categoryIdNum)) {
+            alert("Pasirinkite kategoriją.");
             setLoading(false);
             return;
         }
@@ -27,13 +37,13 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
             const newRecipe = await createRecipe({
                 name,
                 description,
-                categoryId: parseInt(categoryId, 10),
+                categoryId: categoryIdNum,
                 portions: portionsNumber,
                 link,
             });
-
-            onRecipeAdded(newRecipe); // iš RecipePage – įtraukia į sąrašą
-            onClose(); // uždaro modalą
+            setRecipeId(newRecipe.id);
+            onRecipeAdded(newRecipe);
+            clearForm();
         } catch (err) {
             console.error("Klaida kuriant receptą:", err);
             setError("Nepavyko sukurti recepto.");

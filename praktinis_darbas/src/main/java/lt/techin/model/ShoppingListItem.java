@@ -1,6 +1,8 @@
 package lt.techin.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
@@ -15,15 +17,16 @@ public class ShoppingListItem {
   @JoinColumn(name = "shopping_list_id", nullable = true)
   private ShoppingList shoppingList;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "ingredient_id", nullable = false)
   private Ingredient ingredient;
 
-
-  //@Min(value = 1, message = "Quantity must be greater than zero.")
+  @DecimalMin(value = "1.0", message = "Kiekis turi būti ne mažesnis nei 1.")
   @Column(nullable = false)
   private BigDecimal quantity;
 
+  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "unit_id", nullable = false)
   private Unit unit;

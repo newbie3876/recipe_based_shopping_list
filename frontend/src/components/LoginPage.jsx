@@ -1,14 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../context/AuthContext";
 import dinner from "../assets/dinner.svg";
-import { loginUser } from "../services/authService";
 import RegistrationModal from "./RegistrationModal";
+import { useLoginService } from "../services/loginService";
 
 function LoginPage() {
-  const { login } = useAuth();
-
   const {
     register,
     handleSubmit,
@@ -19,60 +16,53 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
-  const onSubmit = async ({ username, password }) => {
-    setLoading(true);
+  const { handleLogin } = useLoginService();
 
-    try {
-      const token = await loginUser(username, password); // Naudojame service
-      login(token);
-    } catch (error) {
-      setLoginError(error.message);
-    } finally {
-      setLoading(false);
-    }
+  const onSubmit = ({ username, password }) => {
+    handleLogin(username, password, setLoading, setLoginError);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-orange-200">
-      <div className="flex flex-col items-center">
-        <h1 className="text-xl font-bold text-center mb-3">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-l from-orange-300 via-orange-200 to-orange-300">
+      <div className="flex flex-col items-center mb-12">
+        <h1 className="text-2xl font-light text-center mb-3 max-w-md">
           Sveiki atvykę į paprastesnį apsipirkimo pasaulį.
         </h1>
         <img
           src={dinner}
           alt="dinner plate"
-          className="w-20 mb-3 animate-spin"
+          className="w-20 mt-5 animate-spin"
           style={{ animationDuration: "6s" }}
         />
       </div>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-orange-100 p-6 rounded-xl shadow-md space-y-4 w-full max-w-sm"
+        className="bg-orange-100 p-8 rounded-lg shadow-sm space-y-6 w-full max-w-sm"
         noValidate
       >
-        <h2 className="text-xl font-bold text-center">Prisijungti</h2>
+        <h2 className="text-xl font-medium text-gray-800 text-center">Prisijungti</h2>
 
         {loginError && (
-          <p className="text-red-500 text-sm text-center">{loginError}</p>
+          <p className="text-red-500 text-sm text-center bg-red-100 border p-2 rounded">{loginError}</p>
         )}
 
-        <div>
-          <label htmlFor="username">Vartotojo vardas</label>
+        <div className="space-y-2">
+          <label htmlFor="username" className="text-sm font-medium text-gray-800">Vartotojo vardas</label>
           <input
             type="text"
             id="username"
-            className="w-full border rounded p-2 mt-1"
+            className="w-full border border-orange-100 bg-orange-50 rounded-md p-3 mt-1"
             {...register("username", { required: "Būtina įvesti vardą" })}
           />
           <p className="text-red-500 text-sm">{errors.username?.message}</p>
         </div>
 
-        <div>
+        <div className="space-y-2">
           <label htmlFor="password">Slaptažodis</label>
           <input
             type="password"
             id="password"
-            className="w-full border rounded p-2 mt-1"
+            className="w-full border border-orange-100  bg-orange-50 rounded-md p-3 mt-1"
             {...register("password", { required: "Būtina įvesti slaptažodį" })}
           />
           <p className="text-red-500 text-sm">{errors.password?.message}</p>
@@ -80,16 +70,16 @@ function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 cursor-pointer text-white font-bold py-2 px-4 rounded"
+          className="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-orange-300"
         >
           {loading ? "Jungiamasi..." : "Prisijungti"}
         </button>
       </form>
-      <div className="flex gap-2">
-        <p>Dar neturi paskyros?</p>
+      <div className="flex gap-2 mt-6 text-sm">
+        <p className="text-gray-600">Dar neturi paskyros?</p>
         <button
           onClick={() => setIsRegisterOpen(true)}
-          className="text-blue-500 hover:underline"
+          className="text-gray-800 hover:text-gray-600 font-medium transition-colors"
         >
           Registracija
         </button>

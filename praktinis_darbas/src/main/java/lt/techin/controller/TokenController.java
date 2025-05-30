@@ -1,6 +1,5 @@
 package lt.techin.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 public class TokenController {
 
   private JwtEncoder encoder;
-  
 
   @Autowired
   public TokenController(JwtEncoder encoder) {
@@ -30,7 +28,7 @@ public class TokenController {
   @PostMapping("/token")
   public String token(Authentication authentication) {
     Instant now = Instant.now();
-    long expiry = 36000L;
+    long expiry = 3600000L;
 
     String scope = authentication.getAuthorities().stream()
             .map(s -> s.getAuthority())
@@ -44,6 +42,11 @@ public class TokenController {
             .claim("scope", scope)
             .build();
 
-    return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    String token = encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
+    // Išspausdinam sugeneruotą tokeną konsolėje
+    System.out.println("Generated token: " + token);
+
+    return token;
   }
 }
