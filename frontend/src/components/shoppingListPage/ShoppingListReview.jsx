@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-//import { fetchShoppingLists } from "../services/shoppingListService";
+//import { fetchShoppingLists } from "../../services/shoppingListService";
 import { useNavigate } from "react-router-dom";
 
 const ShoppingListReview = ({ userId }) => {

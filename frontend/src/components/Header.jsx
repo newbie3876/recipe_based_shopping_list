@@ -34,7 +34,7 @@ function Header() {
             to="/add-ingredient"
             className={({ isActive }) => getNavLinkClass(isActive)}
           >
-            Mano ingredientai
+            Įrašyti naują ingredientą
           </NavLink>
 
           <NavLink

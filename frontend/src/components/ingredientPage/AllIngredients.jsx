@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchIngredients } from "../services/ingredientService";
+import { fetchIngredients } from "../../services/ingredientService";
 
 export default function AllIngredients({userId}) {
   const [ingredients, setIngredients] = useState([]);

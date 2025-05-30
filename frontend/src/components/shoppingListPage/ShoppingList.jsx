@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from "react";
-import { fetchIngredients } from "../services/ingredientService";
+//import { fetchIngredients } from "../services/ingredientService";
+import { fetchIngredients } from "../../services/ingredientService";
 import { useNavigate } from "react-router-dom";
 
 const ShoppingList = ({ userId }) => {

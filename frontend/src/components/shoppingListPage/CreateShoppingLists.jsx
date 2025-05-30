@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchIngredients } from "../../services/ingredientService";
 import { createShoppingList } from "../../services/shoppingListService";
 
-export default function AddShoppingListModal({ userId }) {
+export default function CreateShoppingLists({ userId }) {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [createdAt, setCreatedAt] = useState("");
