@@ -12,5 +12,4 @@ public record ShoppingListItemResponseDTO(
         String unit,
         List<IngredientCategoryResponseDTO> ingredientCategory
 ) {
-
 }
