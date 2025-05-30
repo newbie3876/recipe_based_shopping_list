@@ -3,7 +3,6 @@ package lt.techin.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,13 +15,13 @@ public class Ingredient {
   @Column(nullable = false, length = 250)
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "ingredient_category_id")
+  @ManyToOne
+  @JoinColumn(name = "ingredient_category_id", nullable = false)
   private IngredientCategory ingredientCategory;
 
   @JsonIgnore
   @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<ShoppingListItem> shoppingListItems = new ArrayList<>();
+  private List<ShoppingListItem> shoppingListItems;
 
   @ManyToOne(fetch = FetchType.LAZY) // Užtikrina teisingą ryšį
   @JoinColumn(name = "user_id", nullable = false) // Aiškiai nurodo DB stulpelį
@@ -34,6 +33,13 @@ public class Ingredient {
 
   public Ingredient(String name) {
     this.name = name;
+  }
+
+  public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shoppingListItems, User user) {
+    this.name = name;
+    this.ingredientCategory = ingredientCategory;
+    this.shoppingListItems = shoppingListItems;
+    this.user = user;
   }
 
   public Ingredient() {

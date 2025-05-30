@@ -12,6 +12,9 @@ function Header() {
   const getNavLinkClass = (isActive) =>
     isActive ? "underline font-semibold" : "hover:underline";
 
+  // const getNavLinkClass = (isActive) =>
+  //   isActive ? "underline font-semibold" : "hover:underline";
+
   return (
     <header className="p-4 bg-orange-300 flex items-center">
       <div className="flex-shrink-0">
@@ -32,6 +35,20 @@ function Header() {
             className={({ isActive }) => getNavLinkClass(isActive)}
           >
             Mano receptai
+          </NavLink>
+
+          <NavLink
+            to="/add-ingredient"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Mano ingredientai
+          </NavLink>
+
+          <NavLink
+            to="/create-shoppinglists"
+            className={({ isActive }) => getNavLinkClass(isActive)}
+          >
+            Sukurti naują pirkinių krepšelį
           </NavLink>
 
           <NavLink
@@ -70,5 +87,4 @@ function Header() {
     </header>
   );
 }
-
 export default Header;

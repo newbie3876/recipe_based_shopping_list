@@ -1,7 +1,8 @@
 import React from "react";
 import soup4 from "../images/soup4.jpg";
 
-function HomePage() {
+export default function Homepage() {
+
   return (
     <div className="relative min-h-screen w-full">
       <div className="absolute inset-0 z-0">
@@ -64,5 +65,3 @@ function HomePage() {
     </div>
   );
 }
-
-export default HomePage;

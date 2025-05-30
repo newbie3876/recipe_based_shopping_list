@@ -38,13 +38,16 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ShoppingList> shoppingLists = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//  private List<Ingredient> ingredients = new ArrayList<>();
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Ingredient> ingredients = new ArrayList<>();
 
   public User(String password, String username, List<Role> roles) {
     this.password = password;
     this.username = username;
-    this.roles = roles != null ? new ArrayList<>(roles) : new ArrayList<>();
+    //this.roles = roles != null ? new ArrayList<>(roles) : new ArrayList<>();
+    this.roles = roles;
   }
 
   public User() {
@@ -66,6 +69,10 @@ public class User implements UserDetails {
   @Override
   public String getPassword() {
     return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 
   public List<Role> getRoles() {

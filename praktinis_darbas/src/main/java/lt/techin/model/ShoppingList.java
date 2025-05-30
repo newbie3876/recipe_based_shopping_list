@@ -14,6 +14,8 @@ public class ShoppingList {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  private String name;
+
   @ManyToOne(fetch = FetchType.LAZY) // Užtikrina teisingą ryšį
   @JoinColumn(name = "user_id", nullable = false) // Aiškiai nurodo DB stulpelį
   private User user;
@@ -22,6 +24,12 @@ public class ShoppingList {
   @PastOrPresent(message = "Creation date cannot be in the future!")
   private LocalDateTime createdAt;
 
+  public <E> ShoppingList(User user, LocalDateTime now, ArrayList<E> es, Object o) {
+  }
+
+  public <E> ShoppingList(User user, LocalDateTime now, ArrayList<E> es) {
+  }
+
   @PrePersist
   protected void onCreate() {
     if (this.createdAt == null) {
@@ -29,22 +37,22 @@ public class ShoppingList {
     }
   }
 
-  @Column(length = 255)
-  private String name;
+//  @Column(length = 255)
+//  private String name;
 
   @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<ShoppingListItem> items = new ArrayList<>();
 
-//  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  //  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //  private final List<Ingredient> ingredients = new ArrayList<>();
+  public ShoppingList() {
+  }
 
-  public ShoppingList(User user, LocalDateTime createdAt, List<ShoppingListItem> items) {
+  public ShoppingList(String name, User user, LocalDateTime createdAt, List<ShoppingListItem> items) {
+    this.name = name;
     this.user = user;
     this.createdAt = createdAt;
     this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
-  }
-
-  public ShoppingList() {
   }
 
   public Long getId() {
@@ -73,5 +81,13 @@ public class ShoppingList {
 
   public void setItems(List<ShoppingListItem> items) {
     this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }
