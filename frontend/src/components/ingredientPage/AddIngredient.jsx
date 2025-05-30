@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { addIngredient } from "../../services/ingredientService";
+import { useEffect} from "react";
+import { fetchIngredients } from "../../services/ingredientService";
 
-export default function AddIngredient() {
+export default function AddIngredient({userId}) {
   const [ingredientName, setIngredientName] = useState("");
   const [quantity, setQuantity] = useState("");
   const [unitId, setUnitId] = useState("");
   const [ingredientCategoryId, setIngredientCategoryId] = useState("");
-  const navigate = useNavigate();
+  const [ingredients, setIngredients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Vienetų pasirinkimai
   const unitOptions = [
@@ -29,6 +32,12 @@ export default function AddIngredient() {
     { id: 7, label: "Riebalai, aliejus ir sviestas" },
   ];
 
+  useEffect(() => {
+    fetchIngredients(); // iškart užkraunam
+    const interval = setInterval(fetchIngredients, 10); // kas 1 sek.
+    return () => clearInterval(interval); // išvalom intervalą
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -45,13 +54,48 @@ export default function AddIngredient() {
     };
 
     try {
-      const response = await addIngredient(newIngredient);
+      await addIngredient(newIngredient);
       alert("✅ Ingredientas sėkmingai pridėtas!");
-      navigate("/");
+
+      await fetchIngredients(); // Iškart atnaujinam sąrašą po pridėjimo
+
+      // Gali išvalyti formą jei nori
+      setIngredientName("");
+      setQuantity("");
+      setUnitId("");
+      setIngredientCategoryId("");
     } catch (error) {
       alert(`❌ Klaida pridedant ingredientą: ${error.message}`);
     }
   };
+
+  useEffect(() => {
+    if (!userId) return;
+    
+      const fetchData = async () => {
+        setLoading(true);
+        try {
+  
+          const data = await fetchIngredients(userId);
+  
+          setIngredients(
+            data.map(item => ({
+              ingredientName: item.ingredientName,
+              quantity: item.quantity,
+              unitName: item.unitName,
+              categoryName: item.categoryName
+            }))
+          );
+    
+        } catch (err) {
+          setError("Nepavyko gauti ingredientų.");
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+    fetchData();
+  }, [userId]);
 
   return (
     <div className="bg-orange-200 h-screen">
@@ -82,27 +126,33 @@ export default function AddIngredient() {
           </button>
         </form>
       </div>
-      
-      <div className="bg-orange-200 h-screen">
-        <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", justifyContent: "center" }}>
-          <div style={{ border: "1px solid gray", padding: "15px", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", textAlign: "center" }}>
-            <button 
-              onClick={() => navigate("/all-ingredients")}
-              style={{
-                padding: "10px",
-                borderRadius: "5px",
-                backgroundColor: "#4CAF50",
-                color: "white",
-                border: "none",
-                cursor: "pointer",
-                boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.2)"
-              }}
-            >
-              Rodyti visus ingredientus
-            </button>
-          </div>
-        </div>
+
+      <div>
+        <h1 className="bg-orange-200 text-2xl font-bold text-center p-5">Visi ingredientai:</h1>
+        <table className="bg-orange-200 w-full border border-orange-300 text-center mb-4">
+          <thead>
+            <tr>
+              <th className="p-2 border border-orange-300">#</th>
+              <th className="p-2 border border-orange-300">Pavadinimas</th>
+              <th className="p-2 border border-orange-300">Kiekis</th>
+              <th className="p-2 border border-orange-300">Vienetas</th>
+              <th className="p-2 border border-orange-300">Kategorija</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ingredients.map((ing, i) => (
+              <tr key={ing.ingredientId || i}>
+                <td className="p-2 border border-orange-300">{i + 1}</td>
+                <td className="p-2 border border-orange-300">{ing.ingredientName || "–"}</td>
+                <td className="p-2 border border-orange-300">{ing.quantity || "–"}</td>
+                <td className="p-2 border border-orange-300">{ing.unitName || "–"}</td>
+                <td className="p-2 border border-orange-300">{ing.categoryName || "–"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+    
     </div> 
   );
 }
