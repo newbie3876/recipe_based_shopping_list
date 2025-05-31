@@ -231,6 +231,17 @@ public class ShoppingListService {
     return ShoppingListMapper.toDTO(savedShoppingList);
   }
 
+//  public List<ShoppingList> findShoppingListForCurrentUser() {
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    Jwt jwt = (Jwt) authentication.getPrincipal();
+//    String username = jwt.getSubject();
+//
+//    User user = userRepository.findByUsername(username)
+//            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//
+//    return shoppingListRepository.findByUser(user);
+//  }
+
 
 }
 

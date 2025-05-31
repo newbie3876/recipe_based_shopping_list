@@ -49,19 +49,45 @@ export const fetchShoppingLists = async (userId) => {
 
 
 // services/shoppingListService.js
+// export async function createShoppingList(newList, token) {
+//   const response = await fetch(API_URL, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`, // jei reikia autentifikacijos
+//     },
+//     body: JSON.stringify(newList),
+//   });
+
+//   if (!response.ok) {
+//     throw new Error("Nepavyko sukurti pirkinių krepšelio.");
+//   }
+
+//   return await response.json();
+// }
+
 export async function createShoppingList(newList, token) {
   const response = await fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // jei reikia autentifikacijos
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(newList),
   });
 
+  const responseText = await response.text();
+
   if (!response.ok) {
+    console.error("🔴 Klaida iš serverio:");
+    console.error("Statusas:", response.status);
+    console.error("Atsakymas:", responseText);
     throw new Error("Nepavyko sukurti pirkinių krepšelio.");
   }
 
-  return await response.json();
+  try {
+    return JSON.parse(responseText);
+  } catch (e) {
+    return {}; // jei atsakymas ne JSON
+  }
 }

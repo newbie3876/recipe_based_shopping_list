@@ -3,6 +3,7 @@ package lt.techin.controller;
 import lt.techin.dto.shoppingList.ShoppingListRequestDTO;
 import lt.techin.dto.shoppingList.ShoppingListResponseDTO;
 import lt.techin.service.ShoppingListService;
+import lt.techin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,12 @@ import java.util.List;
 public class ShoppingListController {
 
   private final ShoppingListService shoppingListService;
+  private final UserService userService;
 
   @Autowired
-  public ShoppingListController(ShoppingListService shoppingListService) {
+  public ShoppingListController(ShoppingListService shoppingListService, UserService userService) {
     this.shoppingListService = shoppingListService;
+    this.userService = userService;
   }
 
 //  @PostMapping("/shoppinglists")
@@ -60,6 +63,9 @@ public class ShoppingListController {
 
   @PostMapping("/shoppinglists")
   public ResponseEntity<ShoppingListResponseDTO> createShoppingList(@RequestBody ShoppingListRequestDTO shoppingListRequestDTO) {
+//    String username = SecurityUtils.getCurrentAuthenticatedUsername(); //getCurrentUsername();
+//    User user = userService.findUserByUsername(username)
+//            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     ShoppingListResponseDTO createdShoppingList = shoppingListService.createShoppingList(shoppingListRequestDTO);
     return ResponseEntity.status(HttpStatus.CREATED).body(createdShoppingList);
   }
