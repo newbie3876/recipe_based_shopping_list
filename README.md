@@ -21,21 +21,23 @@ Prieš paleidžiant projektą, įsitikinkite, kad jūsų sistemoje įdiegta:
 
 ### 1. Backend paleidimas (Spring Boot)
 
-````bash
+```bash
 cd praktinis_darbas
 mvn spring-boot:run
 
+```
+
 ## Po sėkmingo paleidimo backend serveris turėtų veikti adresu:
+
 http://localhost:8080
 
 ### 2. Frontend paleidimas
-
 
 ```bash
 cd frontend
 npm install
 npm run dev
+```
 
 Frontend aplikacija bus pasiekiama naršyklėje adresu:
 http://localhost:5173
-````
