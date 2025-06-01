@@ -42,18 +42,18 @@ npm run dev
 Frontend aplikacija bus pasiekiama naršyklėje adresu:
 http://localhost:5173
 
-### Projekto dalyviai
+# Projekto dalyviai
 
 ## Programuotojai
 
-# Kostas Stelmokas
+### Kostas Stelmokas
 
-# Marius Antanaitis
+### Marius Antanaitis
 
-# Vidmantas Juškevičius
+### Vidmantas Juškevičius
 
-# Miglė Adomavičiūtė
+### Miglė Adomavičiūtė
 
 ## Testuotoja
 
-# Agnė Balčiūnaitė
+### Agnė Balčiūnaitė
