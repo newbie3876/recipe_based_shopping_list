@@ -48,16 +48,10 @@ http://localhost:5173
 
 # Project Contributors
 
-## Developers
+## Authors
 
-### https://github.com/newbie3876
-
-### https://github.com/MariusAnta
-
-### https://github.com/JVidmantas
-
-### https://github.com/MiAdo4
-
-## QA
-
-### https://github.com/Shabum-bit
+- [@newbie3876](https://github.com/newbie3876) – Developer
+- [@MariusAnta](https://github.com/MariusAnta) – Developer
+- [@JVidmantas](https://github.com/JVidmantas) – Developer
+- [@MiAdo4](https://github.com/MiAdo4) – Developer
+- [@Shabum-bit](https://github.com/Shabum-bit) – QA
