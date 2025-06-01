@@ -38,13 +38,16 @@ public class User implements UserDetails {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ShoppingList> shoppingLists = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+//  private List<Ingredient> ingredients = new ArrayList<>();
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Ingredient> ingredients = new ArrayList<>();
 
   public User(String password, String username, List<Role> roles) {
     this.password = password;
     this.username = username;
-    this.roles = roles != null ? new ArrayList<>(roles) : new ArrayList<>();
+    //this.roles = roles != null ? new ArrayList<>(roles) : new ArrayList<>();
+    this.roles = roles;
   }
 
   public User() {
@@ -127,5 +130,18 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return id != null && id.equals(user.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return id != null ? id.hashCode() : 0;
   }
 }

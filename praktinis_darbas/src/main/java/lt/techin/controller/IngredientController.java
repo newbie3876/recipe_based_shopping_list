@@ -1,101 +1,163 @@
 package lt.techin.controller;
 
-import jakarta.validation.Valid;
 import lt.techin.dto.ingredient.IngredientMapper;
 import lt.techin.dto.ingredient.IngredientRequestDTO;
 import lt.techin.dto.ingredient.IngredientResponseDTO;
-import lt.techin.model.Ingredient;
-import lt.techin.model.IngredientCategory;
-import lt.techin.model.User;
+import lt.techin.model.*;
+import lt.techin.repository.ShoppingListItemRepository;
+import lt.techin.repository.UnitRepository;
 import lt.techin.security.SecurityUtils;
 import lt.techin.service.IngredientCategoryService;
 import lt.techin.service.IngredientService;
 import lt.techin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
+//@RequestMapping("/api/ingredients")
 @RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:5173")
 public class IngredientController {
-
   private final IngredientService ingredientService;
   private final IngredientCategoryService ingredientCategoryService;
+  //private final UnitService unitService;
+  private final UnitRepository unitRepository;
+  private final ShoppingListItemRepository shoppingListItemRepository;
   private final UserService userService;
 
-  public IngredientController(IngredientService ingredientService,
-                              IngredientCategoryService ingredientCategoryService,
-                              UserService userService) {
+  @Autowired
+  //public IngredientController(IngredientService ingredientService,
+  //IngredientCategoryService ingredientCategoryService,
+  //UnitService unitService) {
+  public IngredientController(
+          IngredientService ingredientService,
+          IngredientCategoryService ingredientCategoryService,
+          UnitRepository unitRepository,
+          ShoppingListItemRepository shoppingListItemRepository,
+          UserService userService
+  ) {
     this.ingredientService = ingredientService;
     this.ingredientCategoryService = ingredientCategoryService;
+    //this.unitService = unitService;
+    this.unitRepository = unitRepository;
+    this.shoppingListItemRepository = shoppingListItemRepository;
     this.userService = userService;
   }
 
-  @Autowired
-
-
+  //  @GetMapping
+//  public ResponseEntity<List<IngredientResponseDTO>> getAll() {
+//    List<IngredientResponseDTO> ingredients = ingredientService.getAllIngredientDTO();
+//    return ResponseEntity.ok(ingredients);
   @GetMapping("/ingredients")
   public ResponseEntity<List<IngredientResponseDTO>> getIngredients() {
 
-    List<Ingredient> ingredients = ingredientService.findAllIngredients();
+    List<Ingredient> ingredients = ingredientService.findIngredientForCurrentUser();
 
     return ResponseEntity.ok(IngredientMapper.toListDTO(ingredients));
   }
 
-  @GetMapping("/ingredients/{id}")
-  public ResponseEntity<IngredientResponseDTO> getIngredientById(@PathVariable Long id) {
+//  @GetMapping("/{id}")
+//  public ResponseEntity<IngredientResponseDTO> getById(@PathVariable Long id) {
+//    IngredientResponseDTO dto = ingredientService.getIngredientDTOById(id);
+//    return ResponseEntity.ok(dto);
+//  }
 
-    return ingredientService.findIngredientById(id).map(
-                    ingredient -> ResponseEntity.ok(IngredientMapper.toDTO(ingredient)))
-            .orElseGet(() -> ResponseEntity.notFound().build());
-
-  }
-
+  //  @DeleteMapping("/{id}")
+//  public ResponseEntity<Void> delete(@PathVariable Long id) {
+//    ingredientService.deleteIngredientById(id);
+//    return ResponseEntity.noContent().build();
+//  }
   @PostMapping("/ingredients")
-  public ResponseEntity<Object> createIngredient(@Valid @RequestBody IngredientRequestDTO ingredientRequestDTO) {
-
-    if (ingredientService.existsIngredientByName(ingredientRequestDTO.name())) {
-
-      Map<String, String> response = new HashMap<>();
-      response.put("message", "Ingredient with such name already exists!");
-
-      return ResponseEntity.badRequest().body(response);
-    }
-
-    // 2. Fetch the FULL category (ID + NAME) from the database
-    IngredientCategory ingredientCategory = ingredientCategoryService.getCategoryById(ingredientRequestDTO.ingredientCategoryId())
-            .orElseThrow(() -> new IllegalArgumentException("Ingredient category does not exits!"));
-
-//    paimam autentifikuotą user
-    String username = SecurityUtils.getCurrentUsername();
+  public ResponseEntity<?> createIngredientWithUsage(@RequestBody IngredientRequestDTO dto) {
+    String username = SecurityUtils.getCurrentAuthenticatedUsername(); //getCurrentUsername();
     User user = userService.findUserByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-    // 3. Map DTO → Ingredient (now includes category name)
-    Ingredient newIngredient = IngredientMapper.toIngredient(ingredientRequestDTO, ingredientCategory, user);
+//    // Tikrinam ar ingredientas jau egzistuoja
+//    Optional<Ingredient> existingIngredient = ingredientService
+//            .findByNameAndUserId(dto.ingredientName(), user.getId());
+//
+//    if (existingIngredient.isPresent()) {
+//      return ResponseEntity.badRequest().body("Ingredient already exists for this user.");
+//    }
 
-    // 4. Save the ingredient
-    Ingredient savedIngredient = ingredientService.saveIngredient(newIngredient);
+//  @PostMapping
+//  public ResponseEntity<IngredientResponseDTO> create(@Valid @RequestBody IngredientRequestDTO dto) {
+//    if (ingredientService.existsIngredientByName(dto.name())) {
+//      return ResponseEntity.badRequest().build();
+//    }
+    IngredientCategory category = ingredientCategoryService.getCategoryById(dto.ingredientCategoryId());
+    //.orElseThrow(() -> new RuntimeException("Ingredient category not found."));
 
-    // 5. Convert to Response DTO (includes category name)
-    IngredientResponseDTO responseDTO = IngredientMapper.toDTO(savedIngredient);
+//    var category = ingredientCategoryService.getCategoryById(dto.ingredientCategoryId());
+//    if (category == null) {
+//      return ResponseEntity.badRequest().build();
+//    }
+    Unit unit = unitRepository.findById(dto.unitId())
+            .orElseThrow(() -> new RuntimeException("Unit not found."));
 
-    // 6. Return response with location header
-    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(savedIngredient.getId())
-            .toUri();
+//    var unit = unitService.getUnitById(dto.unitId());
+//    if (unit == null) {
+//      return ResponseEntity.badRequest().build();
+//    }
+    // Ingredientas
+    Ingredient ingredient = new Ingredient();
+    ingredient.setName(dto.ingredientName());
+    ingredient.setIngredientCategory(category);
+    ingredient.setUser(user);
+    ingredient = ingredientService.saveIngredient(ingredient);
 
-    return ResponseEntity.created(location).body(responseDTO);
+//    var ingredient = IngredientMapper.toIngredient(dto, category, unit);
+//    var savedDTO = ingredientService.saveIngredient(ingredient);
+    // ShoppingListItem (be ShoppingList)
+    ShoppingListItem item = new ShoppingListItem();
+    item.setIngredient(ingredient);
+    item.setQuantity(dto.quantity());
+    item.setUnit(unit);
+    item.setShoppingList(null); // sąmoningai nenaudojam
+
+//    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+//            .path("/{id}")
+//            .buildAndExpand(savedDTO.id())
+//            .toUri();
+    shoppingListItemRepository.save(item);
+
+    // Atsakymas
+    IngredientResponseDTO response = IngredientMapper.toDTO(ingredient, item);
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(response);
   }
+//
+//    return ResponseEntity.created(location).body(savedDTO);
+//  }
+
+//  @PutMapping("/{id}")
+//  public ResponseEntity<IngredientResponseDTO> update(@PathVariable Long id,
+//                                                      @Valid @RequestBody IngredientRequestDTO dto) {
+//    var category = ingredientCategoryService.getCategoryById(dto.ingredientCategoryId());
+//    if (category == null) {
+//      return ResponseEntity.badRequest().build();
+//    }
+
+//    var unit = unitService.getUnitById(dto.unitId());
+//    if (unit == null) {
+//      return ResponseEntity.badRequest().build();
+//    }
+
+//    var existing = ingredientService.getIngredientById(id);
+//    existing.setName(dto.name());
+//    existing.setIngredientCategory(category);
+//    existing.setUnit(unit);
+//
+//    IngredientResponseDTO updated = ingredientService.saveIngredient(existing);
+//    return ResponseEntity.ok(updated);
+//  }
 
   @DeleteMapping("/ingredients/{id}")
   public ResponseEntity<Void> deleteIngredient(@PathVariable Long id) {
@@ -109,6 +171,5 @@ public class IngredientController {
     ingredientService.deleteIngredientById(id);
     return ResponseEntity.noContent().build();
   }
-
 }
 

@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "recipes")
 public class Recipe {
@@ -27,19 +30,17 @@ public class Recipe {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "recipe_category_id")
   @JsonIgnoreProperties("recipes")
   private RecipeCategory recipeCategory;
 
-  public Recipe(String name, String description, String link, int portions, User user, RecipeCategory recipeCategory) {
-    this.name = name;
-    this.description = description;
-    this.link = link;
-    this.portions = portions;
-    this.user = user;
-    this.recipeCategory = recipeCategory;
-  }
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "shopping_list_id")
+  private ShoppingList shoppingList;
+
+  @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
   public Recipe() {
   }
@@ -94,5 +95,13 @@ public class Recipe {
 
   public void setRecipeCategory(RecipeCategory recipeCategory) {
     this.recipeCategory = recipeCategory;
+  }
+
+  public List<RecipeIngredient> getRecipeIngredients() {
+    return recipeIngredients;
+  }
+
+  public void setRecipeIngredients(List<RecipeIngredient> recipeIngredients) {
+    this.recipeIngredients = recipeIngredients;
   }
 }

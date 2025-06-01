@@ -13,9 +13,8 @@ public class ShoppingListItem {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "shopping_list_id", nullable = false)
+  @JoinColumn(name = "shopping_list_id", nullable = true)
   private ShoppingList shoppingList;
 
   @NotNull
@@ -23,7 +22,8 @@ public class ShoppingListItem {
   @JoinColumn(name = "ingredient_id", nullable = false)
   private Ingredient ingredient;
 
-  @DecimalMin(value = "1.0", inclusive = true, message = "Kiekis turėtų būti daugiau už 1 arba lygus 1.")
+  @DecimalMin(value = "1.0", message = "Kiekis turi būti ne mažesnis nei 1.")
+  @Column(nullable = false)
   private BigDecimal quantity;
 
   @NotNull
@@ -39,6 +39,12 @@ public class ShoppingListItem {
   }
 
   public ShoppingListItem() {
+  }
+
+  public ShoppingListItem(Object o, ShoppingList shoppingList, Ingredient ingredient, BigDecimal quantity, Unit unit) {
+  }
+
+  public ShoppingListItem(String s, BigDecimal quantity, Long aLong) {
   }
 
   public Long getId() {

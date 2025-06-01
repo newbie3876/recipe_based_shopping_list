@@ -27,14 +27,15 @@ public class Ingredient {
   @JoinColumn(name = "user_id", nullable = false) // Aiškiai nurodo DB stulpelį
   private User user;
 
+  @ManyToOne
+  @JoinColumn(name = "unit_id")
+  private Unit unit;
+
   public Ingredient(String name) {
     this.name = name;
   }
 
-  public Ingredient(String name,
-                    IngredientCategory ingredientCategory,
-                    List<ShoppingListItem> shoppingListItems,
-                    User user) {
+  public Ingredient(String name, IngredientCategory ingredientCategory, List<ShoppingListItem> shoppingListItems, User user) {
     this.name = name;
     this.ingredientCategory = ingredientCategory;
     this.shoppingListItems = shoppingListItems;
@@ -64,19 +65,27 @@ public class Ingredient {
     this.ingredientCategory = ingredientCategory;
   }
 
-  public List<ShoppingListItem> getShoppingListItems() {
-    return shoppingListItems;
-  }
-
-  public void setShoppingListItems(List<ShoppingListItem> shoppingListItems) {
-    this.shoppingListItems = shoppingListItems;
-  }
-
   public User getUser() {
     return user;
   }
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public void setUnit(Unit unit) {
+    this.unit = unit;
+  }
+
+  public Unit getUnit() {
+    return unit;
+  }
+
+  public List<ShoppingListItem> getShoppingListItems() {
+    return shoppingListItems;
+  }
+
+  public void setShoppingListItems(List<ShoppingListItem> shoppingListItems) {
+    this.shoppingListItems = shoppingListItems;
   }
 }

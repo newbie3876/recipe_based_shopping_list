@@ -17,7 +17,7 @@ public class Image {
   @Column(name = "image_data", columnDefinition = "LONGBLOB")
   private byte[] imageData;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 

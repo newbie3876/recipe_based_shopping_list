@@ -7,6 +7,4 @@ public record ImageResponseDTO(
         String contentType,
         byte[] imageData
 ) {
-
-
 }

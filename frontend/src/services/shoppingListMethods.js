@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/shoppinglists";
+const API_BASE = "http://localhost:8080";
 
 function getToken() {
     const token = localStorage.getItem("token");
@@ -7,7 +7,7 @@ function getToken() {
 }
 
 export async function fetchShoppingLists() {
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${API_BASE}/api/shoppinglists`, {
         headers: {
             "Authorization": `Bearer ${getToken()}`
         }
@@ -17,7 +17,7 @@ export async function fetchShoppingLists() {
 }
 
 export async function createShoppingList(shoppingListData) {
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${API_BASE}/api/shoppinglists`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -30,7 +30,10 @@ export async function createShoppingList(shoppingListData) {
 }
 
 export async function deleteShoppingListById(id) {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const numericId = Number(id);
+    if (isNaN(numericId)) throw new Error("Neteisingas krepšelio ID.");
+    
+    const res = await fetch(`${API_BASE}/api/shoppinglists/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${getToken()}`
@@ -38,4 +41,15 @@ export async function deleteShoppingListById(id) {
     });
     if (!res.ok) throw new Error("Nepavyko ištrinti receptų krepšelio.");
     return true;
+}
+
+export async function createShoppingListFromRecipe(recipeId) {
+    const res = await fetch(`${API_BASE}/api/shoppinglists/from-recipe/${recipeId}`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${getToken()}`
+        }
+    });
+    if (!res.ok) throw new Error("Nepavyko sukurti krepšelio iš recepto.");
+    return await res.json();
 }

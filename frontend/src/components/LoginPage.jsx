@@ -1,14 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../context/AuthContext";
 import dinner from "../assets/dinner.svg";
-import { loginUser } from "../services/authService";
 import RegistrationModal from "./RegistrationModal";
+import { useLoginService } from "../services/loginService";
 
 function LoginPage() {
-  const { login } = useAuth();
-
   const {
     register,
     handleSubmit,
@@ -19,17 +16,10 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
 
-  const onSubmit = async ({ username, password }) => {
-    setLoading(true);
+  const { handleLogin } = useLoginService();
 
-    try {
-      const token = await loginUser(username, password); // Naudojame service
-      login(token);
-    } catch (error) {
-      setLoginError(error.message);
-    } finally {
-      setLoading(false);
-    }
+  const onSubmit = ({ username, password }) => {
+    handleLogin(username, password, setLoading, setLoginError);
   };
 
   return (

@@ -24,6 +24,11 @@ function PhotoAlbum() {
   };
 
   const uploadImage = () => {
+    if (!imageName.trim()) {
+      alert("Pavadinimas yra būtinas!");
+      return; // sustabdom įkėlimą
+    }
+
     if (!file) {
       alert("Pasirinkite failą!");
 
@@ -91,10 +96,6 @@ function PhotoAlbum() {
       console.error("Klaida gaunant paveikslėlius:", error);
     }
   };
-
-  useEffect(() => {
-    fetchImages();
-  }, []);
 
   const deleteImage = async (id) => {
     const isConfirmed = window.confirm(

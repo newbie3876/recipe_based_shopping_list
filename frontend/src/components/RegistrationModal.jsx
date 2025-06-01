@@ -1,6 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import modal_close_icon from "../assets/modalCloseIcon.webp";
+import { registerUser } from "../services/registrationService";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function RegistrationModal({ isOpen, onClose }) {
   const {
@@ -17,26 +20,12 @@ function RegistrationModal({ isOpen, onClose }) {
     setServerError("");
 
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        setServerError(err.username || "Klaida registruojant.");
-        return;
-      }
-
-      alert("Registracija sėkminga!");
+      await registerUser(data);
+      toast.success("Registracija sėkminga!");
       reset();
       onClose();
     } catch (e) {
-      alert({ e });
-      setServerError("Serverio klaida.");
+      setServerError(e.message || "Serverio klaida.");
     }
   };
 

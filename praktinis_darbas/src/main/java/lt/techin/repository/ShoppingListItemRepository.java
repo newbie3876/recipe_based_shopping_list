@@ -8,6 +8,6 @@ import java.util.List;
 public interface ShoppingListItemRepository extends JpaRepository<ShoppingListItem, Long> {
 
   List<ShoppingListItem> findByShoppingListId(Long shoppingListId);
+
+  List<ShoppingListItem> findByIngredientId(Long ingredientId);
 }
-
-
