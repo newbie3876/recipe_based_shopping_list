@@ -79,33 +79,15 @@ public class IngredientController {
     User user = userService.findUserByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-//    // Tikrinam ar ingredientas jau egzistuoja
-//    Optional<Ingredient> existingIngredient = ingredientService
-//            .findByNameAndUserId(dto.ingredientName(), user.getId());
-//
-//    if (existingIngredient.isPresent()) {
-//      return ResponseEntity.badRequest().body("Ingredient already exists for this user.");
-//    }
 
-//  @PostMapping
-//  public ResponseEntity<IngredientResponseDTO> create(@Valid @RequestBody IngredientRequestDTO dto) {
-//    if (ingredientService.existsIngredientByName(dto.name())) {
-//      return ResponseEntity.badRequest().build();
-//    }
     IngredientCategory category = ingredientCategoryService.getCategoryById(dto.ingredientCategoryId());
     //.orElseThrow(() -> new RuntimeException("Ingredient category not found."));
 
-//    var category = ingredientCategoryService.getCategoryById(dto.ingredientCategoryId());
-//    if (category == null) {
-//      return ResponseEntity.badRequest().build();
-//    }
+
     Unit unit = unitRepository.findById(dto.unitId())
             .orElseThrow(() -> new RuntimeException("Unit not found."));
 
-//    var unit = unitService.getUnitById(dto.unitId());
-//    if (unit == null) {
-//      return ResponseEntity.badRequest().build();
-//    }
+
     // Ingredientas
     Ingredient ingredient = new Ingredient();
     ingredient.setName(dto.ingredientName());
@@ -113,19 +95,14 @@ public class IngredientController {
     ingredient.setUser(user);
     ingredient = ingredientService.saveIngredient(ingredient);
 
-//    var ingredient = IngredientMapper.toIngredient(dto, category, unit);
-//    var savedDTO = ingredientService.saveIngredient(ingredient);
-    // ShoppingListItem (be ShoppingList)
+
     ShoppingListItem item = new ShoppingListItem();
     item.setIngredient(ingredient);
     item.setQuantity(dto.quantity());
     item.setUnit(unit);
     item.setShoppingList(null); // sąmoningai nenaudojam
 
-//    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-//            .path("/{id}")
-//            .buildAndExpand(savedDTO.id())
-//            .toUri();
+
     shoppingListItemRepository.save(item);
 
     // Atsakymas

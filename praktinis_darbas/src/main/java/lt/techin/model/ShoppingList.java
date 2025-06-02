@@ -40,7 +40,7 @@ public class ShoppingList {
 //  @Column(length = 255)
 //  private String name;
 
-  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<ShoppingListItem> items = new ArrayList<>();
 
   //  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

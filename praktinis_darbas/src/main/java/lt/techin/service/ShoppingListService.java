@@ -153,25 +153,15 @@
 
 package lt.techin.service;
 
-import lt.techin.dto.shoppingList.ShoppingListItemRequestDTO;
-import lt.techin.dto.shoppingList.ShoppingListMapper;
-import lt.techin.dto.shoppingList.ShoppingListRequestDTO;
-import lt.techin.dto.shoppingList.ShoppingListResponseDTO;
-import lt.techin.model.*;
+import lt.techin.model.ShoppingList;
 import lt.techin.repository.IngredientRepository;
 import lt.techin.repository.ShoppingListRepository;
 import lt.techin.repository.UnitRepository;
 import lt.techin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ShoppingListService {
@@ -188,47 +178,35 @@ public class ShoppingListService {
     this.unitRepository = unitRepository;
   }
 
-  public List<ShoppingListResponseDTO> getShoppingListsByUserId(Long userId) {
-    User user = getAuthenticatedUser();
-
-    return shoppingListRepository.findByUserId(user.getId()).stream()
-            .map(ShoppingListMapper::toDTO)
-            .collect(Collectors.toList());
+  public ShoppingList saveShoppingList(ShoppingList shoppingList) {
+    return shoppingListRepository.save(shoppingList);
   }
 
-  public User getAuthenticatedUser() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//  public ShoppingList saveShoppingList(ShoppingListRequestDTO shoppingListRequestDTO) {
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//    if (authentication == null || !authentication.isAuthenticated()) {
+//      throw new RuntimeException("Vartotojas neautentifikuotas");
+//    }
+//
+//    String username = getUsernameFromAuth(authentication); // ← helper funkcija (žemiau)
+//    User user = userRepository.findByUsername(username)
+//            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+//
+//    ShoppingList list = ShoppingListMapper.toShoppingList(shoppingListRequestDTO, user);
+//
+//    return shoppingListRepository.save(list);
+//  }
 
-    if (authentication == null || !authentication.isAuthenticated()) {
-      throw new RuntimeException("User is not authenticated");
+  private String getUsernameFromAuth(Authentication authentication) {
+    Object principal = authentication.getPrincipal();
+    if (principal instanceof Jwt jwt) {
+      return jwt.getSubject();
+    } else if (principal instanceof String str) {
+      return str;
+    } else {
+      throw new RuntimeException("Nepalaikomas autentifikacijos tipas");
     }
-
-    String username = authentication.getName(); // Gausime prisijungusio vartotojo vardą
-
-    return userRepository.findByUsername(username) // Surandame vartotoją pagal vardą
-            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-  }
-
-
-  public ShoppingListResponseDTO createShoppingList(ShoppingListRequestDTO requestDTO) {
-    User user = getAuthenticatedUser();// ✅ Automatiškai gauname vartotoją iš Spring Security
-
-    ShoppingList shoppingList = new ShoppingList(user, LocalDateTime.now(), new ArrayList<>());
-    shoppingList.setItems(new ArrayList<>());
-
-    for (ShoppingListItemRequestDTO itemDTO : requestDTO.items()) {
-      Ingredient ingredient = ingredientRepository.findById(itemDTO.ingredientId())
-              .orElseThrow(() -> new RuntimeException("Ingredient not found"));
-
-      Unit unit = unitRepository.findById(itemDTO.unitId())
-              .orElseThrow(() -> new RuntimeException("Unit not found"));
-
-      ShoppingListItem item = new ShoppingListItem(shoppingList, ingredient, itemDTO.quantity(), unit);
-      shoppingList.getItems().add(item);
-    }
-
-    ShoppingList savedShoppingList = shoppingListRepository.save(shoppingList);
-    return ShoppingListMapper.toDTO(savedShoppingList);
   }
 
 //  public List<ShoppingList> findShoppingListForCurrentUser() {

@@ -1,7 +1,5 @@
 package lt.techin.dto.shoppingList;
 
-import jakarta.validation.constraints.NotNull;
-
 import java.util.List;
 
 public record ShoppingListRequestDTO(
@@ -11,7 +9,7 @@ public record ShoppingListRequestDTO(
         //List<ShoppingListItemRequestDTO> items
         String name,
 //        LocalDateTime createdAt,
-        Long userId,
+        // Long userId,
 //        List<IngredientRequestDTO> ingredientRequestDTOs
         List<ShoppingListItemRequestDTO> items
 

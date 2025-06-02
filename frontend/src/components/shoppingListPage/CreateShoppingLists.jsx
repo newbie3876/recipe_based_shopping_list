@@ -125,10 +125,13 @@ export default function CreateShoppingLists({ userId }) {
     }
 
     const newList = {
-      name,
+      // name,
+      // createdAt: new Date().toISOString(),
+      // userId,
+      // items: selectedIngredientsDetailed,
+      name, // jei norima
       createdAt: new Date().toISOString(),
-      userId,
-      items: selectedIngredientsDetailed,
+      //items: selectedIngredientsDetailed, // jei siunčiami ingredientai
     };
 
     try {
