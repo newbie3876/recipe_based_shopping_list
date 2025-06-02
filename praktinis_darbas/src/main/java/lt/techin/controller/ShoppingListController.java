@@ -4,8 +4,12 @@ import lt.techin.dto.shoppingList.ShoppingListItemRequestDTO;
 import lt.techin.dto.shoppingList.ShoppingListMapper;
 import lt.techin.dto.shoppingList.ShoppingListRequestDTO;
 import lt.techin.dto.shoppingList.ShoppingListResponseDTO;
-import lt.techin.model.*;
+import lt.techin.model.Ingredient;
+import lt.techin.model.ShoppingList;
+import lt.techin.model.ShoppingListItem;
+import lt.techin.model.User;
 import lt.techin.repository.IngredientRepository;
+import lt.techin.repository.ShoppingListItemRepository;
 import lt.techin.repository.UnitRepository;
 import lt.techin.security.SecurityUtils;
 import lt.techin.service.ShoppingListService;
@@ -29,13 +33,15 @@ public class ShoppingListController {
   private final UserService userService;
   private final UnitRepository unitRepository;
   private final IngredientRepository ingredientRepository;
+  private final ShoppingListItemRepository shoppingListItemRepository;
 
   @Autowired
-  public ShoppingListController(ShoppingListService shoppingListService, UserService userService, UnitRepository unitRepository, IngredientRepository ingredientRepository) {
+  public ShoppingListController(ShoppingListService shoppingListService, UserService userService, UnitRepository unitRepository, IngredientRepository ingredientRepository, ShoppingListItemRepository shoppingListItemRepository) {
     this.shoppingListService = shoppingListService;
     this.userService = userService;
     this.unitRepository = unitRepository;
     this.ingredientRepository = ingredientRepository;
+    this.shoppingListItemRepository = shoppingListItemRepository;
   }
 
 //  @PostMapping("/shoppinglists")
@@ -92,19 +98,24 @@ public class ShoppingListController {
       Ingredient ingredient = ingredientRepository.findById(itemDTO.ingredientId())
               .orElseThrow(() -> new RuntimeException("Ingredient not found"));
 
-      Unit unit = unitRepository.findById(itemDTO.unitId())
-              .orElseThrow(() -> new RuntimeException("Unit not found"));
+      ShoppingListItem latestItem = shoppingListItemRepository
+              .findTopByIngredientIdOrderByIdDesc(ingredient.getId())
+              .orElseThrow(() -> new RuntimeException("No previous ShoppingListItem found for ingredient"));
+
+      if (latestItem.getQuantity() == null || latestItem.getUnit() == null) {
+        throw new RuntimeException("Latest ShoppingListItem is missing quantity or unit");
+      }
 
       ShoppingListItem item = new ShoppingListItem();
       item.setIngredient(ingredient);
-      item.setQuantity(itemDTO.quantity());
-      item.setUnit(unit);
-      item.setShoppingList(shoppingList); // svarbu susieti
+      item.setQuantity(latestItem.getQuantity()); // Naudojame quantity iš paskutinio įrašo
+      item.setUnit(latestItem.getUnit());         // Naudojame unit iš paskutinio įrašo
+      item.setShoppingList(shoppingList);
 
       items.add(item);
     }
 
-    shoppingList.setItems(items); // priskiriame visus itemus
+    shoppingList.setItems(items);
 
     ShoppingList savedList = shoppingListService.saveShoppingList(shoppingList);
 

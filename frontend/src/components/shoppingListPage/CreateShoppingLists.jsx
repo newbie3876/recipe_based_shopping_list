@@ -131,7 +131,7 @@ export default function CreateShoppingLists({ userId }) {
       // items: selectedIngredientsDetailed,
       name, // jei norima
       createdAt: new Date().toISOString(),
-      //items: selectedIngredientsDetailed, // jei siunčiami ingredientai
+      items: selectedIngredientsDetailed, // jei siunčiami ingredientai
     };
 
     try {
