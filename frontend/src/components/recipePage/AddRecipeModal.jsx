@@ -44,6 +44,7 @@ export default function AddRecipeModal({ onClose, onRecipeAdded }) {
             setRecipeId(newRecipe.id);
             onRecipeAdded(newRecipe);
             clearForm();
+            onClose();
         } catch (err) {
             console.error("Klaida kuriant receptą:", err);
             setError("Nepavyko sukurti recepto.");

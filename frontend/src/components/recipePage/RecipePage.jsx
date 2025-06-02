@@ -10,6 +10,7 @@ export default function RecipePage() {
     const [isAddFormOpen, setIsAddFormOpen] = useState(false);
     const [recipeToEdit, setRecipeToEdit] = useState(null);
     const [recipeToDelete, setRecipeToDelete] = useState(null);
+    const [ingredients, setIngredients] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -25,8 +26,13 @@ export default function RecipePage() {
             });
     }, []);
 
-    const handleIngredientAdded = (recipeId, ingredient) => {
-        fetchRecipes().then(data => setRecipes(data));
+    const handleIngredientAdded = async (recipeId, newIngredient) => {
+    try {
+        const updatedRecipes = await fetchRecipes();
+        setRecipes(updatedRecipes);
+    } catch (error) {
+        console.error("Nepavyko atnaujinti receptų:", error);
+    }
     };
 
     return (

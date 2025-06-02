@@ -1,5 +1,7 @@
 package lt.techin.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,16 +13,19 @@ public class RecipeIngredient {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "recipe_id", nullable = false)
+  @JsonBackReference
   private Recipe recipe;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "ingredient_id", nullable = false)
+  @JsonIgnore
   private Ingredient ingredient;
 
   private Double quantity;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = " unit_id")
+  @JoinColumn(name = "unit_id")
+  @JsonIgnore
   private Unit unit;
 
   public RecipeIngredient() {

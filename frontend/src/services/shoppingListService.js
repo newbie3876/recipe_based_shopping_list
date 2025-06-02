@@ -5,11 +5,11 @@ export const fetchShoppingLists = async (userId) => {
     // Pasiimame token'ą iš localStorage
     const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error("❌ Nepavyko gauti autentifikacijos tokeno! Prašome prisijungti.");
+      throw new Error("Nepavyko gauti autentifikacijos tokeno! Prašome prisijungti.");
     }
 
     if (!userId) {
-      throw new Error("❌ Nepateiktas vartotojo ID!");
+      throw new Error("Nepateiktas vartotojo ID!");
     }
 
     // Debug: Logins tokeną (nebent nenori viešai rodyti)
@@ -22,7 +22,7 @@ export const fetchShoppingLists = async (userId) => {
         "Content-Type": "application/json",
       },
       // Jei backend'as naudoja cookies autentifikacijai, paliekam, kitu atveju galima pašalinti
-      credentials: "include",
+      //credentials: "include",
     });
 
     // Debug: Logins HTTP statusą
@@ -42,10 +42,9 @@ export const fetchShoppingLists = async (userId) => {
   } catch (err) {
     // Loginam klaidą konsolėje detaliai
     console.error("fetchShoppingLists klaida:", err);
-    throw new Error(`❌ Klaida gaunant pirkinių sąrašus: ${err.message}`);
+    throw new Error(`Klaida gaunant pirkinių sąrašus: ${err.message}`);
   }
 };
-
 
 
 // services/shoppingListService.js

@@ -1,89 +1,13 @@
-//package lt.techin.service;
-//
-//import jakarta.transaction.Transactional;
-//import lt.techin.dto.ingredient.IngredientMapper;
-//import lt.techin.dto.ingredient.IngredientResponseDTO;
-//import lt.techin.exceptions.IngredientNotFoundException;
-//import lt.techin.model.Ingredient;
-//import lt.techin.model.User;
-//import lt.techin.repository.IngredientRepository;
-//import lt.techin.repository.UserRepository;
-//import lt.techin.security.SecurityUtils;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.stereotype.Service;
-//import org.springframework.web.server.ResponseStatusException;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Service
-//public class IngredientService {
-//  private final IngredientRepository ingredientRepository;
-//  private final UserRepository userRepository;
-//
-//  @Autowired
-//  public IngredientService(IngredientRepository ingredientRepository, UserRepository userRepository) {
-//    this.ingredientRepository = ingredientRepository;
-//    this.userRepository = userRepository;
-//  }
-//
-//  public List<IngredientResponseDTO> getAllIngredientDTO() {
-//    List<Ingredient> allIngredients = ingredientRepository.findAll();
-//    return IngredientMapper.toListDTO(allIngredients);
-//  }
-//
-//  public IngredientResponseDTO getIngredientDTOById(Long id) {
-//    Ingredient match = ingredientRepository.findById(id)
-//            .orElseThrow(() -> new IngredientNotFoundException(id));
-//    return IngredientMapper.toDTO(match);
-//  }
-//
-//  public Ingredient getIngredientById(Long id) {
-//    return ingredientRepository.findById(id)
-//            .orElseThrow(() -> new IngredientNotFoundException(id));
-//  }
-//
-//  public boolean existsIngredientByName(String name) {
-//    return ingredientRepository.existsByName(name);
-//  }
-//
-//  @Transactional
-//  public IngredientResponseDTO saveIngredient(Ingredient ingredient) {
-//    if (ingredient.getName() == null || ingredient.getName().isBlank()) {
-//      throw new IllegalArgumentException("Ingrediento pavadinimas negali būti tuščias");
-//    }
-//    if (ingredient.getIngredientCategory() == null) {
-//      throw new IllegalArgumentException("Ingrediento kategorija turi būti nurodyta");
-//    }
-//
-//    if (ingredient.getUnit() == null) {
-//      throw new IllegalArgumentException("Ingrediento matavimo vienetas turi būti nurodytas");
-//    }
-//
-//    String username = SecurityUtils.getCurrentAuthenticatedUsername();
-//    User currentUser = userRepository.findByUsername(username)
-//            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Vartotojas nerastas"));
-//    ingredient.setUser(currentUser);
-//
-//    Ingredient savedIngredient = ingredientRepository.save(ingredient);
-//    return IngredientMapper.toDTO(savedIngredient);
-//  }
-//
-//  @Transactional
-//  public void deleteIngredientById(Long id) {
-//    if (!ingredientRepository.existsById(id)) {
-//      throw new IngredientNotFoundException(id);
-//    }
-//    ingredientRepository.deleteById(id);
-//  }
-//}
-
 package lt.techin.service;
 
+import lt.techin.dto.ingredient.IngredientRequestDTO;
 import lt.techin.model.Ingredient;
+import lt.techin.model.IngredientCategory;
+import lt.techin.model.Unit;
 import lt.techin.model.User;
+import lt.techin.repository.IngredientCategoryRepository;
 import lt.techin.repository.IngredientRepository;
+import lt.techin.repository.UnitRepository;
 import lt.techin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -97,14 +21,17 @@ import java.util.Optional;
 
 @Service
 public class IngredientService {
-
   private final IngredientRepository ingredientRepository;
   private final UserRepository userRepository;
+  private final UnitRepository unitRepository;
+  private final IngredientCategoryRepository ingredientCategoryRepository;
 
   @Autowired
-  public IngredientService(IngredientRepository ingredientRepository, UserRepository userRepository) {
+  public IngredientService(IngredientRepository ingredientRepository, UserRepository userRepository, UnitRepository unitRepository, IngredientCategoryRepository ingredientCategoryRepository) {
     this.ingredientRepository = ingredientRepository;
     this.userRepository = userRepository;
+    this.unitRepository = unitRepository;
+    this.ingredientCategoryRepository = ingredientCategoryRepository;
   }
 
   public Optional<Ingredient> findIngredientById(Long id) {
@@ -136,5 +63,33 @@ public class IngredientService {
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     return ingredientRepository.findByUser(user);
+  }
+
+  public Ingredient createIngredientFromDto(IngredientRequestDTO dto) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Jwt jwt = (Jwt) authentication.getPrincipal();
+    String username = jwt.getSubject();
+
+    User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    // Surandame Unit
+    Unit unit = unitRepository.findById(dto.unitId())
+            .orElseThrow(() -> new IllegalArgumentException("Unit with id " + dto.unitId() + " not found"));
+
+    // Surandame IngredientCategory
+    IngredientCategory category = ingredientCategoryRepository.findById(dto.ingredientCategoryId())
+            .orElseThrow(() -> new IllegalArgumentException("IngredientCategory with id " + dto.ingredientCategoryId() + " not found"));
+
+    Ingredient ingredient = new Ingredient();
+    ingredient.setName(dto.ingredientName());
+    ingredient.setUser(user);
+    ingredient.setUnit(unit);
+    ingredient.setIngredientCategory(category);
+
+    // Jei turi quantity laukas Ingredient entity, pridėk jį čia:
+    // ingredient.setQuantity(dto.quantity());
+
+    return ingredientRepository.save(ingredient);
   }
 }

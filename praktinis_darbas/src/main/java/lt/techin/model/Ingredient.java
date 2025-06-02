@@ -1,5 +1,6 @@
 package lt.techin.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -15,18 +16,21 @@ public class Ingredient {
   @Column(nullable = false, length = 250)
   private String name;
 
+  @JsonBackReference
   @ManyToOne
   @JoinColumn(name = "ingredient_category_id", nullable = false)
   private IngredientCategory ingredientCategory;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
   private List<ShoppingListItem> shoppingListItems;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY) // Užtikrina teisingą ryšį
   @JoinColumn(name = "user_id", nullable = false) // Aiškiai nurodo DB stulpelį
   private User user;
 
+  @JsonIgnore
   @ManyToOne
   @JoinColumn(name = "unit_id")
   private Unit unit;

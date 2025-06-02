@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AddIngredientModal from "./AddIngredientModal";
+import AddRecipeIngredientModal from "./AddRecipeIngredientModal";
 import ViewRecipeModal from "./ViewRecipeModal";
 
 export default function RecipeList({ recipes, onEdit, onDelete, onIngredientAdded }) {
@@ -7,9 +7,9 @@ export default function RecipeList({ recipes, onEdit, onDelete, onIngredientAdde
     const[selectedRecipeForView, setSelectedRecipeForView] = useState(null);
     const [ingredients, setIngredients] = useState([]);
 
-    const fetchIngredients = async () => {
+    const fetchIngredients = async (recipeId) => {
         try {
-            const res = await fetch(`/api/ingredients`, {
+            const res = await fetch(`/api/recipes/${recipeId}/ingredients`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
             });
             if (!res.ok) throw new Error(`Fetch klaida: ${res.status}`);
@@ -87,9 +87,12 @@ export default function RecipeList({ recipes, onEdit, onDelete, onIngredientAdde
             ))}
 
             {selectedRecipeId && (
-                <AddIngredientModal
+                <AddRecipeIngredientModal
                     recipeId={selectedRecipeId}
-                    onIngredientAdded={(ingredient) => onIngredientAdded(selectedRecipeId, ingredient)}
+                    onIngredientAdded={async (ingredient) => {
+                        await onIngredientAdded(selectedRecipeId, ingredient); // jei reikia kažką padaryti RecipePage'e
+                        await fetchIngredients(selectedRecipeId); // atnaujinam ingredientus
+                    }}
                     onClose={handleCloseModal}
                 />
             )}

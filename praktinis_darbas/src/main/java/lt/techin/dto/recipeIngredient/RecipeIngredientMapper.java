@@ -29,7 +29,6 @@ public class RecipeIngredientMapper {
             )
                     : null,
             ri.getQuantity(),
-            ri.getUnit() != null ? ri.getUnit().getId() : null,
             ri.getUnit() != null ? ri.getUnit().getName() : null
     );
   }

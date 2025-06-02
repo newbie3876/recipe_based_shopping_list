@@ -2,8 +2,8 @@ const API_URL = "http://localhost:8080/api/ingredients";
 
 export const addIngredient = async (ingredientData) => {
   try {
-    const token = localStorage.getItem("token"); // 📌 Pasiimame JWT tokeną
-    if (!token) throw new Error("❌ Nepavyko gauti autentifikacijos tokeno!");
+    const token = localStorage.getItem("token"); // Pasiimame JWT tokeną
+    if (!token) throw new Error("Nepavyko gauti autentifikacijos tokeno!");
 
     const response = await fetch(API_URL, {
       method: "POST",
@@ -19,19 +19,17 @@ export const addIngredient = async (ingredientData) => {
       throw new Error(errorData.message || `Serverio klaida! Statusas: ${response.status}`);
     }
 
-    return await response.json(); // ✅ Grąžiname serverio atsakymą (ResponseDTO)
+    return await response.json(); // Grąžiname serverio atsakymą (ResponseDTO)
   } catch (err) {
-    throw new Error(`❌ Klaida pridedant ingredientą: ${err.message}`);
+    throw new Error(`Klaida pridedant ingredientą: ${err.message}`);
   }
 };
-
-
 
 export const fetchIngredients = async () => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      throw new Error("❌ Nepavyko gauti autentifikacijos tokeno!");
+      throw new Error("Nepavyko gauti autentifikacijos tokeno!");
     }
 
     const response = await fetch(API_URL, {
@@ -49,6 +47,6 @@ export const fetchIngredients = async () => {
     const data = await response.json();
     return data;
   } catch (err) {
-    throw new Error(`❌ Klaida gaunant ingredientus: ${err.message}`);
+    throw new Error(`Klaida gaunant ingredientus: ${err.message}`);
   }
 };

@@ -15,23 +15,32 @@ export default function AddShoppingListModal({onClose, onShoppingListAdded}) {
         setLoading(true);
         setError(null);
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            setError("Prašome prisijungti - trūksta autentifikacijos žetono.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const newShoppingList = await createShoppingList({
                 name,
                 createdAt,
                 recipeIngredients,
                 independentIngredients
-            });
+            }, token); // <- PERDUODAME TOKENĄ
 
             onShoppingListAdded(newShoppingList);
             onClose();
-            } catch (err) {
+        } catch (err) {
             console.error("Klaida kuriant prekių krepšelį:", err);
             setError("Nepavyko sukurti prekių krepšelio.");
         } finally {
             setLoading(false);
         }
     };
+
         
     const clearForm = () => {
         setName("");

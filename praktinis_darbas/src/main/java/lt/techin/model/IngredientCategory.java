@@ -1,5 +1,6 @@
 package lt.techin.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class IngredientCategory {
   @Column(length = 255)
   private String name;
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "ingredientCategory", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Ingredient> ingredients = new ArrayList<>();
 
