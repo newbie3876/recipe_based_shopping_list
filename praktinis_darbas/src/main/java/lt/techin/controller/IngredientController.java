@@ -50,7 +50,11 @@ public class IngredientController {
 
   @GetMapping("/ingredients")
   public ResponseEntity<List<IngredientResponseDTO>> getIngredients() {
+    String username = SecurityUtils.getCurrentAuthenticatedUsername();
+    User user = userService.findUserByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+    // Fetch shopping list items with ingredients, quantities, and units
     List<Ingredient> ingredients = ingredientService.findIngredientForCurrentUser();
 
     return ResponseEntity.ok(IngredientMapper.toListDTO(ingredients));

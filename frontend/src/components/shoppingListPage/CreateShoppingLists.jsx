@@ -63,33 +63,6 @@ export default function CreateShoppingLists({ userId }) {
     setIndependentIngredients(updatedSelectedIngredients);
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const selectedIngredientsDetailed = ingredients
-  //     .filter((ingredient) => selectedIds.includes(ingredient.ingredientId))
-  //     .map((ingredient) => ({
-  //       ingredientId: ingredient.ingredientId,
-  //       ingredientName: ingredient.ingredientName,
-  //       quantity: ingredient.quantity,
-  //       unitName: ingredient.unitName,
-  //       categoryName: ingredient.categoryName || "–",
-  //     }));
-
-  //   if (selectedIngredientsDetailed.length === 0) {
-  //     setError("Pasirinkite bent vieną ingredientą.");
-  //     return;
-  //   }
-
-  //   // Saugojimas į localStorage pagal userId
-  //   const allData = JSON.parse(localStorage.getItem("independentIngredientsByUser") || "{}");
-  //   allData[userId] = selectedIngredientsDetailed;
-  //   localStorage.setItem("independentIngredientsByUser", JSON.stringify(allData));
-
-  //   // Navigavimas į pirkinių krepšelio puslapį
-  //   navigate("/shoppinglist");
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
