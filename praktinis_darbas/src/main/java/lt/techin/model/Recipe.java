@@ -2,6 +2,7 @@ package lt.techin.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class Recipe {
   @JoinColumn(name = "shopping_list_id")
   private ShoppingList shoppingList;
 
+  @JsonManagedReference
   @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 

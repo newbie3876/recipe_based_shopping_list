@@ -38,7 +38,7 @@ public class Unit {
     if (this == o) return true;
     if (!(o instanceof Unit)) return false;
     Unit unit = (Unit) o;
-    // Jei id dar nėra priskirtas (null), naudoti name lyginimui (jei norisi)
+    
     if (id != null && unit.id != null) {
       return id.equals(unit.id);
     }

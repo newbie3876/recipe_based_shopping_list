@@ -1,5 +1,6 @@
 package lt.techin.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -13,13 +14,15 @@ public class ShoppingListItem {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @JsonIgnore
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "shopping_list_id", nullable = true)
+  @JoinColumn(name = "shopping_list_id")
   private ShoppingList shoppingList;
 
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "ingredient_id", nullable = false)
+  @JsonIgnore
   private Ingredient ingredient;
 
   @DecimalMin(value = "1.0", message = "Kiekis turi būti ne mažesnis nei 1.")
@@ -39,12 +42,6 @@ public class ShoppingListItem {
   }
 
   public ShoppingListItem() {
-  }
-
-  public ShoppingListItem(Object o, ShoppingList shoppingList, Ingredient ingredient, BigDecimal quantity, Unit unit) {
-  }
-
-  public ShoppingListItem(String s, BigDecimal quantity, Long aLong) {
   }
 
   public Long getId() {

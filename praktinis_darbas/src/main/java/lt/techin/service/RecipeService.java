@@ -29,20 +29,17 @@ public class RecipeService {
   private final UserRepository userRepository;
   private final RecipeCategoryRepository recipeCategoryRepository;
   private final UnitRepository unitRepository;
-  private final IngredientRepository ingredientRepository; // pridedam ingredientų repo
+  private final IngredientRepository ingredientRepository;
+  private final RecipeIngredientRepository recipeIngredientRepository;
 
   @Autowired
-  public RecipeService(
-          RecipeRepository recipeRepository,
-          UserRepository userRepository,
-          RecipeCategoryRepository recipeCategoryRepository,
-          UnitRepository unitRepository,
-          IngredientRepository ingredientRepository) {
+  public RecipeService(RecipeRepository recipeRepository, UserRepository userRepository, RecipeCategoryRepository recipeCategoryRepository, UnitRepository unitRepository, IngredientRepository ingredientRepository, RecipeIngredientRepository recipeIngredientRepository) {
     this.recipeRepository = recipeRepository;
     this.userRepository = userRepository;
     this.recipeCategoryRepository = recipeCategoryRepository;
     this.unitRepository = unitRepository;
     this.ingredientRepository = ingredientRepository;
+    this.recipeIngredientRepository = recipeIngredientRepository;
   }
 
   public List<RecipeResponseDTO> getAllUserRecipes() {
@@ -86,7 +83,19 @@ public class RecipeService {
     }
 
     applyRecipeDTOtoEntity(recipe, dto);
-    return recipeRepository.save(recipe);
+
+    // Pirmiausiai išsaugom receptą, kad gautų ID (jei naujas)
+    Recipe savedRecipe = recipeRepository.save(recipe);
+
+    // Tada išsaugom RecipeIngredient atskirai, jei jie nauji
+    for (RecipeIngredient ri : savedRecipe.getRecipeIngredients()) {
+      if (ri.getId() == null) {
+        ri.setRecipe(savedRecipe);
+        recipeIngredientRepository.save(ri);
+      }
+    }
+
+    return savedRecipe;
   }
 
   public RecipeResponseDTO convertToResponseDTO(Recipe recipe) {
@@ -121,7 +130,6 @@ public class RecipeService {
             ingredient.getName(),       // Ingredient pavadinimas
             categoryDTO,
             ri.getQuantity(),
-            ri.getUnit() != null ? ri.getUnit().getId() : null,
             ri.getUnit() != null ? ri.getUnit().getName() : null
     );
   }
@@ -170,8 +178,13 @@ public class RecipeService {
       ingredient = ingredientRepository.findById(dto.ingredientId())
               .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingredientas nerastas"));
     } else if (dto.ingredientName() != null && !dto.ingredientName().isBlank()) {
+      String trimmedName = dto.ingredientName().trim();
+      if (trimmedName.isEmpty()) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ingrediento pavadinimas negali būti tuščias arba sudarytas tik iš tarpų");
+      }
+
       ingredient = new Ingredient();
-      ingredient.setName(dto.ingredientName());
+      ingredient.setName(trimmedName);
       ingredientRepository.save(ingredient);
     } else {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IngredientId arba ingredientName būtinas");

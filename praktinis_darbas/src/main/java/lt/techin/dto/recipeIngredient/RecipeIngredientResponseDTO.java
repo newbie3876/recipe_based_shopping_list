@@ -7,6 +7,5 @@ public record RecipeIngredientResponseDTO(
         String ingredientName,
         IngredientCategoryResponseDTO category,
         Double quantity,
-        Long unitId,
         String unitName) {
 }

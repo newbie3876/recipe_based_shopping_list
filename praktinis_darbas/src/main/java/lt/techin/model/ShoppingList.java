@@ -1,5 +1,6 @@
 package lt.techin.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PastOrPresent;
 
@@ -24,11 +25,8 @@ public class ShoppingList {
   @PastOrPresent(message = "Creation date cannot be in the future!")
   private LocalDateTime createdAt;
 
-  public <E> ShoppingList(User user, LocalDateTime now, ArrayList<E> es, Object o) {
-  }
-
-  public <E> ShoppingList(User user, LocalDateTime now, ArrayList<E> es) {
-  }
+  @Column(nullable = false)
+  private boolean active = true;
 
   @PrePersist
   protected void onCreate() {
@@ -37,22 +35,22 @@ public class ShoppingList {
     }
   }
 
-//  @Column(length = 255)
-//  private String name;
-
   @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonManagedReference
   private List<ShoppingListItem> items = new ArrayList<>();
+
+  public ShoppingList(User user, LocalDateTime createdAt, List<ShoppingListItem> items) {
+    this.user = user;
+    this.createdAt = createdAt;
+    this.items = items;
+  }
+
+  //  @Column(length = 255)
+//  private String name;
 
   //  @OneToMany(mappedBy = "shoppingList", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //  private final List<Ingredient> ingredients = new ArrayList<>();
   public ShoppingList() {
-  }
-
-  public ShoppingList(String name, User user, LocalDateTime createdAt, List<ShoppingListItem> items) {
-    this.name = name;
-    this.user = user;
-    this.createdAt = createdAt;
-    this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
   }
 
   public Long getId() {
@@ -89,5 +87,13 @@ public class ShoppingList {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
   }
 }
