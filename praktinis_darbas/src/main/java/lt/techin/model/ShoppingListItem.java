@@ -14,7 +14,7 @@ public class ShoppingListItem {
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "shopping_list_id", nullable = true)
+  @JoinColumn(name = "shopping_list_id", nullable = false)
   private ShoppingList shoppingList;
 
   @NotNull
@@ -82,4 +82,5 @@ public class ShoppingListItem {
   public void setUnit(Unit unit) {
     this.unit = unit;
   }
+
 }

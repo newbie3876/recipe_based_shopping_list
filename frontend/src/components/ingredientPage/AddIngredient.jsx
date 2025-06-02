@@ -32,11 +32,38 @@ export default function AddIngredient({userId}) {
     { id: 7, label: "Riebalai, aliejus ir sviestas" },
   ];
 
+  // fetchinam ingredientus
   useEffect(() => {
-    fetchIngredients(); // iškart užkraunam
-    const interval = setInterval(fetchIngredients, 10); // kas 1 sek.
-    return () => clearInterval(interval); // išvalom intervalą
-  }, []);
+    if (!userId) return;
+    
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+
+        const data = await fetchIngredients(userId);
+        
+        setIngredients(
+          data.map(item => ({
+            ingredientName: item.ingredientName,
+            quantity: item.quantity,
+            unitName: item.unitName,
+            categoryName: item.categoryName
+          }))
+        );
+      } catch (err) {
+        setError("Nepavyko gauti ingredientų.");
+        console.error("Error fetching ingredients:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+    
+    const interval = setInterval(fetchData, 10000); // kas 10 s
+    
+    return () => clearInterval(interval);
+  }, [userId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,17 +76,26 @@ export default function AddIngredient({userId}) {
     const newIngredient = {
       ingredientName: ingredientName.trim(),
       quantity: parseFloat(quantity),
-      unitId: unitId.toString(), // Siunčiame kaip string
-      ingredientCategoryId: ingredientCategoryId.toString(), // Siunčiame kaip string
+      unitId: unitId.toString(),
+      ingredientCategoryId: ingredientCategoryId.toString(),
     };
 
     try {
       await addIngredient(newIngredient);
       alert("✅ Ingredientas sėkmingai pridėtas!");
 
-      await fetchIngredients(); // Iškart atnaujinam sąrašą po pridėjimo
+      // Perkraunam ingredientų listą
+      const data = await fetchIngredients(userId);
+      setIngredients(
+        data.map(item => ({
+          ingredientName: item.ingredientName,
+          quantity: item.quantity,
+          unitName: item.unitName,
+          categoryName: item.categoryName
+        }))
+      );
 
-      // Gali išvalyti formą jei nori
+      // Išvalome formą
       setIngredientName("");
       setQuantity("");
       setUnitId("");
@@ -69,34 +105,6 @@ export default function AddIngredient({userId}) {
     }
   };
 
-  useEffect(() => {
-    if (!userId) return;
-    
-      const fetchData = async () => {
-        setLoading(true);
-        try {
-  
-          const data = await fetchIngredients(userId);
-  
-          setIngredients(
-            data.map(item => ({
-              ingredientName: item.ingredientName,
-              quantity: item.quantity,
-              unitName: item.unitName,
-              categoryName: item.categoryName
-            }))
-          );
-    
-        } catch (err) {
-          setError("Nepavyko gauti ingredientų.");
-        } finally {
-          setLoading(false);
-        }
-      };
-    
-    fetchData();
-  }, [userId]);
-
   return (
     <div className="bg-orange-200 h-screen">
       <div style={{ textAlign: "center", padding: "20px", backgroundColor: "#ffffff", border: "1px solid gray", boxShadow: "3px 3px 12px rgba(0, 0, 0, 0.3)", borderRadius: "8px", maxWidth: "400px", margin: "auto" }}>
@@ -105,7 +113,6 @@ export default function AddIngredient({userId}) {
           <input type="text" placeholder="Ingrediento pavadinimas" value={ingredientName} onChange={(e) => setIngredientName(e.target.value)} required style={{ padding: "10px", borderRadius: "5px", border: "1px solid gray" }} />
           <input type="number" placeholder="Kiekis" value={quantity} onChange={(e) => setQuantity(e.target.value)} required style={{ padding: "10px", borderRadius: "5px", border: "1px solid gray" }} />
 
-          {/* Dropdown vienetams */}
           <select value={unitId} onChange={(e) => setUnitId(e.target.value)} required style={{ padding: "10px", borderRadius: "5px", border: "1px solid gray" }}>
             <option value="">Pasirinkti vienetus</option>
             {unitOptions.map((unit) => (
@@ -113,7 +120,6 @@ export default function AddIngredient({userId}) {
             ))}
           </select>
 
-          {/* Dropdown kategorijoms */}
           <select value={ingredientCategoryId} onChange={(e) => setIngredientCategoryId(e.target.value)} required style={{ padding: "10px", borderRadius: "5px", border: "1px solid gray" }}>
             <option value="">Pasirinkti kategoriją</option>
             {categoryOptions.map((category) => (
@@ -129,6 +135,10 @@ export default function AddIngredient({userId}) {
 
       <div>
         <h1 className="bg-orange-200 text-2xl font-bold text-center p-5">Visi ingredientai:</h1>
+        
+        {loading && <p className="text-center">Kraunama...</p>}
+        {error && <p className="text-center text-red-600">{error}</p>}
+        
         <table className="bg-orange-200 w-full border border-orange-300 text-center mb-4">
           <thead>
             <tr>
@@ -140,19 +150,26 @@ export default function AddIngredient({userId}) {
             </tr>
           </thead>
           <tbody>
-            {ingredients.map((ing, i) => (
-              <tr key={ing.ingredientId || i}>
-                <td className="p-2 border border-orange-300">{i + 1}</td>
-                <td className="p-2 border border-orange-300">{ing.ingredientName || "–"}</td>
-                <td className="p-2 border border-orange-300">{ing.quantity || "–"}</td>
-                <td className="p-2 border border-orange-300">{ing.unitName || "–"}</td>
-                <td className="p-2 border border-orange-300">{ing.categoryName || "–"}</td>
+            {ingredients.length > 0 ? (
+              ingredients.map((ing, i) => (
+                <tr key={ing.ingredientId || i}>
+                  <td className="p-2 border border-orange-300">{i + 1}</td>
+                  <td className="p-2 border border-orange-300">{ing.ingredientName || "–"}</td>
+                  <td className="p-2 border border-orange-300">{ing.quantity || "–"}</td>
+                  <td className="p-2 border border-orange-300">{ing.unitName || "–"}</td>
+                  <td className="p-2 border border-orange-300">{ing.categoryName || "–"}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="5" className="p-4 text-gray-500">
+                  {loading ? "Kraunama..." : "Ingredientų nėra"}
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
-    
-    </div> 
+    </div>
   );
 }
