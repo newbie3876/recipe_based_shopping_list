@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { addIngredientToRecipe } from "../../services/recipePageMethods";
 
-export default function AddIngredientModal({ recipeId, onIngredientAdded, onClose }){
-    const [name, setName] = useState("");
+export default function AddRecipeIngredientModal({ recipeId, onIngredientAdded, onClose }){
+    const [ingredientName, setIngredientName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [unitId, setUnitId] = useState("");
     const [ingredientCategoryId, setIngredientCategoryId] = useState("");
@@ -22,10 +22,17 @@ export default function AddIngredientModal({ recipeId, onIngredientAdded, onClos
             return;
         }
 
+        if (!ingredientName.trim()) {
+            alert("Ingrediento pavadinimas negali būti tuščias.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const newIngredient = await addIngredientToRecipe({
                 recipeId,
-                name,
+                ingredientId: null,
+                ingredientName,
                 quantity: quantityNumber,
                 unitId: unitId ? parseInt(unitId, 10) : null,
                 ingredientCategoryId: ingredientCategoryId ? parseInt(ingredientCategoryId, 10) : null,
@@ -43,7 +50,7 @@ export default function AddIngredientModal({ recipeId, onIngredientAdded, onClos
     }
 
     const clearForm = () => {
-        setName("");
+        setIngredientName("");
         setQuantity("");
         setUnitId("");
         setIngredientCategoryId("");
@@ -57,8 +64,8 @@ export default function AddIngredientModal({ recipeId, onIngredientAdded, onClos
 
                 <input 
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={ingredientName}
+                    onChange={(e) => setIngredientName(e.target.value)}
                     className="w-full px-3 py-2 border rounded"
                     placeholder="Ingrediento pavadinimas"
                     required

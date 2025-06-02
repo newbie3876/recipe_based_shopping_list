@@ -19,7 +19,7 @@ const ShoppingList = ({ userId }) => {
   //     try {
   //       setSelectedIngredients(JSON.parse(saved));
   //     } catch (err) {
-  //       console.error("❌ Nepavyko nuskaityti ingredientų iš localStorage", err);
+  //       console.error(" Nepavyko nuskaityti ingredientų iš localStorage", err);
   //     }
   //   }
   // }, []);
@@ -38,7 +38,7 @@ const ShoppingList = ({ userId }) => {
 
     setIndependentIngredients(userIngredients);
   } catch (err) {
-    console.error("❌ Nepavyko nuskaityti ingredientų pagal userId iš localStorage", err);
+    console.error("Nepavyko nuskaityti ingredientų pagal userId iš localStorage", err);
   }
   }, [userId]);
 

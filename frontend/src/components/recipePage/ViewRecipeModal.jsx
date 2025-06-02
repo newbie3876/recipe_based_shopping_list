@@ -1,23 +1,4 @@
 export default function ViewRecipeModal({ recipe, ingredients, onClose }) {
-    const ingredientCategoryMap = {
-    1: "Pienas ir jo gaminiai",
-    2: "Mėsa, žuvis ir kiaušiniai",
-    3: "Bulvės, ankštiniai augalai ir riešutai",
-    4: "Daržovės",
-    5: "Vaisiai",
-    6: "Duona, makaronai, grūdai, cukrus ir saldainiai",
-    7: "Riebalai, aliejus ir sviestas"
-    };
-
-    const unitMap = {
-        1: "g",
-        2: "kg",
-        3: "l",
-        4: "ml",
-        5: "pc."
-    };
-
-
     if (!recipe) return null;
     return (
         <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center z-50">
@@ -33,7 +14,7 @@ export default function ViewRecipeModal({ recipe, ingredients, onClose }) {
                     <ul className="list-disc list-inside">
                         {ingredients.map((ing) => (
                             <li key={ing.id}>
-                                {ing.name}, kiekis: {ing.quantity ?? "nepriskirta"}, matavimo vienetai: {unitMap[parseInt(ing.unitId, 10)] || "nepriskirta"}, kategorija: {ingredientCategoryMap[parseInt(ing.ingredientCategoryId, 10)] || "nepriskirta"}
+                                {ing.ingredientName ?? "nepriskirta"}, kiekis: {ing.quantity ?? "nepriskirta"}, matavimo vienetai: {ing.unitName ?? "nepriskirta"}, kategorija: {ing.category ? ing.category.name : "nepriskirta"}
                             </li>
                         ))}
                     </ul>

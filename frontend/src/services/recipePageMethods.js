@@ -53,19 +53,35 @@ export async function deleteRecipeById(id) {
     return true;
 }
 
-export async function addIngredientToRecipe({ recipeId, name, quantity, unitId, ingredientCategoryId }) {
-    const response = await fetch(`${API_BASE}/api/ingredients`, {
+export async function addIngredientToRecipe({ recipeId, ingredientId, ingredientName, quantity, unitId, ingredientCategoryId }) {
+    if (!recipeId || !quantity || !unitId || (!ingredientId && !ingredientName) || (!ingredientId && !ingredientCategoryId)) {
+        throw new Error("Trūksta privalomų laukų");
+    }
+
+    const body = {
+        recipeId,
+        ingredientId: ingredientId || null,
+        ingredientName: ingredientName || null,
+        quantity,
+        unitId,
+        ingredientCategoryId: ingredientCategoryId || null,
+    };
+
+    const response = await fetch(`${API_BASE}/api/recipes/${recipeId}/ingredients`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${getToken()}`,
         },
-        body: JSON.stringify({ recipeId, name, quantity, unitId, ingredientCategoryId }),
+        body: JSON.stringify(body),
     });
 
     if (!response.ok) {
         throw new Error("Nepavyko pridėti ingrediento");
     }
+
     return await response.json();
 }
+
+
 

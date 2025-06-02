@@ -55,7 +55,7 @@ export default function AddIngredient({userId}) {
 
     try {
       await addIngredient(newIngredient);
-      alert("✅ Ingredientas sėkmingai pridėtas!");
+      alert("Ingredientas sėkmingai pridėtas!");
 
       await fetchIngredients(); // Iškart atnaujinam sąrašą po pridėjimo
 
@@ -65,7 +65,7 @@ export default function AddIngredient({userId}) {
       setUnitId("");
       setIngredientCategoryId("");
     } catch (error) {
-      alert(`❌ Klaida pridedant ingredientą: ${error.message}`);
+      alert(`Klaida pridedant ingredientą: ${error.message}`);
     }
   };
 
@@ -80,6 +80,7 @@ export default function AddIngredient({userId}) {
   
           setIngredients(
             data.map(item => ({
+              ingredientId: item.id,
               ingredientName: item.ingredientName,
               quantity: item.quantity,
               unitName: item.unitName,
@@ -143,10 +144,10 @@ export default function AddIngredient({userId}) {
             {ingredients.map((ing, i) => (
               <tr key={ing.ingredientId || i}>
                 <td className="p-2 border border-orange-300">{i + 1}</td>
-                <td className="p-2 border border-orange-300">{ing.ingredientName || "–"}</td>
-                <td className="p-2 border border-orange-300">{ing.quantity || "–"}</td>
-                <td className="p-2 border border-orange-300">{ing.unitName || "–"}</td>
-                <td className="p-2 border border-orange-300">{ing.categoryName || "–"}</td>
+                <td className="p-2 border border-orange-300">{ing.ingredientName || "-"}</td>
+                <td className="p-2 border border-orange-300">{ing.quantity ?? "-"}</td>
+                <td className="p-2 border border-orange-300">{ing.unitName || "-"}</td>
+                <td className="p-2 border border-orange-300">{ing.categoryName || "-"}</td>
               </tr>
             ))}
           </tbody>
